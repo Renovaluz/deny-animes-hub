@@ -1,0 +1,165 @@
+<%- include('partials/header', { page_name: 'editar-perfil' }) %>
+
+<style>
+    /* ESTILOS PROFISSIONAIS PARA A PÁGINA DE EDIÇÃO */
+    .edit-profile-container { max-width: 900px; margin: 3rem auto; }
+    .edit-profile-container h1 { display: flex; align-items: center; gap: 1rem; color: var(--accent-primary); }
+    .admin-form-container { background-color: var(--bg-secondary); padding: var(--space-6); border-radius: var(--border-radius); border: 1px solid var(--border-color); box-shadow: 0 8px 30px rgba(var(--shadow-rgb), 0.1); }
+    .image-upload-wrapper { display: grid; gap: 2rem; margin-bottom: 2rem; grid-template-columns: 1fr; }
+    @media (min-width: 768px) { .image-upload-wrapper { grid-template-columns: 200px 1fr; } }
+    .avatar-upload-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+    .avatar-preview-wrapper { width: 150px; height: 150px; border-radius: 50%; position: relative; overflow: hidden; border: 4px solid var(--border-color); box-shadow: 0 5px 15px rgba(var(--shadow-rgb), 0.1); }
+    .avatar-preview-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+    .cover-upload-container { display: flex; flex-direction: column; gap: 1rem; }
+    .cover-preview-wrapper { width: 100%; aspect-ratio: 16 / 5; border-radius: var(--border-radius); position: relative; overflow: hidden; background-color: var(--bg-tertiary); border: 2px solid var(--border-color); }
+    .cover-preview-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+    .upload-button { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; font-size: 0.8rem; }
+    .loading-spinner { display: none; border: 2px solid #f3f3f3; border-top: 2px solid var(--accent-primary); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
+    #notification-bar { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); padding: 1rem 2rem; border-radius: var(--border-radius); color: white; font-weight: 600; z-index: 3000; opacity: 0; visibility: hidden; transition: all 0.4s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    #notification-bar.show { opacity: 1; visibility: visible; }
+    #notification-bar.success { background-color: #04d361; }
+    #notification-bar.error { background-color: var(--accent-primary); }
+    .admin-form-container .form-group { margin-bottom: 1.75rem; }
+    .admin-form-container .form-group label { display: block; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .admin-form-container .auth-form.input, .admin-form-container textarea { width: 100%; padding: 0.8rem 1rem; background-color: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--border-radius); color: var(--text-primary); font-family: var(--font-primary); font-size: 1rem; transition: all 0.3s ease; box-shadow: inset 0 1px 3px rgba(var(--shadow-rgb), 0.1); }
+    .admin-form-container .auth-form.input:disabled { background-color: var(--bg-tertiary); cursor: not-allowed; opacity: 0.7; }
+    .admin-form-container .auth-form.input:focus, .admin-form-container textarea:focus { outline: none; border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(var(--glow-rgb), 0.2), inset 0 1px 3px rgba(var(--shadow-rgb), 0.1); }
+    .admin-form-container textarea { min-height: 120px; resize: vertical; }
+    .admin-form-container hr { border: none; border-top: 1px solid var(--border-color); margin: 2rem 0; }
+    .admin-form-container .actions-cell { display: flex; gap: 1rem; justify-content: flex-start; margin-top: 1.5rem; }
+</style>
+
+<div class="edit-profile-container container animated-section fade-in-up">
+    <h1><i class="fas fa-user-edit"></i> Editar Perfil</h1>
+    <p class="text-secondary mb-5">Atualize suas informações, avatar e capa.</p>
+
+    <div id="notification-bar"></div>
+
+    <div class="admin-form-container">
+        <div class="image-upload-wrapper">
+            <div class="avatar-upload-container">
+                <label class="mb-2">Avatar</label>
+                <div class="avatar-preview-wrapper"><img src="<%= user.avatar %>" id="avatar-preview" alt="Avatar"></div>
+                <button type="button" class="btn btn--secondary upload-button" onclick="document.getElementById('avatar-input').click();"><i class="fas fa-camera"></i> Alterar</button>
+                <input type="file" id="avatar-input" name="avatar" accept="image/*" style="display: none;">
+            </div>
+            <div class="cover-upload-container">
+                <label class="mb-2">Imagem de Capa</label>
+                <div class="cover-preview-wrapper"><img src="<%= user.capaPerfil %>" id="capa-preview" alt="Capa do Perfil"></div>
+                <button type="button" class="btn btn--secondary upload-button" onclick="document.getElementById('capa-input').click();"><i class="fas fa-image"></i> Alterar Capa</button>
+                <input type="file" id="capa-input" name="capa" accept="image/*" style="display: none;">
+            </div>
+        </div>
+        <hr>
+        <form id="profile-info-form">
+            <div class="form-group">
+                <label for="nome">Nome de Usuário</label>
+                <input type="text" id="nome" name="nome" class="auth-form input" value="<%= user.nome %>" required>
+            </div>
+            <div class="form-group">
+                <label for="bio">Bio</label>
+                <textarea id="bio" name="bio" class="auth-form input" rows="4" placeholder="Fale um pouco sobre você..."><%= user.bio %></textarea>
+            </div>
+            <div class="form-group">
+                <label>Email (não pode ser alterado)</label>
+                <input type="email" class="auth-form input" value="<%= user.email %>" disabled>
+            </div>
+            <div class="actions-cell mt-4">
+                <button type="submit" class="btn btn--primary">
+                    <span class="btn-text"><i class="fas fa-save"></i> Salvar Informações</span>
+                    <div class="loading-spinner"></div>
+                </button>
+                <a href="/perfil" class="btn btn--secondary">Voltar ao Perfil</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Seletores dos elementos da página
+    const capaInput = document.getElementById('capa-input');
+    const capaPreview = document.getElementById('capa-preview');
+    const avatarInput = document.getElementById('avatar-input');
+    const avatarPreview = document.getElementById('avatar-preview');
+    const profileInfoForm = document.getElementById('profile-info-form');
+    const notificationBar = document.getElementById('notification-bar');
+    
+    // Função para exibir notificações na tela
+    function showNotification(message, type = 'success') {
+        notificationBar.textContent = message;
+        notificationBar.className = `show ${type}`;
+        setTimeout(() => { notificationBar.className = ''; }, 4000);
+    }
+    
+    // Função genérica para lidar com o upload de uma imagem via API
+    async function handleImageUpload(file, endpoint, previewElement) {
+        if (!file) return;
+        previewElement.src = URL.createObjectURL(file); // Mostra prévia imediata
+
+        const formData = new FormData();
+        // O nome do campo ('capa' ou 'avatar') deve corresponder ao que o middleware `upload.single()` espera
+        formData.append(endpoint, file);
+
+        try {
+            const response = await fetch(`/api/user/profile/${endpoint}`, { method: 'POST', body: formData });
+            const result = await response.json();
+
+            if (!response.ok) throw new Error(result.error || 'Falha no upload da imagem.');
+            
+            showNotification('Imagem atualizada com sucesso!', 'success');
+            // Atualiza a imagem com o caminho final do servidor para garantir que está salva
+            previewElement.src = result.data[endpoint === 'avatar' ? 'avatar' : 'capaPerfil'];
+        } catch (error) {
+            console.error(`Erro no upload de ${endpoint}:`, error);
+            showNotification(error.message, 'error');
+        }
+    }
+
+    // Listeners para os inputs de imagem
+    capaInput.addEventListener('change', (e) => handleImageUpload(e.target.files[0], 'capa', capaPreview));
+    avatarInput.addEventListener('change', (e) => handleImageUpload(e.target.files[0], 'avatar', avatarPreview));
+
+    // Listener para o formulário de NOME e BIO (CORRIGIDO)
+    profileInfoForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const submitButton = profileInfoForm.querySelector('button[type="submit"]');
+        const buttonText = submitButton.querySelector('.btn-text');
+        const spinner = submitButton.querySelector('.loading-spinner');
+        
+        buttonText.style.display = 'none';
+        spinner.style.display = 'inline-block';
+        submitButton.disabled = true;
+
+        // Coleta os dados diretamente dos campos do formulário
+        const body = {
+            nome: document.getElementById('nome').value,
+            bio: document.getElementById('bio').value
+        };
+
+        try {
+            const response = await fetch('/api/user/profile', {
+                method: 'PUT', // Método correto para atualização
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error);
+            
+            showNotification(result.message, 'success');
+            // Atualiza o nome do usuário no topo da página, se alterado
+            document.querySelector('.profile-page-container h1, .edit-profile-container h1').textContent = body.nome;
+        } catch (error) {
+            console.error('Erro ao salvar perfil:', error);
+            showNotification(error.message, 'error');
+        } finally {
+            buttonText.style.display = 'inline-block';
+            spinner.style.display = 'none';
+            submitButton.disabled = false;
+        }
+    });
+});
+</script>
+
+<%- include('partials/footer') %>

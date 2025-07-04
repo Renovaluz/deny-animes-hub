@@ -1,0 +1,583 @@
+<%- include('partials/header', { page_name: 'noticias' }) %>
+
+<!-- 
+    ================================================================
+    CSS AVANÇADO INTEGRADO PARA O MODAL INTERATIVO
+    ================================================================
+-->
+<style>
+    /* --- Efeito de Fundo do Corpo --- */
+    body.modal-open {
+        overflow: hidden;
+    }
+
+    /* --- Estrutura Base do Modal --- */
+    .modal {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: none; align-items: center; justify-content: center;
+        z-index: 1000; opacity: 0; transition: opacity 0.3s ease;
+        padding: 20px;
+    }
+    .modal.active { display: flex; opacity: 1; }
+
+    /* --- MODAL DE API (ANIME/FILME) - ESTRUTURA VISUAL AVANÇADA --- */
+    #api-modal .modal__content {
+        position: relative; background: transparent; /* FUNDO TRANSPARENTE */
+        width: 100%; max-width: 950px; height: 90vh; max-height: 800px;
+        display: flex; flex-direction: column;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+        border-radius: 12px; overflow: hidden;
+    }
+
+    /* Imagem de Backdrop (FUNDO) */
+    .modal-backdrop-image {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        object-fit: cover; z-index: 1; transition: opacity 0.5s;
+    }
+    /* Overlay Gradiente (para legibilidade) */
+    .modal-backdrop-overlay {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(to top, rgba(18, 18, 23, 1) 20%, rgba(18, 18, 23, 0.7) 60%, rgba(18, 18, 23, 1) 100%);
+        z-index: 2;
+    }
+
+    /* --- Container do Conteúdo Real --- */
+    .modal-inner-content {
+        position: relative; z-index: 3;
+        display: flex; flex-direction: column;
+        height: 100%; color: #e4e4e7;
+    }
+
+    /* --- Cabeçalho, Corpo e Rodapé --- */
+    .modal__header { padding: 20px 30px; padding-top: 50px; }
+    .modal__header h2 { margin: 0; font-size: 2.2rem; color: #fff; line-height: 1.2; }
+    .modal__close {
+        position: absolute; top: 12px; right: 15px; background: rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; width: 32px; height: 32px;
+        font-size: 20px; color: #fff; cursor: pointer; z-index: 20; transition: all 0.2s;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .modal__close:hover { background: #e50914; border-color: #e50914; transform: scale(1.1); }
+
+    /* --- Sistema de Abas --- */
+    .modal__tabs {
+        display: flex; padding: 0 30px;
+        border-bottom: 1px solid #3f3f46;
+    }
+    .modal__tab-btn {
+        background: none; border: none; color: #a1a1aa;
+        padding: 15px 20px; font-size: 1rem; cursor: pointer;
+        position: relative; transition: color 0.2s;
+    }
+    .modal__tab-btn:hover { color: #fff; }
+    .modal__tab-btn.active {
+        color: #fff; font-weight: 600;
+    }
+    .modal__tab-btn.active::after {
+        content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
+        height: 3px; background-color: #e50914; border-radius: 3px 3px 0 0;
+    }
+    .modal-tab-panel { display: none; }
+    .modal-tab-panel.active { display: block; }
+    
+    .modal__body-wrapper { overflow-y: auto; flex-grow: 1; padding: 25px 30px; }
+    .modal__footer {
+        padding: 15px 30px; background-color: rgba(0,0,0,0.3);
+        border-top: 1px solid #27272a; text-align: right;
+        display: flex; justify-content: flex-end; gap: 10px;
+    }
+
+    /* --- Conteúdo Específico das Abas --- */
+    .modal-section { margin-bottom: 25px; }
+    .modal-section h4 {
+        margin: 0 0 12px 0; font-size: 1.2rem; color: #fff;
+        border-bottom: 1px solid #3f3f46; padding-bottom: 8px;
+    }
+    
+    /* Grid de Metadados */
+    .modal-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; }
+    .meta-item { background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px; border: 1px solid #27272a; }
+    .meta-item__label { display: block; font-size: 0.8rem; color: #a1a1aa; margin-bottom: 5px; text-transform: uppercase; }
+    .meta-item__value { font-size: 1rem; color: #e4e4e7; font-weight: 500; }
+    .meta-item__value .fa-star { color: #f5c518; }
+    .meta-item__value .certification-tag { background: #3f3f46; padding: 3px 8px; border-radius: 4px; font-size: 0.9em; }
+
+    /* Tags de Gênero */
+    .modal-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .modal-tag { background-color: #3f3f46; color: #e4e4e7; padding: 5px 12px; border-radius: 15px; font-size: 0.9em; }
+
+    /* Sinopse com "Ver Mais" */
+    .synopsis-content { max-height: 100px; overflow: hidden; position: relative; transition: max-height 0.5s ease-in-out; }
+    .synopsis-content.is-expanded { max-height: 1000px; }
+    .synopsis-content:not(.is-expanded)::after {
+        content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 50px;
+        background: linear-gradient(to top, rgba(18, 18, 23, 1), transparent);
+    }
+    .btn-show-more { background: none; border: none; color: #e50914; cursor: pointer; font-weight: bold; padding: 10px 0; }
+
+    /* Trailer */
+    .trailer-container { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; }
+    .trailer-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 6px; }
+
+    /* Grid de Elenco/Personagens */
+    .cast-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 20px; }
+    .cast-card { text-align: center; }
+    .cast-card__img { width: 100%; border-radius: 8px; margin-bottom: 10px; background-color: #27272a; aspect-ratio: 2/3; object-fit: cover; }
+    .cast-card__name { font-weight: 600; color: #fff; margin: 0; }
+    .cast-card__role { font-size: 0.85em; color: #a1a1aa; }
+
+    /* Grid de Recomendações */
+    .reco-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
+    .reco-card { position: relative; }
+    .reco-card__img { width: 100%; border-radius: 6px; aspect-ratio: 2/3; object-fit: cover; background: #27272a;}
+    .reco-card__title {
+        position: absolute; bottom: 0; left: 0; right: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        color: #fff; font-size: 0.9em; padding: 20px 10px 10px 10px;
+        margin: 0; text-align: center; border-radius: 0 0 6px 6px;
+    }
+    .status-message.loading-message { padding: 40px; text-align: center; font-size: 1.1rem; }
+</style>
+
+<!-- ======================================= -->
+<!-- PÁGINA (HERO, CONTEÚDO, SIDEBAR)        -->
+<!-- ======================================= -->
+<!-- ... (O seu conteúdo da página de notícias permanece o mesmo) ... -->
+<section id="news-hero" class="news-hero-section animated-section fade-in">
+    <div class="news-hero-overlay"></div>
+    <div class="container news-hero-content">
+        <h1><i class="fas fa-satellite-dish"></i> Central de Notícias Otaku</h1>
+        <p>Sua fonte definitiva para as últimas novidades, anúncios e análises do universo anime.</p>
+    </div>
+</section>
+<div class="main-layout container">
+    <main class="main-content-area">
+        <% if (destaque) { %>
+        <section id="featured-news" class="featured-news-section animated-section fade-in-up">
+             <h2 class="section-title-main"><i class="fas fa-star"></i> Em Destaque</h2>
+             <article class="featured-news-card" data-news-id="<%= destaque.id %>">
+                <div class="featured-news__image">
+                    <img src="<%= destaque.imagemDestaque %>" alt="<%= destaque.titulo %>" loading="lazy" onerror="this.onerror=null;this.src='/images/placeholder_poster.png';"/>
+                </div>
+                <div class="featured-news__content">
+                    <div class="featured-news__meta">
+                        <span><i class="fas fa-calendar-alt"></i> <%= new Date(destaque.createdAt).toLocaleDateString('pt-BR') %></span>
+                        <span><i class="fas fa-user-edit"></i> Por <%= destaque.autorNome || 'Equipe DenyAnimeHub' %></span>
+                    </div>
+                    <h3 class="featured-news__title"><%= destaque.titulo %></h3>
+                    <button class="btn btn--secondary btn-open-news-modal" data-title="<%= destaque.titulo %>" data-content="<%- destaque.conteudo %>">
+                        <i class="fas fa-book-open"></i> Leia a Matéria Completa
+                    </button>
+                </div>
+             </article>
+        </section>
+        <% } %>
+         <section id="noticias-recentes" class="animated-section fade-in-up">
+            <h2 class="section-title-main"><i class="far fa-newspaper"></i> Notícias do Site</h2>
+            <div class="news-grid">
+                <% if (recentes && recentes.length > 0) { %>
+                    <% recentes.forEach(post => { %>
+                        <article class="news-card" data-news-id="<%= post.id %>">
+                            <div class="news-card__image-container">
+                                <img src="<%= post.imagemDestaque %>" alt="<%= post.titulo %>" loading="lazy" onerror="this.onerror=null;this.src='/images/placeholder_poster.png';"/>
+                                <div class="news-card__overlay">
+                                    <button class="news-card__readmore btn-open-news-modal" data-title="<%= post.titulo %>" data-content="<%- post.conteudo %>">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="news-card__content">
+                                <span class="news-card__category"><%= post.categoria %></span>
+                                <h4 class="news-card__title"><%= post.titulo %></h4>
+                                <div class="news-card__meta">
+                                    <span><i class="fas fa-calendar-alt"></i> <%= new Date(post.createdAt).toLocaleDateString('pt-BR') %></span>
+                                    <span><i class="fas fa-eye"></i> <%= (post.views || 0).toLocaleString('pt-BR') %></span>
+                                </div>
+                            </div>
+                        </article>
+                    <% }) %>
+                <% } else { %>
+                    <p class="status-message">Nenhuma notícia do site encontrada no momento.</p>
+                <% } %>
+            </div>
+        </section>
+    </main>
+    <aside class="sidebar animated-section fade-in-up">
+        <div class="sidebar-widget">
+            <h3><i class="fas fa-fire-alt"></i> Top Animes da Temporada</h3>
+            <ol class="ranking-list">
+               <% if (locals.topAnimes && topAnimes.length > 0) { %>
+                    <% topAnimes.forEach(anime => { %>
+                        <li>
+                            <a href="#" class="btn-open-api-modal" data-type="jikan" data-id="<%= anime.mal_id %>" data-backdrop="<%= anime.images.jpg.large_image_url || anime.images.jpg.image_url %>">
+                                <img src="<%= anime.images.jpg.image_url %>" alt="Thumbnail <%= anime.title %>" onerror="this.onerror=null;this.src='/images/placeholder_poster.png';">
+                                <div class="rank-info">
+                                    <span class="title"><%= anime.title_english || anime.title %></span>
+                                    <span class="details"><span><i class="fas fa-star"></i> <%= anime.score || 'N/A' %></span><span><i class="fas fa-user-friends"></i> <%= (anime.members || 0).toLocaleString('pt-BR') %></span></span>
+                                </div>
+                            </a>
+                        </li>
+                    <% }) %>
+               <% } else { %><li class="status-message">Não foi possível carregar os animes populares.</li><% } %>
+            </ol>
+        </div>
+        <div class="sidebar-widget">
+            <h3><i class="fas fa-film"></i> Filmes Populares</h3>
+            <ol class="ranking-list">
+                <% if (locals.topFilmes && topFilmes.length > 0) { %>
+                    <% topFilmes.slice(0, 5).forEach(filme => { %>
+                        <li>
+                            <a href="#" class="btn-open-api-modal" data-type="tmdb" data-media-type="movie" data-id="<%= filme.id %>" data-backdrop="https://image.tmdb.org/t/p/original<%= filme.backdrop_path %>">
+                                <img src="https://image.tmdb.org/t/p/w185<%= filme.poster_path %>" alt="Pôster <%= filme.title %>" onerror="this.onerror=null;this.src='/images/placeholder_poster.png';">
+                                <div class="rank-info">
+                                    <span class="title"><%= filme.title %></span>
+                                    <span class="details"><span><i class="fas fa-star"></i> <%= filme.vote_average.toFixed(1) %></span><span><i class="fas fa-calendar-alt"></i> <%= filme.release_date.split('-')[0] %></span></span>
+                                </div>
+                            </a>
+                        </li>
+                    <% }) %>
+                <% } else { %><li class="status-message">Não foi possível carregar os filmes populares.</li><% } %>
+            </ol>
+        </div>
+    </aside>
+</div>
+
+<!-- ======================================= -->
+<!-- MODAL PARA NOTÍCIAS DO SITE (SIMPLES) -->
+<!-- ======================================= -->
+<div id="news-modal" class="modal">
+    <!-- Este modal é mais simples e mantém a estrutura original -->
+    <div class="modal__content" style="background-color: #18181b; max-width: 800px; max-height: 90vh;">
+       <button class="modal__close" aria-label="Fechar modal">×</button>
+       <div class="modal__header"><h2 id="news-modal-title"></h2></div>
+       <div class="modal__body-wrapper"><div id="news-modal-full-content" class="modal__body"></div></div>
+       <div class="modal__footer"><button class="btn btn--secondary modal__close">Fechar</button></div>
+    </div>
+</div>
+
+<!-- ======================================= -->
+<!-- MODAL AVANÇADO PARA DETALHES DA API   -->
+<!-- ======================================= -->
+<div id="api-modal" class="modal">
+    <div class="modal__content">
+        <!-- Fundo e Overlay serão preenchidos via JS -->
+        <img id="modal-backdrop" src="" alt="Backdrop" class="modal-backdrop-image">
+        <div class="modal-backdrop-overlay"></div>
+
+        <!-- Conteúdo que fica sobre o fundo -->
+        <div class="modal-inner-content">
+            <button class="modal__close" aria-label="Fechar modal">×</button>
+
+            <header class="modal__header">
+                <h2 id="modal-api-title">Carregando...</h2>
+            </header>
+
+            <nav class="modal__tabs" id="modal-api-tabs">
+                <!-- Abas serão geradas via JS -->
+            </nav>
+
+            <div class="modal__body-wrapper" id="modal-api-tab-panels">
+                <!-- Painéis das abas serão gerados via JS -->
+            </div>
+
+            <footer class="modal__footer">
+                <a href="#" id="modal-details-link" target="_blank" class="btn btn--primary" style="display: none;">
+                    <i class="fas fa-info-circle"></i> Ver Página Original
+                </a>
+                <button class="btn btn--secondary modal__close">Fechar</button>
+            </footer>
+        </div>
+    </div>
+</div>
+
+
+<!-- ======================================= -->
+<!-- JAVASCRIPT MEGA ROBUSTO E INTEGRADO -->
+<!-- ======================================= -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- LÓGICA GERAL DOS MODAIS (ABRIR/FECHAR) ---
+    const body = document.body;
+    const openModal = (modalElement) => {
+        modalElement?.classList.add('active');
+        body.classList.add('modal-open');
+    };
+    const closeModal = (modalElement) => {
+        modalElement?.classList.remove('active');
+        if (document.querySelectorAll('.modal.active').length === 0) {
+            body.classList.remove('modal-open');
+        }
+    };
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.querySelectorAll('.modal__close').forEach(button => button.addEventListener('click', () => closeModal(modal)));
+        modal.addEventListener('click', e => (e.target === modal) && closeModal(modal));
+    });
+
+    // --- LÓGICA DO MODAL DE NOTÍCIAS (SIMPLES) ---
+    const newsModal = document.getElementById('news-modal');
+    if (newsModal) {
+        const newsModalTitle = document.getElementById('news-modal-title');
+        const newsModalContent = document.getElementById('news-modal-full-content');
+        document.body.addEventListener('click', e => {
+            const btn = e.target.closest('.btn-open-news-modal');
+            if (btn) {
+                e.preventDefault();
+                if(newsModalTitle) newsModalTitle.textContent = btn.dataset.title || 'Notícia';
+                if(newsModalContent) newsModalContent.innerHTML = btn.dataset.content || '<p>Conteúdo indisponível.</p>';
+                openModal(newsModal);
+            }
+        });
+    }
+
+    // --- LÓGICA DO MODAL DA API (AVANÇADO) ---
+    const apiModal = document.getElementById('api-modal');
+    if (apiModal) {
+        const modalTitleEl = document.getElementById('modal-api-title');
+        const modalBackdropEl = document.getElementById('modal-backdrop');
+        const modalTabsContainer = document.getElementById('modal-api-tabs');
+        const modalPanelsContainer = document.getElementById('modal-api-tab-panels');
+        const modalDetailsLinkEl = document.getElementById('modal-details-link');
+        
+        const JIKAN_API = 'https://api.jikan.moe/v4';
+        const TMDB_API = 'https://api.themoviedb.org/3';
+        const TMDB_KEY = 'ebc6c62b1d31f28ab2d155ad4c921657';
+        const IMG_PATH = 'https://image.tmdb.org/t/p/';
+        const PLACEHOLDER_IMG = '/images/placeholder_poster.png';
+
+        const fetchData = async (url) => {
+            try {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error(`API Error: ${res.status}`);
+                const data = await res.json();
+                return data.data || data;
+            } catch (error) {
+                console.error(`Falha ao buscar dados de ${url}:`, error);
+                return null;
+            }
+        };
+        
+        // --- Lógica de Interação interna do Modal (Abas, Ver Mais) ---
+        apiModal.addEventListener('click', e => {
+            // Lógica das abas
+            const tabBtn = e.target.closest('.modal__tab-btn');
+            if (tabBtn) {
+                apiModal.querySelectorAll('.modal__tab-btn').forEach(btn => btn.classList.remove('active'));
+                apiModal.querySelectorAll('.modal-tab-panel').forEach(panel => panel.classList.remove('active'));
+                tabBtn.classList.add('active');
+                apiModal.querySelector(tabBtn.dataset.target).classList.add('active');
+            }
+            // Lógica do "Ver Mais"
+            const showMoreBtn = e.target.closest('.btn-show-more');
+            if (showMoreBtn) {
+                const content = showMoreBtn.previousElementSibling;
+                content.classList.toggle('is-expanded');
+                showMoreBtn.textContent = content.classList.contains('is-expanded') ? 'Ler menos' : 'Ler mais';
+            }
+        });
+
+        // --- Gatilho Principal para Abrir o Modal ---
+        document.body.addEventListener('click', async e => {
+            const openApiBtn = e.target.closest('.btn-open-api-modal');
+            if (!openApiBtn) return;
+            e.preventDefault();
+
+            // 1. Reset e Abre o Modal em estado de carregamento
+            modalTitleEl.textContent = 'Carregando...';
+            modalTabsContainer.innerHTML = '';
+            modalPanelsContainer.innerHTML = `<div class="status-message loading-message"><i class="fas fa-spinner fa-spin"></i> Buscando informações...</div>`;
+            modalDetailsLinkEl.style.display = 'none';
+            modalBackdropEl.src = openApiBtn.dataset.backdrop || '/images/placeholder_backdrop.png';
+            openModal(apiModal);
+            
+            // 2. Determina o tipo e busca os dados
+            const { type, id, mediaType } = openApiBtn.dataset;
+            let renderer;
+            
+            if (type === 'jikan') renderer = renderJikanDetails;
+            else if (type === 'tmdb') renderer = renderTmdbDetails;
+            
+            if (renderer) {
+                await renderer(id, mediaType);
+            } else {
+                modalPanelsContainer.innerHTML = `<div class="status-message">Erro: Tipo de conteúdo desconhecido.</div>`;
+            }
+        });
+
+        // --- Funções de Renderização ---
+
+        async function renderJikanDetails(id) {
+            const details = await fetchData(`${JIKAN_API}/anime/${id}/full`);
+            if (!details) {
+                modalTitleEl.textContent = 'Erro';
+                modalPanelsContainer.innerHTML = `<div class="status-message">Não foi possível carregar os detalhes do anime.</div>`;
+                return;
+            }
+
+            modalTitleEl.textContent = details.title_english || details.title;
+            modalDetailsLinkEl.href = details.url;
+            modalDetailsLinkEl.style.display = 'inline-flex';
+
+            const genres = details.genres?.map(g => `<span class="modal-tag">${g.name}</span>`).join('') || 'N/A';
+            const studios = details.studios?.map(s => s.name).join(', ') || 'N/A';
+            const trailer = details.trailer?.embed_url ? `
+                <div class="modal-section"><h4>Trailer</h4><div class="trailer-container"><iframe src="${details.trailer.embed_url}" allowfullscreen></iframe></div></div>
+            ` : '';
+
+            // Monta as abas
+            modalTabsContainer.innerHTML = `
+                <button class="modal__tab-btn active" data-target="#panel-overview">Visão Geral</button>
+                <button class="modal__tab-btn" data-target="#panel-chars">Personagens</button>
+                <button class="modal__tab-btn" data-target="#panel-recos">Recomendações</button>
+            `;
+
+            // Monta os painéis
+            modalPanelsContainer.innerHTML = `
+                <div id="panel-overview" class="modal-tab-panel active">
+                    <div class="modal-meta-grid">
+                        <div class="meta-item"><span class="meta-item__label">Nota</span><span class="meta-item__value"><i class="fas fa-star"></i> ${details.score || 'N/A'}</span></div>
+                        <div class="meta-item"><span class="meta-item__label">Ano</span><span class="meta-item__value">${details.year || 'N/A'}</span></div>
+                        <div class="meta-item"><span class="meta-item__label">Classificação</span><span class="meta-item__value"><span class="certification-tag">${details.rating?.split(' - ')[0] || 'N/A'}</span></span></div>
+                        <div class="meta-item"><span class="meta-item__label">Status</span><span class="meta-item__value">${details.status || 'N/A'}</span></div>
+                    </div>
+                    <div class="modal-section"><h4>Gêneros</h4><div class="modal-tags">${genres}</div></div>
+                    <div class="modal-section"><h4>Sinopse</h4><div class="synopsis-content"><p>${details.synopsis?.replace(/\n/g, '<br>') || 'Não disponível.'}</p></div><button class="btn-show-more">Ler mais</button></div>
+                    ${trailer}
+                </div>
+                <div id="panel-chars" class="modal-tab-panel"><div class="status-message loading-message">Carregando personagens...</div></div>
+                <div id="panel-recos" class="modal-tab-panel"><div class="status-message loading-message">Carregando recomendações...</div></div>
+            `;
+            
+            // Carrega dados adicionais de forma assíncrona
+            loadJikanCharacters(id);
+            loadJikanRecommendations(id);
+        }
+        
+        async function renderTmdbDetails(id, mediaType) {
+            const details = await fetchData(`${TMDB_API}/${mediaType}/${id}?api_key=${TMDB_KEY}&language=pt-BR&append_to_response=credits,videos,release_dates,recommendations`);
+            if (!details) {
+                modalTitleEl.textContent = 'Erro';
+                modalPanelsContainer.innerHTML = `<div class="status-message">Não foi possível carregar os detalhes.</div>`;
+                return;
+            }
+
+            modalTitleEl.textContent = details.title || details.name;
+            modalDetailsLinkEl.href = `https://www.themoviedb.org/${mediaType}/${id}`;
+            modalDetailsLinkEl.style.display = 'inline-flex';
+
+            const releaseDate = details.release_date || details.first_air_date;
+            const certification = details.release_dates?.results?.find(r => r.iso_3166_1 === 'BR' || r.iso_3166_1 === 'US')?.release_dates[0]?.certification || 'N/A';
+            const genres = details.genres?.map(g => `<span class="modal-tag">${g.name}</span>`).join('') || 'N/A';
+            const video = details.videos?.results?.find(v => v.site === 'YouTube' && v.type === 'Trailer');
+            const trailer = video ? `
+                <div class="modal-section"><h4>Trailer</h4><div class="trailer-container"><iframe src="https://www.youtube.com/embed/${video.key}" allowfullscreen></iframe></div></div>
+            ` : '';
+            
+            modalTabsContainer.innerHTML = `
+                <button class="modal__tab-btn active" data-target="#panel-overview">Visão Geral</button>
+                <button class="modal__tab-btn" data-target="#panel-cast">Elenco e Produção</button>
+                <button class="modal__tab-btn" data-target="#panel-recos">Similares</button>
+            `;
+
+            modalPanelsContainer.innerHTML = `
+                <div id="panel-overview" class="modal-tab-panel active">
+                    <div class="modal-meta-grid">
+                         <div class="meta-item"><span class="meta-item__label">Nota</span><span class="meta-item__value"><i class="fas fa-star"></i> ${details.vote_average?.toFixed(1) || 'N/A'}</span></div>
+                         <div class="meta-item"><span class="meta-item__label">Lançamento</span><span class="meta-item__value">${new Date(releaseDate).toLocaleDateString('pt-BR') || 'N/A'}</span></div>
+                         <div class="meta-item"><span class="meta-item__label">Classificação</span><span class="meta-item__value"><span class="certification-tag">${certification}</span></span></div>
+                         <div class="meta-item"><span class="meta-item__label">Status</span><span class="meta-item__value">${details.status || 'N/A'}</span></div>
+                         ${details.budget ? `<div class="meta-item"><span class="meta-item__label">Orçamento</span><span class="meta-item__value">$${details.budget.toLocaleString('pt-BR')}</span></div>` : ''}
+                         ${details.revenue ? `<div class="meta-item"><span class="meta-item__label">Receita</span><span class="meta-item__value">$${details.revenue.toLocaleString('pt-BR')}</span></div>` : ''}
+                    </div>
+                    <div class="modal-section"><h4>Gêneros</h4><div class="modal-tags">${genres}</div></div>
+                    <div class="modal-section"><h4>Sinopse</h4><div class="synopsis-content"><p>${details.overview || 'Não disponível.'}</p></div><button class="btn-show-more">Ler mais</button></div>
+                    ${trailer}
+                </div>
+                <div id="panel-cast" class="modal-tab-panel">
+                    ${renderTmdbCrew(details.credits.crew)}
+                    ${renderTmdbCast(details.credits.cast)}
+                </div>
+                <div id="panel-recos" class="modal-tab-panel">
+                    ${renderTmdbRecommendations(details.recommendations.results)}
+                </div>
+            `;
+        }
+        
+        // --- Funções para Carregar/Renderizar Sub-componentes ---
+        async function loadJikanCharacters(id) {
+            const data = await fetchData(`${JIKAN_API}/anime/${id}/characters`);
+            const panel = document.getElementById('panel-chars');
+            if (!data || data.length === 0) {
+                panel.innerHTML = `<div class="status-message">Nenhum personagem encontrado.</div>`;
+                return;
+            }
+            const charactersHTML = data.slice(0, 18).map(item => {
+                const char = item.character;
+                const voiceActor = item.voice_actors?.find(va => va.language === 'Japanese');
+                return `
+                    <div class="cast-card">
+                        <img class="cast-card__img" src="${char.images.jpg.image_url}" alt="${char.name}" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}'">
+                        <h5 class="cast-card__name">${char.name}</h5>
+                        ${voiceActor ? `<p class="cast-card__role">${voiceActor.person.name}</p>` : ''}
+                    </div>
+                `;
+            }).join('');
+            panel.innerHTML = `<div class="cast-grid">${charactersHTML}</div>`;
+        }
+
+        async function loadJikanRecommendations(id) {
+            const data = await fetchData(`${JIKAN_API}/anime/${id}/recommendations`);
+            const panel = document.getElementById('panel-recos');
+            if (!data || data.length === 0) {
+                panel.innerHTML = `<div class="status-message">Nenhuma recomendação encontrada.</div>`;
+                return;
+            }
+            const recosHTML = data.slice(0, 12).map(reco => {
+                const entry = reco.entry;
+                return `
+                    <a href="#" class="reco-card btn-open-api-modal" data-type="jikan" data-id="${entry.mal_id}" data-backdrop="${entry.images.jpg.large_image_url}">
+                        <img class="reco-card__img" src="${entry.images.jpg.image_url}" alt="${entry.title}" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}'">
+                        <h5 class="reco-card__title">${entry.title}</h5>
+                    </a>
+                `;
+            }).join('');
+            panel.innerHTML = `<div class="reco-grid">${recosHTML}</div>`;
+        }
+        
+        function renderTmdbCrew(crew) {
+            const directors = crew.filter(c => c.job === 'Director').map(d => d.name).join(', ');
+            const writers = crew.filter(c => c.department === 'Writing').map(w => w.name).slice(0,3).join(', ');
+            return `
+                <div class="modal-section"><h4>Direção</h4><p>${directors || 'N/A'}</p></div>
+                <div class="modal-section"><h4>Roteiro</h4><p>${writers || 'N/A'}</p></div>
+            `;
+        }
+
+        function renderTmdbCast(cast) {
+            if (!cast || cast.length === 0) return `<div class="status-message">Elenco não disponível.</div>`;
+            const castHTML = cast.slice(0, 18).map(person => `
+                <div class="cast-card">
+                    <img class="cast-card__img" src="${person.profile_path ? IMG_PATH + 'w185' + person.profile_path : PLACEHOLDER_IMG}" alt="${person.name}" loading="lazy">
+                    <h5 class="cast-card__name">${person.name}</h5>
+                    <p class="cast-card__role">${person.character}</p>
+                </div>
+            `).join('');
+            return `<div class="modal-section"><h4>Elenco Principal</h4><div class="cast-grid">${castHTML}</div></div>`;
+        }
+
+        function renderTmdbRecommendations(recos) {
+            if (!recos || recos.length === 0) return `<div class="status-message">Nenhum título similar encontrado.</div>`;
+            const recosHTML = recos.slice(0, 12).map(reco => `
+                 <a href="#" class="reco-card btn-open-api-modal" data-type="tmdb" data-media-type="${reco.media_type}" data-id="${reco.id}" data-backdrop="${IMG_PATH + 'original' + reco.backdrop_path}">
+                    <img class="reco-card__img" src="${reco.poster_path ? IMG_PATH + 'w342' + reco.poster_path : PLACEHOLDER_IMG}" alt="${reco.title || reco.name}" loading="lazy">
+                    <h5 class="reco-card__title">${reco.title || reco.name}</h5>
+                </a>
+            `).join('');
+            return `<div class="reco-grid">${recosHTML}</div>`;
+        }
+    }
+});
+</script>
+
+<%- include('partials/footer') %>

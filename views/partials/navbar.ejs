@@ -1,0 +1,30 @@
+<header class="site-header">
+    <div class="container">
+        <div class="site-header__logo">
+            <a href="/">
+                <img src="/images/1.ico" alt="Logo DenyAnimeHub">
+                <span>DenyAnimeHub</span>
+            </a>
+        </div>
+        <nav class="site-header__nav">
+            <ul>
+                <li><a href="/" class="<%= page_name === 'index' ? 'active' : '' %>">Início</a></li>
+                <li><a href="/noticias" class="<%= page_name === 'noticias' ? 'active' : '' %>">Notícias</a></li>
+                
+                <% if (userIsLoggedIn) { %>
+                    <li><a href="/perfil" class="<%= page_name === 'perfil' ? 'active' : '' %>">Perfil</a></li>
+                    <li><a href="/auth/logout">Sair</a></li>
+                <% } else { %>
+                    <li><a href="/login" class="<%= page_name === 'login-page' ? 'active' : '' %>">Login</a></li>
+                <% } %>
+
+                <li>
+                    <button class="theme-switch" id="theme-toggle" aria-label="Alternar tema">
+                        <i class="fas fa-moon icon-moon"></i>
+                        <i class="fas fa-sun icon-sun"></i>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>

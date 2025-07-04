@@ -1,0 +1,285 @@
+<%- include('partials/header', { page_name: 'anime-detail' }) %>
+
+<style>
+    /* --- INÍCIO DO CÓDIGO CSS COMPLETO E ROBUSTO --- */
+
+    /* --- SEÇÃO HERO (FUNDO) --- */
+    /* CORREÇÃO APLICADA AQUI: Esta classe agora controla o fundo desfocado. */
+    .anime-detail-hero {
+        position: relative;
+        min-height: 50vh; /* Altura do banner de fundo. Ajuste conforme necessário. */
+        
+        /* Estas propriedades garantem que a imagem de fundo preencha a div */
+        background-size: cover;
+        background-position: center center;
+
+        /* Efeitos visuais aplicados apenas no fundo */
+        filter: blur(8px) brightness(0.5);
+
+        /* 
+           O 'transform: scale' dá um leve zoom para garantir que as bordas 
+           desfocadas do filtro não fiquem visíveis. O 'overflow' esconde o que sobrar.
+        */
+        transform: scale(1.1);
+        overflow: hidden;
+    }
+
+    /* O overlay gradiente continua o mesmo, criando a transição para o corpo da página */
+    .anime-detail-hero__overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 1; /* Fica acima do fundo, mas abaixo do conteúdo */
+        background: linear-gradient(to top, rgb(var(--bg-primary-rgb)) 10%, rgba(var(--bg-primary-rgb), .7) 30%, transparent 80%);
+    }
+
+
+    /* --- LAYOUT GRID DO CONTEÚDO --- */
+    .anime-detail__grid {
+        display: grid;
+        grid-template-columns: 1fr; /* Layout para telas pequenas */
+        gap: var(--space-6);
+        align-items: flex-start;
+    }
+
+    @media (min-width: 992px) {
+        .anime-detail__grid {
+            /* Layout para telas grandes: sidebar de 250px e o resto para o conteúdo */
+            grid-template-columns: 250px 1fr;
+            gap: var(--space-7);
+        }
+    }
+
+
+    /* --- SIDEBAR E PÔSTER NÍTIDO (CAMADA DA FRENTE) --- */
+    .anime-detail__sidebar .anime-detail__poster img {
+        width: 100%;
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow-xl);
+        border: 3px solid var(--border-color);
+        transition: transform .3s ease;
+    }
+
+    .anime-detail__sidebar .anime-detail__poster img:hover {
+        transform: scale(1.03);
+    }
+
+
+    /* --- BLOCO DE INFORMAÇÕES --- */
+    .anime-detail__info-block {
+        background-color: var(--bg-secondary);
+        padding: var(--space-5);
+        border-radius: var(--border-radius-lg);
+        margin-top: var(--space-5);
+    }
+
+    .anime-detail__info-block h4 {
+        color: var(--accent-primary);
+        border-bottom: 2px solid var(--accent-primary);
+        padding-bottom: var(--space-2);
+        margin-bottom: var(--space-4);
+        font-size: 1.3rem;
+    }
+
+    .anime-detail__info-block p {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-2);
+        margin-bottom: var(--space-3);
+        font-size: .95rem;
+    }
+
+    .anime-detail__info-block p i {
+        color: var(--accent-primary);
+        width: 18px;
+        text-align: center;
+        margin-top: 4px;
+    }
+
+    .anime-detail__info-block p strong {
+        color: var(--text-primary);
+        min-width: 80px;
+    }
+
+
+    /* --- CONTEÚDO PRINCIPAL (TÍTULO, SINOPSE, ETC) --- */
+    .anime-detail__content h1 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        line-height: 1.2;
+        margin-bottom: var(--space-5);
+        color: var(--text-primary); /* Garante que o H1 tenha cor, caso herde do hero */
+        text-shadow: none; /* Remove a sombra do texto do hero que não se aplica aqui */
+    }
+
+    .anime-detail__content h4 {
+        font-size: 1.6rem;
+        color: var(--accent-primary);
+        margin-top: var(--space-6);
+        margin-bottom: var(--space-3);
+        border-left: 4px solid var(--accent-primary);
+        padding-left: var(--space-3);
+    }
+
+
+    /* --- LISTA DE EPISÓDIOS E SELETOR DE TEMPORADA --- */
+    .episode-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        max-height: 450px;
+        overflow-y: auto;
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius-lg);
+        background-color: var(--bg-secondary);
+    }
+
+    .episode-list li a {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        color: var(--text-primary);
+        transition: all .2s ease;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .episode-list li:last-child a {
+        border-bottom: none;
+    }
+
+    .episode-list li a:hover {
+        background-color: rgba(var(--accent-primary-rgb), .1);
+        color: var(--accent-primary);
+    }
+
+    .season-selector {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .season-btn {
+        background-color: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-weight: 600;
+    }
+
+    .season-btn.active,
+    .season-btn:hover {
+        background-color: var(--accent-primary);
+        color: white;
+        border-color: var(--accent-primary);
+    }
+
+    .episode-list-season {
+        display: none;
+    }
+
+    .episode-list-season.active {
+        display: block;
+    }
+
+    /* --- FIM DO CÓDIGO CSS --- */
+</style>
+
+<!-- CAMADA DE FUNDO: Esta div usa a imagem de capa como um fundo desfocado e expandido. -->
+<div class="anime-detail-hero animated-section fade-in" style="background-image: url('<%= anime.imagemCapa %>');">
+    <div class="anime-detail-hero__overlay"></div>
+</div>
+
+<!-- CAMADA DE CONTEÚDO: Puxada para cima com margem negativa para sobrepor o fundo. -->
+<div class="container" style="margin-top: -150px; position: relative; z-index: 2;">
+    <div class="anime-detail__grid animated-section fade-in-up">
+        <aside class="anime-detail__sidebar">
+            <!-- PÔSTER NÍTIDO: A imagem de capa principal, sem filtros. -->
+            <div class="anime-detail__poster"><img src="<%= anime.imagemCapa %>" alt="Pôster de <%= anime.titulo %>"></div>
+            
+            <div class="anime-detail__info-block">
+                <h4><i class="fas fa-info-circle"></i> Informações</h4>
+                <p><strong><i class="fas fa-star"></i> Nota:</strong> <%= anime.classificacao || 'N/A' %></p>
+                <p><strong><i class="fas fa-calendar-alt"></i> Ano:</strong> <%= anime.anoLancamento %></p>
+                <p><strong><i class="fas fa-comments"></i> Idioma:</strong> <%= anime.idioma || 'Legendado' %></p>
+                <p><strong><i class="fas fa-eye"></i> Views:</strong> <%= anime.views.toLocaleString('pt-BR') %></p>
+                <p><strong><i class="fas fa-theater-masks"></i> Gêneros:</strong> <%= anime.generos.join(', ') %></p>
+            </div>
+
+             <% if(anime.episodios && anime.episodios.length > 0) { %>
+                <a href="/assistir/<%= anime.id %>/<%= anime.episodios.sort((a,b) => a.numero - b.numero)[0].numero %>" class="btn btn--primary btn--large" style="width: 100%; justify-content: center; margin-top: var(--space-5);">
+                    <i class="fas fa-play-circle"></i> Ver Agora
+                </a>
+             <% } %>
+        </aside>
+
+        <main class="anime-detail__content">
+            <h1><%= anime.titulo %></h1>
+            <h4><i class="fas fa-book-open"></i> Sinopse</h4>
+            <p><%- anime.sinopse.replace(/\n/g, '<br>') %></p>
+            
+            <% if(anime.trailerUrl) { /* ... (código do trailer) ... */ } %>
+
+            <h4 id="episode-list-title"><i class="fas fa-list-ol"></i> Lista de Episódios</h4>
+            <% if(anime.episodios && anime.episodios.length > 0) {
+                const temporadas = anime.episodios.reduce((acc, ep) => {
+                    const temp = ep.temporada || 1;
+                    if (!acc[temp]) acc[temp] = [];
+                    acc[temp].push(ep);
+                    return acc;
+                }, {});
+            %>
+                <div class="season-selector">
+                    <% Object.keys(temporadas).sort((a, b) => a - b).forEach((tempNum, index) => { %>
+                        <button class="season-btn <%= index === 0 ? 'active' : '' %>" data-season="<%= tempNum %>">
+                            Temporada <%= tempNum %>
+                        </button>
+                    <% }) %>
+                </div>
+                <% Object.keys(temporadas).sort((a, b) => a - b).forEach((tempNum, index) => { %>
+                    <div class="episode-list-season <%= index === 0 ? 'active' : '' %>" id="season-<%= tempNum %>">
+                        <div class="episode-list">
+                            <% temporadas[tempNum].sort((a,b) => a.numero - b.numero).forEach(ep => { %>
+                                <li>
+                                    <a href="/assistir/<%= anime.id %>/<%= ep.numero %>">
+                                        <span>Episódio <%= ep.numero %><% if (ep.titulo) { %> - <%= ep.titulo %><% } %></span>
+                                        <i class="fas fa-play-circle"></i>
+                                    </a>
+                                </li>
+                            <% }) %>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p>Nenhum episódio cadastrado para este anime ainda.</p>
+            <% } %>
+        </main>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const seasonButtons = document.querySelectorAll('.season-btn');
+    const seasonLists = document.querySelectorAll('.episode-list-season');
+
+    if (seasonButtons.length > 0) {
+        seasonButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetSeason = button.dataset.season;
+
+                // Desativa todos os botões e listas
+                seasonButtons.forEach(btn => btn.classList.remove('active'));
+                seasonLists.forEach(list => list.classList.remove('active'));
+
+                // Ativa o botão clicado e a lista correspondente
+                button.classList.add('active');
+                document.getElementById(`season-${targetSeason}`).classList.add('active');
+            });
+        });
+    }
+});
+</script>
+
+<%- include('partials/footer') %>

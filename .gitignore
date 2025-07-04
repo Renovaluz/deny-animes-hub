@@ -1,0 +1,13 @@
+# Dependências
+/node_modules
+
+# Arquivos de ambiente
+.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Pasta de uploads (opcional, dependendo da estratégia de deploy)
+/public/uploads

@@ -1,0 +1,243 @@
+<%- include('partials/header', { page_name: 'player' }) %>
+
+<style>
+    /* ESTILOS PROFISSIONAIS PARA A PÁGINA DO PLAYER */
+    /* Estes são os únicos estilos necessários para a página limpa */
+
+    .player-main-container {
+        padding: var(--space-5) 0;
+    }
+
+    .player-grid {
+        display: grid;
+        grid-template-columns: 1fr; /* Padrão para mobile */
+        gap: var(--space-6);
+    }
+
+    /* Layout de duas colunas para telas maiores */
+    @media (min-width: 1024px) {
+        .player-grid {
+            /* O player ocupa o espaço restante e a lista de episódios tem largura fixa */
+            grid-template-columns: 1fr 350px;
+        }
+    }
+
+    .video-player-section {
+        background-color: var(--bg-secondary);
+        border-radius: var(--border-radius);
+        border: 1px solid var(--border-color);
+        padding: var(--space-3);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .video-player-header {
+        padding: var(--space-3);
+    }
+
+    .video-player-header h1 {
+        font-size: 1.8rem;
+        margin: 0;
+        color: var(--accent-primary);
+    }
+    .video-player-header h1 a {
+        color: inherit;
+        text-decoration: none;
+    }
+    .video-player-header h1 a:hover {
+        text-decoration: underline;
+    }
+
+    .video-player-header p {
+        color: var(--text-secondary);
+        margin: 0.5rem 0 0 0;
+    }
+
+    .video-player-container {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        background-color: #000;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+    }
+
+    .video-player-container iframe,
+    .video-player-container video {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    .player-controls {
+        padding: var(--space-4);
+        border-top: 1px solid var(--border-color);
+    }
+    
+    .player-controls .actions-cell {
+        display: flex;
+        justify-content: space-between; /* Para colocar um botão em cada lado */
+        gap: var(--space-3);
+    }
+    .player-controls .actions-cell .btn {
+        flex-grow: 1; /* Faz os botões ocuparem o espaço disponível */
+    }
+
+    .player-controls h4 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        color: var(--text-secondary);
+    }
+
+    .download-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-3);
+        margin-bottom: 1.5rem; /* Adiciona espaço antes da linha e dos botões de navegação */
+    }
+
+    .download-options .btn {
+        background-color: var(--bg-tertiary);
+    }
+
+    .episode-list-sidebar {
+        background-color: var(--bg-secondary);
+        border-radius: var(--border-radius);
+        border: 1px solid var(--border-color);
+        max-height: calc(100vh - 150px); /* Evita que a lista seja muito grande */
+        overflow-y: auto;
+    }
+
+    .episode-list-sidebar h3 {
+        padding: var(--space-4);
+        margin: 0;
+        border-bottom: 1px solid var(--border-color);
+        font-size: 1.2rem;
+        position: sticky; /* Mantém o título fixo no topo ao rolar */
+        top: 0;
+        background-color: var(--bg-secondary);
+        z-index: 10;
+    }
+
+    .episode-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .episode-list li a {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        color: var(--text-secondary);
+        transition: all 0.2s ease;
+        border-bottom: 1px solid var(--border-color);
+        text-decoration: none;
+    }
+
+    .episode-list li:last-child a {
+        border-bottom: none;
+    }
+
+    .episode-list li a:hover {
+        background-color: rgba(var(--accent-primary-rgb), 0.1);
+        color: var(--accent-primary);
+    }
+
+    .episode-list li.active a {
+        background-color: var(--accent-primary);
+        color: white;
+        font-weight: 600;
+    }
+
+    .episode-number-badge {
+        flex-shrink: 0;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--bg-tertiary);
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.9em;
+    }
+
+    .episode-list li.active .episode-number-badge {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .episode-title {
+        flex-grow: 1;
+        line-height: 1.4;
+    }
+</style>
+
+<div class="player-main-container container">
+    <div class="player-grid">
+        
+        <!-- Coluna Principal: Player de Vídeo e Controles -->
+        <main class="video-player-section">
+            <div class="video-player-header">
+                <a href="/anime/<%= anime.id %>" title="Voltar para a página do anime"><h1><%= anime.titulo %></h1></a>
+                <p>Episódio <%= episodio.numero %>: <%= episodio.titulo %></p>
+            </div>
+            
+            <div class="video-player-container">
+                <iframe src="<%= episodio.urlVideo %>" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+            
+            <div class="player-controls">
+                <% if (episodio.downloads && episodio.downloads.length > 0) { %>
+                    <h4><i class="fas fa-download"></i> Opções de Download</h4>
+                    <div class="download-options">
+                        <% episodio.downloads.forEach(dl => { %>
+                            <a href="<%= dl.urlDownload %>" target="_blank" class="btn btn--secondary"><i class="fas fa-hdd"></i> <%= dl.qualidade %></a>
+                        <% }) %>
+                    </div>
+                    <hr>
+                <% } %>
+                
+                <div class="actions-cell">
+                    <% 
+                        const episodioAtualIndex = todosEpisodios.findIndex(ep => ep.numero == episodio.numero);
+                        const episodioAnterior = todosEpisodios[episodioAtualIndex - 1];
+                        const proximoEpisodio = todosEpisodios[episodioAtualIndex + 1];
+                    %>
+                    
+                    <% if(episodioAnterior) { %>
+                        <a href="/assistir/<%= anime.id %>/<%= episodioAnterior.numero %>" class="btn btn--secondary"><i class="fas fa-backward"></i> Anterior</a>
+                    <% } else { %>
+                        <!-- Adiciona um botão desabilitado para manter o layout consistente -->
+                        <span class="btn btn--secondary" style="opacity: 0.5; cursor: not-allowed;"><i class="fas fa-backward"></i> Anterior</span>
+                    <% } %>
+
+                    <% if(proximoEpisodio) { %>
+                        <a href="/assistir/<%= anime.id %>/<%= proximoEpisodio.numero %>" class="btn btn--primary">Próximo <i class="fas fa-forward"></i></a>
+                    <% } else { %>
+                        <span class="btn btn--primary" style="opacity: 0.5; cursor: not-allowed;">Próximo <i class="fas fa-forward"></i></span>
+                    <% } %>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Barra Lateral: Lista de Episódios -->
+        <aside class="episode-list-sidebar">
+            <h3><i class="fas fa-list-ol"></i> Lista de Episódios</h3>
+            <ul class="episode-list">
+                <% todosEpisodios.forEach(ep => { %>
+                   <li class="<%= ep.numero == episodio.numero ? 'active' : '' %>">
+                       <a href="/assistir/<%= anime.id %>/<%= ep.numero %>" title="Assistir Episódio <%= ep.numero %>: <%= ep.titulo %>">
+                           <span class="episode-number-badge"><%= ep.numero %></span>
+                           <span class="episode-title"><%= ep.titulo %></span>
+                       </a>
+                   </li>
+               <% }) %>
+           </ul>
+        </aside>
+
+    </div>
+</div>
+
+<%- include('partials/footer') %>

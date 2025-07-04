@@ -1,0 +1,69 @@
+<%- include('partials/header', { page_name: 'perfil' }) %>
+
+<div class="profile-page-container animated-section fade-in">
+    <!-- Profile Header com Capa -->
+    <header class="profile-header" style="background-image: url('<%= user.capaPerfil %>');">
+        <div class="profile-header-overlay"></div>
+        <div class="profile-header-content">
+            <div class="profile-avatar-container">
+                <img src="<%= user.avatar %>" alt="Avatar de <%= user.nome %>" class="profile-avatar">
+            </div>
+            <div class="profile-user-info">
+                <h1><%= user.nome %></h1>
+                <p class="profile-role role-<%= user.role %>"><%= user.role.charAt(0).toUpperCase() + user.role.slice(1) %></p>
+                <p class="profile-join-date">Membro desde <%= new Date(user.createdAt).toLocaleDateString('pt-BR', { year: 'numeric', month: 'long' }) %></p>
+            </div>
+            
+            <!-- ============================================= -->
+            <!-- LÓGICA DE BOTÕES CORRIGIDA -->
+            <!-- ============================================= -->
+            <div class="profile-header-actions">
+                <!-- Botão de Editar Perfil (aparece para TODOS os usuários logados) -->
+                <a href="/perfil/editar" class="btn btn--secondary profile-edit-btn"><i class="fas fa-pencil-alt"></i> Editar Perfil</a>
+
+                <!-- Botão do Dashboard (aparece APENAS se o usuário for admin) -->
+                <% if(user.role === 'admin') { %>
+                    <a href="/admin/dashboard" class="btn btn--primary profile-admin-btn"><i class="fas fa-user-shield"></i> Dashboard Admin</a>
+                <% } %>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo do Perfil em Grid -->
+    <div class="profile-grid-layout container">
+        <aside class="profile-sidebar">
+            <div class="profile-widget">
+                <h3><i class="fas fa-address-card"></i> Sobre Mim</h3>
+                <p class="profile-bio"><%= user.bio %></p>
+            </div>
+            <!-- Outros widgets como conquistas... -->
+        </aside>
+
+        <main class="profile-main-content">
+            <div class="profile-widget">
+                <h3><i class="fas fa-history"></i> Continuar Assistindo</h3>
+                <div class="placeholder-card" style="display: flex;">
+                    <img src="/images/placeholder_akatsuki.png" alt="Histórico Vazio">
+                    <span>Funcionalidade de histórico em breve...</span>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- CSS Adicional para posicionar os botões -->
+<style>
+    .profile-header-actions {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        display: flex;
+        gap: 1rem;
+    }
+    .profile-header-actions .btn {
+        backdrop-filter: blur(5px);
+        background-color: rgba(var(--bg-secondary-rgb), 0.5);
+    }
+</style>
+
+<%- include('partials/footer') %>

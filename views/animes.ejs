@@ -1,0 +1,25 @@
+<%- include('partials/header') %>
+
+<div class="page-header">
+    <h1>Todos os Animes</h1>
+    <p>Explore nossa coleção completa.</p>
+</div>
+
+<div class="grid-animes">
+    <% if (animes && animes.length > 0) { %>
+        <% animes.forEach(anime => { %>
+            <div class="card-anime">
+                <img src="<%= anime.imagemCapa %>" alt="Capa de <%= anime.titulo %>">
+                <div class="card-anime-info">
+                    <h3><%= anime.titulo %></h3>
+                    <p>Ano: <%= anime.anoLancamento %></p>
+                    <a href="/anime/<%= anime._id %>" class="btn-secundario">Ver Detalhes</a>
+                </div>
+            </div>
+        <% }) %>
+    <% } else { %>
+        <p>Nenhum anime encontrado no banco de dados. Adicione alguns para começar!</p>
+    <% } %>
+</div>
+
+<%- include('partials/footer') %>

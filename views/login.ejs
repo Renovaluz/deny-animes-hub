@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login/Registro - DenyAnimeHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="/images/1.ico" type="image/ico">
+</head>
+<body class="login-page" data-theme="dark">
+
+    <div class="auth-container">
+
+        <!-- Formulário de Login (Inicialmente Visível) -->
+        <form class="auth-form active-form" id="login-form" action="/auth/login" method="POST">
+            <div class="auth-form__header">
+                <button type="button" class="theme-switch" aria-label="Alternar tema"><i class="fas fa-moon icon-moon"></i><i class="fas fa-sun icon-sun"></i></button>
+                <h2>DenyAnimeHub</h2>
+                <h3 class="form-title">Acessar Plataforma</h3>
+            </div>
+            
+            <!-- Bloco para exibir mensagens -->
+            <% if (locals.sucesso) { %>
+                <p class="mensagem-sucesso">Registro realizado com sucesso! Faça o login.</p>
+            <% } %>
+            <% if (locals.erro) { %>
+                <p class="mensagem-erro"><%= erro %></p>
+            <% } %>
+
+            <div class="auth-form__group">
+                <label for="login-email">Email</label>
+                <input type="email" id="login-email" name="email" required placeholder="Digite seu email">
+            </div>
+            <div class="auth-form__group">
+                <label for="login-password">Senha</label>
+                <input type="password" id="login-password" name="senha" required placeholder="Sua senha secreta">
+            </div>
+            <div class="auth-form__actions">
+                <button type="submit" class="btn btn--primary">Entrar <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="auth-form__footer">
+                 <div>
+                    <a href="#forgot-password-form" class="form-switch-link" data-target="forgot-password-form">Esqueceu a senha?</a>
+                    <span class="footer-separator">|</span>
+                    <span>Não tem conta? <a href="#register-form" class="form-switch-link" data-target="register-form">Registre-se</a></span>
+                 </div>
+                 <a href="/" class="back-link"><i class="fas fa-home"></i> Voltar ao Início</a>
+            </div>
+        </form>
+
+        <!-- Formulário de Registro (O script.js o tornará visível) -->
+        <form class="auth-form" id="register-form" action="/auth/registrar" method="POST">
+            <div class="auth-form__header">
+                 <button type="button" class="theme-switch" aria-label="Alternar tema"><i class="fas fa-moon icon-moon"></i><i class="fas fa-sun icon-sun"></i></button>
+                <h2>DenyAnimeHub</h2>
+                <h3 class="form-title">Criar Nova Conta</h3>
+            </div>
+            <div class="auth-form__group">
+                <label for="register-username">Nome de Usuário</label>
+                <input type="text" id="register-username" name="nome" required placeholder="Escolha um nome único">
+            </div>
+            <div class="auth-form__group">
+                <label for="register-email">Email</label>
+                <input type="email" id="register-email" name="email" required placeholder="seu_email@dominio.com">
+            </div>
+            <div class="auth-form__group">
+                <label for="register-password">Senha</label>
+                <input type="password" id="register-password" name="senha" minlength="6" required placeholder="Mínimo 6 caracteres">
+            </div>
+            <div class="auth-form__actions">
+                <button type="submit" class="btn btn--primary">Registrar <i class="fas fa-user-plus"></i></button>
+            </div>
+            <div class="auth-form__footer">
+                <div><span>Já tem conta? <a href="#login-form" class="form-switch-link" data-target="login-form">Entrar</a></span></div>
+                 <a href="/" class="back-link"><i class="fas fa-home"></i> Voltar ao Início</a>
+            </div>
+        </form>
+
+        <!-- Formulário de Esqueci Senha (O script.js o tornará visível) -->
+        <form class="auth-form" id="forgot-password-form" action="#" method="post">
+             <div class="auth-form__header">
+                 <button type="button" class="theme-switch" aria-label="Alternar tema"><i class="fas fa-moon icon-moon"></i><i class="fas fa-sun icon-sun"></i></button>
+                 <h2>DenyAnimeHub</h2>
+                 <h3 class="form-title">Recuperar Senha</h3>
+            </div>
+            <p class="form-instruction">Esta funcionalidade será implementada em uma futura atualização.</p>
+            <div class="auth-form__group">
+                <label for="forgot-credential">Email Registrado</label>
+                <input type="email" id="forgot-credential" name="credential" required placeholder="seu_email@dominio.com" disabled>
+            </div>
+            <div class="auth-form__actions">
+                <button type="submit" class="btn btn--primary" disabled>Enviar Instruções <i class="fas fa-paper-plane"></i></button>
+            </div>
+            <div class="auth-form__footer">
+                <div><span>Lembrou a senha? <a href="#login-form" class="form-switch-link" data-target="login-form">Entrar</a></span></div>
+                <a href="/" class="back-link"><i class="fas fa-home"></i> Voltar ao Início</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- O script.js que você forneceu já tem a lógica para os 'form-switch-link' -->
+    <script src="/js/script.js"></script>
+</body>
+</html>

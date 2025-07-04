@@ -1,0 +1,139 @@
+<%- include('partials/header', { page_name: 'assistir', titulo: 'Assistir' }) %>
+
+<main class="container-fluid" style="padding: 0;">
+
+    <!-- ======================= VIDEO PLAYER SECTION ======================= -->
+    <section class="video-player-section animated-section fade-in">
+        <div class="video-player-header">
+            <div class="header-main-info">
+                <h1 id="player-title">DenyAnimeHub</h1>
+                <div class="video-meta">
+                    <span id="player-anime-title">Selecione um item para assistir</span>
+                    <span id="title-separator" style="display: none;">•</span>
+                    <span id="player-episode-number"></span>
+                    <div id="player-extra-info" class="meta-extra-info" style="display: none;">
+                        <span><i class="fas fa-tags"></i> <span id="player-genres"></span></span>
+                        <span><i class="fas fa-star"></i> <span id="player-rating"></span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="player-controls-extra">
+                <button class="btn btn--icon-only" id="prev-ep-btn" title="Episódio Anterior" disabled><i class="fas fa-backward"></i></button>
+                <button class="btn btn--icon-only" id="next-ep-btn" title="Próximo Episódio" disabled><i class="fas fa-forward"></i></button>
+                <div class="control-divider"></div>
+                <button class="btn btn--icon-only" id="toggle-lights-btn" title="Apagar Luzes"><i class="far fa-lightbulb"></i></button>
+                <button class="btn btn--icon-only" id="fullscreen-btn" title="Tela Cheia"><i class="fas fa-expand"></i></button>
+            </div>
+        </div>
+
+        <div class="video-player-container">
+            <div id="video-loader" style="display: none;"><div class="loader-spinner"></div>Carregando...</div>
+            <div id="video-error-message" class="video-loader" style="display: none;"><i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>Erro ao carregar o vídeo.</p></div>
+            <div id="player-placeholder" class="player-placeholder active">
+                <div class="placeholder-backdrop"></div>
+                <div class="placeholder-content">
+                    <i class="fas fa-play-circle placeholder-icon-main"></i>
+                    <p>Bem-vindo ao Player!</p>
+                    <span class="placeholder-subtext">Selecione um episódio nos carrosséis abaixo para começar.</span>
+                </div>
+            </div>
+            <div class="video-player-wrapper">
+                <iframe id="anime-video-player-iframe" style="display:none;" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <video id="anime-video-player-local" style="display:none;" controls></video>
+            </div>
+        </div>
+
+        <div class="player-info-options">
+            <div id="server-options" class="player-options">
+                <span class="options-label"><i class="fas fa-server"></i> Servidor:</span>
+                <div class="server-button-group">
+                    <button class="btn btn--option active" data-server-id="1">Padrão</button>
+                </div>
+            </div>
+            <div class="player-actions">
+                <a href="#" id="download-ep-link" class="btn btn--secondary btn--small" style="display: none;" target="_blank"><i class="fas fa-download"></i> Download</a>
+                <button id="report-btn" class="btn btn--secondary btn--small"><i class="fas fa-flag"></i> Reportar</button>
+            </div>
+        </div>
+    </section>
+    <div id="lights-off-overlay"></div>
+
+    <!-- ======================= SELEÇÃO DE EPISÓDIOS ======================= -->
+    <section id="select-episode-section" class="container animated-section fade-in-up">
+        <div class="carousel-header">
+            <h2 class="section-title-main"><i class="fas fa-list-ol"></i> Selecionar Episódio</h2>
+            <div class="carousel-nav">
+                <button class="nav-btn" id="ep-carousel-prev" title="Anterior"><i class="fas fa-chevron-left"></i></button>
+                <button class="nav-btn" id="ep-carousel-next" title="Próximo"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+        <div id="episode-carousel" class="episode-carousel-container">
+            <!-- api.js irá popular aqui com createEpisodeItem -->
+        </div>
+    </section>
+
+    <!-- ======================= SUGESTÕES - ANIMES POPULARES ======================= -->
+    <section class="container animated-section fade-in-up">
+        <div class="carousel-header">
+            <h2 class="section-title-main"><i class="fas fa-fire"></i> Animes em Alta</h2>
+            <div class="carousel-nav">
+                <button class="nav-btn" id="suggestion-carousel-prev" title="Anterior"><i class="fas fa-chevron-left"></i></button>
+                <button class="nav-btn" id="suggestion-carousel-next" title="Próximo"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+        <div id="suggestion-carousel" class="anime-carousel-container">
+            <!-- api.js irá popular aqui com createItemCard (Jikan) -->
+        </div>
+    </section>
+
+    <!-- ======================= SUGESTÕES - FILMES DE ANIME ======================= -->
+    <section class="container animated-section fade-in-up">
+        <div class="carousel-header">
+            <h2 class="section-title-main"><i class="fas fa-film"></i> Filmes Populares</h2>
+            <div class="carousel-nav">
+                <button class="nav-btn" id="movies-carousel-prev" title="Anterior"><i class="fas fa-chevron-left"></i></button>
+                <button class="nav-btn" id="movies-carousel-next" title="Próximo"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+        <div id="anime-movies-carousel" class="anime-carousel-container">
+            <!-- api.js irá popular aqui com createItemCard (TMDb) -->
+        </div>
+    </section>
+
+</main>
+
+<!-- ======================= MODAL DE DETALHES ======================= -->
+<div id="anime-modal" class="modal">
+    <div class="modal-backdrop-container">
+        <img id="modal-backdrop" src="<%= PLACEHOLDER_BACKDROP_URL %>" alt="Backdrop" class="modal-backdrop-image">
+        <div class="modal-backdrop-overlay"></div>
+    </div>
+    <div class="modal__content">
+        <button class="modal__close" id="modal-close-btn" aria-label="Fechar modal">×</button>
+        <div class="modal__header">
+            <h2 id="modal-title">Carregando...</h2>
+            <div class="anime-card__info" id="modal-info">
+                 <span><i class="fas fa-star"></i> N/A</span>
+                 <span><i class="fas fa-calendar-alt"></i> N/A</span>
+                 <span><i class="fas fa-globe"></i> N/A</span>
+            </div>
+        </div>
+        <div class="modal__body-wrapper">
+            <div id="modal-body-content" class="modal__body">
+                <!-- api.js irá popular aqui com buildJikanModalContent ou buildTMDbModalContent -->
+                <p class="status-message loading-message">Carregando detalhes...</p>
+            </div>
+        </div>
+        <div class="modal__footer">
+            <a href="#" id="modal-details-link" target="_blank" class="btn btn--secondary" style="display: none;"><i class="fas fa-info-circle"></i> Ver Página Original</a>
+            <button id="modal-watch-btn" class="btn btn--primary" style="display: none;"><i class="fas fa-play"></i> Assistir Agora</button>
+            <button class="btn btn--secondary" id="modal-close-btn-footer">Fechar</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- Incluir o script da API no final -->
+<script src="/js/api.js"></script>
+
+<%- include('partials/footer') %>
