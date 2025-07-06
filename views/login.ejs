@@ -6,31 +6,46 @@
     <title>Login/Registro - DenyAnimeHub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/style.css"> <!-- Seu CSS principal -->
     <link rel="icon" href="/images/1.ico" type="image/ico">
+    <style>
+        /* Estilos adicionais para mensagens de erro/sucesso */
+        .auth-alert {
+            display: none;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 500;
+        }
+        .auth-alert.error {
+            background-color: #EF4444;
+            color: white;
+        }
+        .auth-alert.success {
+            background-color: #10B981;
+            color: white;
+        }
+    </style>
 </head>
 <body class="login-page" data-theme="dark">
 
     <div class="auth-container">
 
+        <!-- Bloco para exibir mensagens de erro/sucesso via JavaScript -->
+        <div id="auth-alert" class="auth-alert"></div>
+
         <!-- Formulário de Login (Inicialmente Visível) -->
-        <form class="auth-form active-form" id="login-form" action="/auth/login" method="POST">
+        <!-- Removido 'action' e 'method' para serem controlados pelo JS -->
+        <form class="auth-form active-form" id="login-form">
             <div class="auth-form__header">
                 <button type="button" class="theme-switch" aria-label="Alternar tema"><i class="fas fa-moon icon-moon"></i><i class="fas fa-sun icon-sun"></i></button>
                 <h2>DenyAnimeHub</h2>
                 <h3 class="form-title">Acessar Plataforma</h3>
             </div>
             
-            <!-- Bloco para exibir mensagens -->
-            <% if (locals.sucesso) { %>
-                <p class="mensagem-sucesso">Registro realizado com sucesso! Faça o login.</p>
-            <% } %>
-            <% if (locals.erro) { %>
-                <p class="mensagem-erro"><%= erro %></p>
-            <% } %>
-
             <div class="auth-form__group">
                 <label for="login-email">Email</label>
                 <input type="email" id="login-email" name="email" required placeholder="Digite seu email">
@@ -52,8 +67,9 @@
             </div>
         </form>
 
-        <!-- Formulário de Registro (O script.js o tornará visível) -->
-        <form class="auth-form" id="register-form" action="/auth/registrar" method="POST">
+        <!-- Formulário de Registro -->
+        <!-- Removido 'action' e 'method' -->
+        <form class="auth-form" id="register-form">
             <div class="auth-form__header">
                  <button type="button" class="theme-switch" aria-label="Alternar tema"><i class="fas fa-moon icon-moon"></i><i class="fas fa-sun icon-sun"></i></button>
                 <h2>DenyAnimeHub</h2>
@@ -80,29 +96,130 @@
             </div>
         </form>
 
-        <!-- Formulário de Esqueci Senha (O script.js o tornará visível) -->
-        <form class="auth-form" id="forgot-password-form" action="#" method="post">
-             <div class="auth-form__header">
-                 <button type="button" class="theme-switch" aria-label="Alternar tema"><i class="fas fa-moon icon-moon"></i><i class="fas fa-sun icon-sun"></i></button>
-                 <h2>DenyAnimeHub</h2>
-                 <h3 class="form-title">Recuperar Senha</h3>
-            </div>
-            <p class="form-instruction">Esta funcionalidade será implementada em uma futura atualização.</p>
-            <div class="auth-form__group">
-                <label for="forgot-credential">Email Registrado</label>
-                <input type="email" id="forgot-credential" name="credential" required placeholder="seu_email@dominio.com" disabled>
-            </div>
-            <div class="auth-form__actions">
-                <button type="submit" class="btn btn--primary" disabled>Enviar Instruções <i class="fas fa-paper-plane"></i></button>
-            </div>
-            <div class="auth-form__footer">
-                <div><span>Lembrou a senha? <a href="#login-form" class="form-switch-link" data-target="login-form">Entrar</a></span></div>
-                <a href="/" class="back-link"><i class="fas fa-home"></i> Voltar ao Início</a>
-            </div>
+        <!-- Formulário de Esqueci Senha (Funcionalidade desabilitada) -->
+        <form class="auth-form" id="forgot-password-form">
+            <div class="auth-form__header">
+                <button type="button" class="theme-switch" aria-label="Alternar tema"><i class="fas fa-moon icon-moon"></i><i class="fas fa-sun icon-sun"></i></button>
+                <h2>DenyAnimeHub</h2>
+                <h3 class="form-title">Recuperar Senha</h3>
+           </div>
+           <p class="form-instruction">Funcionalidade de recuperação em desenvolvimento.</p>
+           <div class="auth-form__actions">
+                <a href="#login-form" class="btn btn--secondary form-switch-link" data-target="login-form">Voltar para Login</a>
+           </div>
         </form>
     </div>
 
-    <!-- O script.js que você forneceu já tem a lógica para os 'form-switch-link' -->
-    <script src="/js/script.js"></script>
+    <!-- ============================================================== -->
+    <!-- SCRIPT DE AUTENTICAÇÃO - O CORAÇÃO DA SOLUÇÃO -->
+    <!-- ============================================================== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const authContainer = document.querySelector('.auth-container');
+            const formSwitchLinks = document.querySelectorAll('.form-switch-link');
+            const alertBox = document.getElementById('auth-alert');
+
+            // Função para mostrar alertas
+            const showAlert = (message, type = 'error') => {
+                if (!alertBox) {
+                    alert(message); // Fallback
+                    return;
+                }
+                alertBox.textContent = message;
+                alertBox.className = `auth-alert ${type}`;
+                alertBox.style.display = 'block';
+            };
+
+            // Lógica para o formulário de LOGIN
+            if (loginForm) {
+                loginForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const email = loginForm.querySelector('input[name="email"]').value;
+                    const senha = loginForm.querySelector('input[name="senha"]').value;
+                    const submitButton = loginForm.querySelector('button[type="submit"]');
+
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
+                    alertBox.style.display = 'none';
+
+                    try {
+                        const response = await fetch('/auth/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email, senha }),
+                        });
+                        const data = await response.json();
+
+                        if (data.success) {
+                            showAlert('Login bem-sucedido! Redirecionando...', 'success');
+                            window.location.href = data.user.role === 'admin' ? '/admin/dashboard' : '/';
+                        } else {
+                            showAlert(data.error || 'Ocorreu um erro.');
+                        }
+                    } catch (error) {
+                        showAlert('Erro de comunicação com o servidor.');
+                    } finally {
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = 'Entrar <i class="fas fa-arrow-right"></i>';
+                    }
+                });
+            }
+
+            // Lógica para o formulário de REGISTRO
+            if (registerForm) {
+                registerForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const nome = registerForm.querySelector('input[name="nome"]').value;
+                    const email = registerForm.querySelector('input[name="email"]').value;
+                    const senha = registerForm.querySelector('input[name="senha"]').value;
+                    const submitButton = registerForm.querySelector('button[type="submit"]');
+
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Criando...';
+                    alertBox.style.display = 'none';
+
+                    try {
+                        const response = await fetch('/auth/registrar', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ nome, email, senha }),
+                        });
+                        const data = await response.json();
+
+                        if (data.success) {
+                            showAlert('Conta criada com sucesso! Redirecionando para o login...', 'success');
+                            setTimeout(() => {
+                                // Troca para o formulário de login e preenche o email
+                                document.getElementById('login-email').value = email;
+                                document.querySelector('.form-switch-link[data-target="login-form"]').click();
+                            }, 2000);
+                        } else {
+                            showAlert(data.error || 'Ocorreu um erro.');
+                        }
+                    } catch (error) {
+                        showAlert('Erro de comunicação com o servidor.');
+                    } finally {
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = 'Registrar <i class="fas fa-user-plus"></i>';
+                    }
+                });
+            }
+
+            // Lógica para trocar entre os formulários (mantida do seu script.js)
+            if (authContainer && formSwitchLinks.length > 0) {
+                formSwitchLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const targetId = link.dataset.target;
+                        authContainer.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active-form'));
+                        document.getElementById(targetId)?.classList.add('active-form');
+                        if (alertBox) alertBox.style.display = 'none';
+                    });
+                });
+            }
+        });
+    </script>
 </body>
 </html>
