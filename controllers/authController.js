@@ -1,77 +1,93 @@
+const jwt = require('jsonwebtoken');
 const db = require('../models');
 const User = db.User;
-const jwt = require('jsonwebtoken');
 
-// Função para gerar o token e enviá-lo como cookie
+// Função auxiliar para gerar e enviar o token
 const enviarToken = (user, statusCode, res) => {
-    try {
-        const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, {
-            expiresIn: '1d'
-        });
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+        expiresIn: '30d'
+    });
 
-        const options = {
-            expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // Adiciona segurança em produção
-            sameSite: 'strict'
-        };
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 30 * 24 * 60 * 60 * 1000 // 30 dias
+    });
 
-        res.status(statusCode).cookie('token', token, options).redirect('/perfil');
-    } catch (error) {
-        console.error("Erro ao gerar token:", error);
-        res.status(500).redirect('/login?erro=Erro%20interno%20ao%20gerar%20sessao');
-    }
+    // Remove a senha do objeto do usuário antes de enviar
+    const userSemSenha = user.get({ plain: true });
+    delete userSemSenha.senha;
+
+    res.status(statusCode).json({
+        success: true,
+        user: userSemSenha,
+        token
+    });
 };
 
 // @desc    Registrar um novo usuário
-exports.registrar = async (req, res) => {
-    const { nome, email, senha } = req.body;
+// @route   POST /auth/registrar
+exports.registrar = async (req, res, next) => {
     try {
-        if (!nome || !email || !senha) {
-            throw new Error("Todos os campos são obrigatórios.");
-        }
-        await User.create({ nome, email, senha });
-        res.status(201).redirect('/login?sucesso=true#login-form');
+        const { nome, email, senha } = req.body;
+        const user = await User.create({ nome, email, senha });
+        enviarToken(user, 201, res);
     } catch (error) {
-        console.error("Erro no registro:", error);
-        const mensagemErro = encodeURIComponent('Erro ao registrar. O email ou nome de usuário pode já estar em uso.');
-        res.redirect(`/login?erro=${mensagemErro}#register-form`);
+        // Envia uma resposta de erro JSON mais clara
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            return res.status(400).json({ success: false, error: 'Este e-mail já está em uso.' });
+        }
+        res.status(500).json({ success: false, error: 'Erro no servidor ao registrar.' });
     }
 };
 
-// @desc    Fazer login
-exports.login = async (req, res) => {
-    const { email, senha } = req.body;
-    try {
-        if (!email || !senha) {
-            throw new Error('Por favor, forneça email e senha.');
-        }
 
-        // Busca o usuário com a senha usando o scope definido no Model
+// =========================================================================
+// CORREÇÃO CRUCIAL APLICADA AQUI
+// =========================================================================
+// @desc    Fazer login de um usuário
+// @route   POST /auth/login
+exports.login = async (req, res, next) => {
+    try {
+        const { email, senha } = req.body;
+
+        if (!email || !senha) {
+            return res.status(400).json({ success: false, error: 'Por favor, forneça e-mail e senha.' });
+        }
+        
+        // CORRIGIDO: Usamos .scope('comSenha') para FORÇAR o Sequelize a incluir
+        // o campo da senha na busca, ignorando o defaultScope.
         const user = await User.scope('comSenha').findOne({ where: { email } });
 
-        // A verificação mais importante:
-        // 1. O usuário existe?
-        // 2. A senha fornecida bate com a senha hasheada no banco?
-        if (!user || !(await user.compararSenha(senha))) {
-            // Se qualquer uma das condições falhar, as credenciais são inválidas.
-            throw new Error('Credenciais inválidas.');
+        if (!user) {
+            return res.status(401).json({ success: false, error: 'Credenciais inválidas.' });
         }
 
-        // Se passou, as credenciais estão corretas. Gerar e enviar o token.
+        // Agora `user.senha` existe e podemos comparar
+        const isMatch = await user.compararSenha(senha);
+
+        if (!isMatch) {
+            return res.status(401).json({ success: false, error: 'Credenciais inválidas.' });
+        }
+        
         enviarToken(user, 200, res);
+
     } catch (error) {
         console.error("Erro no login:", error);
-        const mensagemErro = encodeURIComponent(error.message);
-        res.redirect(`/login?erro=${mensagemErro}`);
+        res.status(500).json({ success: false, error: 'Erro no servidor.' });
     }
 };
+// =========================================================================
+// FIM DA CORREÇÃO
+// =========================================================================
 
-// @desc    Fazer logout
+
+// @desc    Fazer logout de um usuário
+// @route   GET /auth/logout
 exports.logout = (req, res) => {
     res.cookie('token', 'none', {
-        expires: new Date(Date.now() + 5 * 1000),
+        expires: new Date(Date.now() + 10 * 1000),
         httpOnly: true
     });
-    res.status(200).redirect('/');
+    res.status(200).json({ success: true, data: {} });
 };
