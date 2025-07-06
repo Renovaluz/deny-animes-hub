@@ -1,27 +1,36 @@
-const mongoose = require('mongoose');
+'use strict';
+const { Model } = require('sequelize');
 
-const HistoricoSchema = new mongoose.Schema({
-    usuario: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', // Referência ao seu modelo de Usuário
-        required: true,
-    },
-    anime: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Anime', // Referência ao seu modelo de Anime
-        required: true,
+module.exports = (sequelize, DataTypes) => {
+  class Historico extends Model {
+    static associate(models) {
+      Historico.belongsTo(models.User, { foreignKey: 'usuarioId', as: 'usuario' });
+      Historico.belongsTo(models.Anime, { foreignKey: 'animeId', as: 'anime' });
+    }
+  }
+  Historico.init({
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
     },
     ultimoEpisodioAssistido: {
-        numero: { type: Number, required: true },
-        titulo: { type: String, required: true },
-    },
-}, {
-    timestamps: true // Adiciona `createdAt` e `updatedAt` automaticamente
-});
-
-// Índice para garantir que um usuário tenha apenas UMA entrada por anime, evitando duplicatas.
-HistoricoSchema.index({ usuario: 1, anime: 1 }, { unique: true });
-
-const Historico = mongoose.model('Historico', HistoricoSchema);
-
-module.exports = Historico;
+      type: DataTypes.JSON, // Armazena o objeto { numero, titulo } como JSON
+      allowNull: false
+    }
+    // As chaves estrangeiras `usuarioId` e `animeId` serão adicionadas pelas associações
+  }, {
+    sequelize,
+    modelName: 'Historico',
+    tableName: 'historicos',
+    timestamps: true,
+    // Índice para garantir que um usuário tenha apenas uma entrada por anime
+    indexes: [
+      {
+        unique: true,
+        fields: ['usuarioId', 'animeId']
+      }
+    ]
+  });
+  return Historico;
+};
