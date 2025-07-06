@@ -1,47 +1,46 @@
-require('dotenv').config();
-const db = require('./models');
+// ========================================================================
+// SCRIPT DE SETUP PARA PRODUÇÃO
+// Responsabilidade: Criar o usuário admin se ele não existir.
+// Seguro e não apaga dados existentes.
+// ========================================================================
 
-// Dados de exemplo para popular o banco
-const animesParaCriar = [
-    { titulo: "Naruto Shippuden", sinopse: "A jornada de Naruto Uzumaki...", anoLancamento: 2007, imagemCapa: "/images/placeholder.jpg", generos: ["Ação", "Aventura"] },
-    { titulo: "Attack on Titan", sinopse: "Humanidade luta contra titãs...", anoLancamento: 2013, imagemCapa: "/images/placeholder.jpg", generos: ["Ação", "Dark Fantasy"] }
-];
-
-const postsParaCriar = [
-    { titulo: "Nova Temporada Anunciada!", conteudo: "Detalhes sobre a nova temporada de um anime popular..." },
-    { titulo: "Top 10 Lutas Inesquecíveis", conteudo: "Uma lista das melhores lutas dos animes..." }
-];
+require('dotenv').config(); // Carrega as variáveis de ambiente (DB_HOST, etc.)
+const db = require('./models'); // Importa a conexão com o banco e os modelos
 
 const setupProduction = async () => {
     try {
         console.log('Conectando ao banco de dados de produção...');
-        await db.sequelize.sync({ force: true }); // CUIDADO: `force: true` apaga tudo! Use apenas na primeira vez.
-        console.log('✅ Tabelas sincronizadas.');
+        // A configuração de produção (com SSL) já está no models/index.js
+        await db.sequelize.authenticate();
+        console.log('✅ Conexão bem-sucedida.');
 
-        console.log('Criando usuário admin...');
+        console.log('Verificando se o usuário admin já existe...');
+        const adminEmail = 'admin@denyanimehub.com';
+        const adminExists = await db.User.scope('comSenha').findOne({ where: { email: adminEmail } });
+
+        if (adminExists) {
+            console.log('✅ Usuário admin já existe. Nenhuma ação necessária.');
+            return;
+        }
+
+        console.log('Criando usuário admin padrão...');
         const adminUser = await db.User.create({
             nome: 'Admin Akatsuki',
-            email: 'admin@denyanimehub.com',
-            senha: 'password123', // Senha será criptografada pelo hook
+            email: adminEmail,
+            // IMPORTANTE: Use uma senha forte para o ambiente de produção
+            senha: process.env.ADMIN_DEFAULT_PASSWORD || 'admin@@@...2025',
             role: 'admin'
         });
-        console.log(`✅ Usuário admin criado: ${adminUser.email}`);
-
-        console.log('Criando animes de exemplo...');
-        await db.Anime.bulkCreate(animesParaCriar);
-        console.log('✅ Animes de exemplo criados.');
-
-        console.log('Criando posts de exemplo...');
-        const postsComAutor = postsParaCriar.map(p => ({ ...p, autorId: adminUser.id, autorNome: adminUser.nome }));
-        await db.Post.bulkCreate(postsComAutor);
-        console.log('✅ Posts de exemplo criados.');
-
-        console.log('\n🚀 SETUP DE PRODUÇÃO CONCLUÍDO COM SUCESSO! 🚀');
+        console.log(`🚀 Usuário admin de produção criado com sucesso! ID: ${adminUser.id}`);
 
     } catch (error) {
         console.error('❌ Erro durante o setup de produção:', error);
     } finally {
-        await db.sequelize.close();
+        // Garante que a conexão com o banco seja fechada no final
+        if (db.sequelize) {
+            await db.sequelize.close();
+            console.log('Conexão com o banco de dados fechada.');
+        }
     }
 };
 
