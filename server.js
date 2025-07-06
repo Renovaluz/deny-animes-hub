@@ -3,23 +3,21 @@
 // RESPONSABILIDADE: Importar a aplicação, conectar ao DB e iniciar o servidor.
 // ==========================================================================
 
-const app = require('./app'); // Apontando para o app.js
-const db = require('./models'); // Conexão com Sequelize
+require('dotenv').config();
+const app = require('./app'); // Importa a configuração do Express
+const db = require('./models');
 
-// Usa a porta do Render (ou 3000 localmente)
 const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {
     try {
-        // Tenta conectar ao banco de dados
         await db.sequelize.authenticate();
         console.log(`✅ Conexão com o banco de dados estabelecida com sucesso.`);
 
-        // Sincroniza os modelos
-        await db.sequelize.sync({ force: false });
+        // Use { force: false } para não apagar os dados a cada reinicialização
+        await db.sequelize.sync({ force: false }); 
         console.log(`🔄 Modelos sincronizados com o banco de dados.`);
 
-        // Inicia o servidor
         app.listen(PORT, () => {
             console.log(`🚀 Servidor DenyAnimeHub rodando em http://localhost:${PORT}`);
         });
@@ -31,5 +29,4 @@ const startServer = async () => {
 };
 
 startServer();
-// Exporta o app para testes ou outros usos
 module.exports = app;
