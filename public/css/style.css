@@ -807,7 +807,7 @@ body.lights-off .site-header { opacity: 1; pointer-events: auto; filter: none; }
 body.page-noticias .main-layout { gap: var(--space-7); }
 /* News Hero */
 #news-hero {
-    background-image: url('images/fundo.png'); /* Sua imagem de fundo aqui */
+    background-image: url('/images/fundo.png'); /* Sua imagem de fundo aqui */
     background-size: cover; background-position: center center; background-repeat: no-repeat;
     position: relative; color: white; padding: var(--space-8) var(--space-4); text-align: center;
     min-height: 40vh; display: flex; align-items: center; justify-content: center; overflow: hidden;

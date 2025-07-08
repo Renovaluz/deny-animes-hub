@@ -4,105 +4,302 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="icon" href="/images/1.ico" type="image/ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
+        /* ==========================================================================
+           1. VARIÁVEIS GLOBAIS E RESET
+           ========================================================================== */
         :root {
-            --bg-primary: #0A0A0A; --bg-secondary: #141414; --bg-tertiary: #212121; --text-primary: #F0F0F0; --text-secondary: #A0A0A0; --border-color: #2E2E2E; --accent-primary: #E50914;
-            --accent-primary-rgb: 229, 9, 20; --accent-secondary: #3b82f6; --success: #10B981; --error: #EF4444; --border-radius: 8px; --sidebar-width: 280px;
-            --font-primary: 'Poppins', sans-serif; --shadow-color: rgba(0, 0, 0, 0.5); --accent-glow: 0 0 15px rgba(var(--accent-primary-rgb), 0.5);
+            --bg-primary: #0A0A0A;
+            --bg-secondary: #121212;
+            --bg-tertiary: #1E1E1E;
+            --bg-glass: rgba(18, 18, 18, 0.65);
+            --text-primary: #F0F0F0;
+            --text-secondary: #A0A0A0;
+            --text-tertiary: #6B7280;
+            --border-color: #2E2E2E;
+            --border-color-light: #444444;
+            --accent-primary: #E50914;
+            --accent-primary-rgb: 229, 9, 20;
+            --accent-secondary: #3b82f6;
+            --success: #10B981;
+            --error: #EF4444;
+            --warning: #F59E0B;
+            --border-radius: 8px;
+            --sidebar-width: 280px;
+            --font-primary: 'Poppins', sans-serif;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --shadow-light: rgba(0, 0, 0, 0.3);
+            --accent-glow: 0 0 20px rgba(var(--accent-primary-rgb), 0.5);
+            --focus-glow: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.4);
+            --transition-speed: 0.3s;
+            --transition-curve: cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { height: 100%; overflow: hidden; }
-        body { font-family: var(--font-primary); background-color: var(--bg-primary); color: var(--text-primary); line-height: 1.6; font-size: 16px; position: relative; }
-        body.page-admin { background-image: linear-gradient(rgba(10, 10, 10, 0.85), rgba(10, 10, 10, 0.85)), url('/images/berserk_legacy.jpg'); background-size: cover; background-position: center center; background-attachment: fixed; background-repeat: no-repeat; }
-        a { text-decoration: none; color: var(--accent-secondary); transition: color 0.2s ease; }
+        html, body { height: 100%; }
+        body { 
+            font-family: var(--font-primary); background-color: var(--bg-primary); color: var(--text-primary); 
+            line-height: 1.6; font-size: 16px; position: relative; overflow: hidden;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+        }
+        body.page-admin { 
+            background-image: linear-gradient(rgba(10, 10, 10, 0.9), rgba(10, 10, 10, 0.9)), url('/images/berserk_legacy.jpg');
+            background-size: cover; background-position: center center; background-attachment: fixed; background-repeat: no-repeat;
+        }
+
+        a { text-decoration: none; color: var(--accent-secondary); transition: color var(--transition-speed) ease; }
         a:hover { color: #60a5fa; }
-        h1, h2, h3, h4 { margin-bottom: 1rem; line-height: 1.3; font-weight: 600; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-        .input, textarea, select { width: 100%; padding: 0.75rem; background-color: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: var(--border-radius); font-family: inherit; font-size: 1rem; transition: border-color 0.2s, box-shadow 0.2s; }
-        .input:focus, textarea:focus, select:focus { border-color: var(--accent-primary); outline: none; box-shadow: var(--accent-glow); }
-        label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--text-secondary); }
+        h1, h2, h3, h4 { margin-bottom: 1rem; line-height: 1.3; font-weight: 600; text-shadow: 0 2px 5px var(--shadow-light); }
+        h2 { font-size: 1.75rem; }
+        p { margin-bottom: 1rem; color: var(--text-secondary); }
+        img { max-width: 100%; display: block; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background-color: var(--bg-tertiary); border-radius: 20px; border: 2px solid var(--bg-primary); }
+        ::-webkit-scrollbar-thumb:hover { background-color: var(--border-color-light); }
+
+        /* ==========================================================================
+           2. COMPONENTES REUTILIZÁVEIS (BOTÕES, FORMS, CARDS)
+           ========================================================================== */
         
+        /* Botões */
+        .btn { 
+            padding: 0.75rem 1.25rem; border-radius: var(--border-radius); border: 1px solid var(--border-color); font-weight: 600;
+            cursor: pointer; transition: all var(--transition-speed) var(--transition-curve); display: inline-flex; align-items: center; justify-content: center;
+            gap: 0.5rem; background-color: var(--bg-tertiary); color: var(--text-primary); text-shadow: 0 1px 2px var(--shadow-light);
+        }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+        .btn:hover:not(:disabled) { background-color: #333; border-color: var(--border-color-light); transform: translateY(-2px); }
+        .btn:active:not(:disabled) { transform: translateY(0); }
+
+        .btn--primary { background-color: var(--accent-primary); border-color: var(--accent-primary); color: white; box-shadow: var(--accent-glow); }
+        .btn--primary:hover:not(:disabled) { background-color: #ff1c28; border-color: #ff1c28; transform: scale(1.05) translateY(-2px); }
+        
+        .btn--small { padding: 0.5rem 0.75rem; font-size: 0.9rem; }
+        .btn-icon-only { padding: 0.6rem; width: 40px; height: 40px; border-radius: 50%; }
+
+        /* Formulários */
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--text-secondary); font-size: 0.9rem; }
+        
+        .input, .textarea, .select {
+            width: 100%; background-color: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);
+            padding: 0.75rem 1rem; border-radius: var(--border-radius); font-family: var(--font-primary); font-size: 1rem;
+            transition: all var(--transition-speed) ease;
+        }
+        .input:focus, .textarea:focus, .select:focus {
+            outline: none; border-color: var(--accent-primary); box-shadow: var(--focus-glow);
+        }
+        .textarea { resize: vertical; min-height: 120px; }
+
+        /* Custom Checkbox */
+        .form-group-checkbox { display: flex; align-items: center; gap: 0.75rem; }
+        .form-group-checkbox input[type="checkbox"] { opacity: 0; width: 0; height: 0; position: absolute; }
+        .form-group-checkbox label { margin-bottom: 0; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; user-select: none; }
+        .form-group-checkbox .custom-checkbox {
+            width: 22px; height: 22px; border: 2px solid var(--border-color-light); border-radius: 4px; display: inline-block;
+            position: relative; transition: all var(--transition-speed) ease;
+        }
+        .form-group-checkbox input[type="checkbox"]:checked + label .custom-checkbox {
+            background-color: var(--accent-primary); border-color: var(--accent-primary);
+        }
+        .form-group-checkbox .custom-checkbox::after {
+            content: ''; position: absolute; left: 6px; top: 2px; width: 6px; height: 12px;
+            border: solid white; border-width: 0 3px 3px 0; transform: rotate(45deg); opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        .form-group-checkbox input[type="checkbox"]:checked + label .custom-checkbox::after { opacity: 1; }
+
+        /* Image Preview */
+        .image-preview-container { margin-top: 1rem; }
+        .image-preview { max-height: 150px; width: auto; border-radius: var(--border-radius); border: 2px solid var(--border-color); object-fit: cover; }
+        
+        /* Tooltips */
+        [data-tooltip] { position: relative; }
+        [data-tooltip]::after {
+            content: attr(data-tooltip); position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%);
+            background-color: var(--bg-tertiary); color: var(--text-primary); padding: 0.5rem 0.75rem; border-radius: 6px;
+            font-size: 0.85rem; font-weight: 500; white-space: nowrap; pointer-events: none; opacity: 0;
+            transition: opacity var(--transition-speed) ease, bottom var(--transition-speed) ease;
+        }
+        [data-tooltip]:hover::after { opacity: 1; bottom: 125%; }
+
+        /* ==========================================================================
+           3. LAYOUT PRINCIPAL (SIDEBAR, MAIN CONTENT)
+           ========================================================================== */
         body.page-admin { display: flex; height: 100vh; }
-        .admin-sidebar { width: var(--sidebar-width); background-color: var(--bg-secondary); border-right: 1px solid var(--border-color); flex-shrink: 0; display: flex; flex-direction: column; box-shadow: 5px 0 25px rgba(0,0,0,0.3); z-index: 1000; transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
-        .admin-sidebar-header { text-align: center; padding: 1.5rem 1rem; flex-shrink: 0; }
+
+        /* Sidebar */
+        .admin-sidebar { 
+            width: var(--sidebar-width); background-color: var(--bg-secondary); border-right: 1px solid var(--border-color);
+            flex-shrink: 0; display: flex; flex-direction: column; box-shadow: 5px 0 25px var(--shadow-light); z-index: 1000;
+            transition: transform var(--transition-curve) var(--transition-speed);
+        }
+        .admin-sidebar-header { 
+            text-align: center; padding: 1.5rem 1rem; flex-shrink: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2), transparent);
+        }
         .admin-sidebar-header a { display: inline-flex; align-items: center; gap: 0.75rem; font-size: 1.3rem; font-weight: 700; color: var(--text-primary); }
-        .admin-sidebar-header img { height: 40px; filter: drop-shadow(0 0 5px var(--accent-primary)); }
-        .sidebar-section-title { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); padding: 0 1rem; margin: 1.5rem 0 0.5rem; }
-        .admin-nav { list-style: none; flex-grow: 1; overflow-y: auto; padding: 0 0.5rem; }
-        .admin-nav .nav-link { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem; margin-bottom: 0.5rem; border-radius: var(--border-radius); color: var(--text-secondary); font-weight: 500; transition: all 0.2s ease; cursor: pointer; border-left: 4px solid transparent; }
+        .admin-sidebar-header img { height: 40px; filter: drop-shadow(0 0 8px var(--accent-primary)); transition: transform var(--transition-speed) ease; }
+        .admin-sidebar-header a:hover img { transform: rotate(15deg) scale(1.1); }
+        .sidebar-section-title { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-tertiary); padding: 0 1.5rem; margin: 1.5rem 0 0.5rem; }
+        
+        .admin-nav { list-style: none; flex-grow: 1; overflow-y: auto; padding: 0 1rem; }
+        .admin-nav .nav-link { 
+            display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem; margin-bottom: 0.5rem; border-radius: var(--border-radius);
+            color: var(--text-secondary); font-weight: 500; transition: all 0.2s ease; cursor: pointer; border-left: 4px solid transparent;
+        }
         .admin-nav .nav-link:hover { background-color: var(--bg-tertiary); color: var(--text-primary); }
-        .admin-nav .nav-link.active { background: linear-gradient(90deg, rgba(var(--accent-primary-rgb), 0.15) 0%, rgba(var(--accent-primary-rgb), 0) 100%); color: var(--accent-primary); border-left-color: var(--accent-primary); font-weight: 600; text-shadow: 0 0 10px rgba(var(--accent-primary-rgb), 0.5); }
+        .admin-nav .nav-link.active { 
+            background: linear-gradient(90deg, rgba(var(--accent-primary-rgb), 0.15) 0%, rgba(var(--accent-primary-rgb), 0) 100%); 
+            color: var(--accent-primary); border-left-color: var(--accent-primary); font-weight: 600; 
+            text-shadow: 0 0 10px rgba(var(--accent-primary-rgb), 0.5);
+        }
         .admin-nav .nav-link i { width: 20px; text-align: center; font-size: 1.2rem; }
+        
         .admin-sidebar-footer { padding: 1rem; border-top: 1px solid var(--border-color); flex-shrink: 0; background-color: rgba(0,0,0,0.2); }
-        .user-profile-widget { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
-        .user-profile-widget img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-color); transition: border-color 0.3s ease; }
+        .user-profile-widget { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; padding: 0.5rem; border-radius: var(--border-radius); transition: background-color var(--transition-speed) ease; }
+        .user-profile-widget:hover { background-color: var(--bg-tertiary); }
+        .user-profile-widget img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-color); transition: border-color var(--transition-speed) ease; }
         .user-profile-widget:hover img { border-color: var(--accent-primary); }
         .user-profile-widget .user-info { line-height: 1.2; overflow: hidden; }
         .user-profile-widget .user-name { font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .user-profile-widget .edit-link { font-size: 0.8rem; color: var(--text-secondary); }
-        .user-profile-widget .edit-link:hover { color: var(--accent-secondary); }
-        .admin-main-content { flex-grow: 1; display: flex; flex-direction: column; height: 100vh; background-color: rgba(10, 10, 10, 0.6); backdrop-filter: blur(8px); border-left: 1px solid var(--border-color); position: relative; }
-        .main-content-header { padding: 1.5rem; flex-shrink: 0; display: flex; align-items: center; gap: 1rem; }
-        .main-content-body { padding: 0 1.5rem 1.5rem; overflow-y: auto; flex-grow: 1; }
-        .admin-panel { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .user-profile-widget .edit-link { font-size: 0.8rem; color: var(--text-tertiary); }
+        .user-profile-widget .edit-link:hover { color: var(--accent-secondary); text-decoration: underline; }
+
+        /* Main Content Area */
+        .admin-main-content { 
+            flex-grow: 1; display: flex; flex-direction: column; height: 100vh;
+            background-color: var(--bg-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-left: 1px solid var(--border-color); position: relative;
+        }
+        .main-content-header { padding: 1.5rem 2rem; flex-shrink: 0; display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid var(--border-color); background-color: rgba(18, 18, 18, 0.5); }
+        .main-content-header h1 { margin: 0; flex-grow: 1; display: flex; align-items: center; gap: 1rem; }
+        .main-content-body { padding: 2rem; overflow-y: auto; flex-grow: 1; }
+
+        /* Painéis de Conteúdo */
+        .admin-panel { display: none; animation: fadeIn 0.5s var(--transition-curve); }
         .admin-panel.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .admin-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
-        .stat-card { background: linear-gradient(145deg, var(--bg-tertiary), var(--bg-secondary)); padding: 1.5rem; border-radius: var(--border-radius); border-left: 4px solid var(--accent-primary); transition: all 0.3s ease; box-shadow: 0 4px 15px var(--shadow-color); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ==========================================================================
+           4. SEÇÕES ESPECÍFICAS (DASHBOARD, GRIDS, TABELAS, FORMS)
+           ========================================================================== */
+        
+        /* Dashboard Stats */
+        .admin-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+        .stat-card { 
+            background: linear-gradient(145deg, var(--bg-tertiary), var(--bg-secondary)); padding: 1.5rem;
+            border-radius: var(--border-radius); border-left: 4px solid var(--accent-primary);
+            transition: all var(--transition-speed) var(--transition-curve); box-shadow: 0 4px 15px var(--shadow-color);
+        }
         .stat-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px var(--shadow-color), var(--accent-glow); }
-        .stat-card h3 { font-size: 0.9rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); }
+        .stat-card h3 { font-size: 0.9rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin: 0; }
         .stat-card p { font-size: 2.5rem; font-weight: 700; color: var(--text-primary); margin: 0.5rem 0 0 0; }
-        .items-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
-        .item-card { background-color: var(--bg-secondary); border: 1px solid var(--border-color); box-shadow: 0 4px 15px var(--shadow-color); border-radius: var(--border-radius); display: flex; flex-direction: column; overflow: hidden; transition: all 0.3s ease; }
-        .item-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.7); border-color: #444; }
-        .item-card__image { width: 100%; height: 250px; object-fit: cover; border-bottom: 1px solid var(--border-color); background-color: var(--bg-primary); }
+
+        /* Grid de Itens (Animes, Posts) */
+        .items-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+        .item-card { 
+            background-color: var(--bg-secondary); border: 1px solid var(--border-color); box-shadow: 0 4px 15px var(--shadow-color);
+            border-radius: var(--border-radius); display: flex; flex-direction: column; overflow: hidden;
+            transition: all var(--transition-speed) var(--transition-curve); position: relative;
+        }
+        .item-card:hover { transform: translateY(-8px); box-shadow: 0 10px 30px rgba(0,0,0,0.7); border-color: var(--border-color-light); }
+        .item-card__image { width: 100%; height: 300px; object-fit: cover; border-bottom: 1px solid var(--border-color); background-color: var(--bg-primary); }
         .item-card__content { padding: 1rem; flex-grow: 1; display: flex; flex-direction: column; }
-        .item-card__title { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem; line-height: 1.3; flex-grow: 1; }
+        .item-card__title { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem; line-height: 1.3; flex-grow: 1; }
         .item-card__meta { font-size: 0.8rem; color: var(--text-secondary); display: flex; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
         .item-card__actions { display: flex; gap: 0.5rem; padding: 0 1rem 1rem; }
-        .btn { padding: 0.75rem 1rem; border-radius: var(--border-radius); border: 1px solid var(--border-color); font-weight: 600; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background-color: var(--bg-tertiary); color: var(--text-primary); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
-        .btn:hover:not(:disabled) { background-color: #333; border-color: #444; }
-        .btn--primary { background-color: var(--accent-primary); border-color: var(--accent-primary); color: white; box-shadow: var(--accent-glow); }
-        .btn--primary:hover:not(:disabled) { background-color: #ff1c28; border-color: #ff1c28; transform: scale(1.05); }
-        .btn--small { padding: 0.5rem 0.75rem; font-size: 0.9rem; }
-        .admin-form-container { padding: 2rem; background-color: var(--bg-secondary); border-radius: var(--border-radius); margin-top: 1rem; max-width: 800px; margin-left: auto; margin-right: auto; }
-        .form-group { margin-bottom: 1.5rem; }
-        #sidebar-toggle, .mobile-header-title { display: none; }
-        .sidebar-overlay { display: none; position: fixed; inset: 0; background-color: rgba(0,0,0,0.6); z-index: 999; }
-        .table-container { background-color: var(--bg-secondary); border-radius: var(--border-radius); border: 1px solid var(--border-color); overflow-x: auto; }
+        .item-card__actions .btn { background-color: var(--bg-tertiary); }
+        .item-card__actions .btn:hover { background-color: #333; }
+        
+        /* Controles (Botão Adicionar, Busca) */
+        .view-controls { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
+        .search-container { position: relative; }
+        .search-input { 
+            background-color: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary);
+            padding: 0.6rem 1rem 0.6rem 2.5rem; border-radius: var(--border-radius); font-size: 1rem; min-width: 280px;
+            transition: all var(--transition-speed) ease;
+        }
+        .search-input:focus { outline: none; border-color: var(--accent-primary); box-shadow: var(--focus-glow); }
+        .search-container .fa-search { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-tertiary); }
+
+        /* Layout de Formulário */
+        .admin-form-container { padding: 2.5rem; background-color: var(--bg-secondary); border-radius: var(--border-radius); margin-top: 1rem; max-width: 800px; margin-left: auto; margin-right: auto; border: 1px solid var(--border-color); }
+        
+        /* Tabelas */
+        .table-container { background-color: var(--bg-secondary); border-radius: var(--border-radius); border: 1px solid var(--border-color); overflow: hidden; }
         .data-table { width: 100%; border-collapse: collapse; white-space: nowrap; }
-        .data-table th, .data-table td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        .data-table th, .data-table td { padding: 1rem 1.25rem; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
         .data-table thead { background-color: var(--bg-tertiary); }
-        .data-table th { font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; }
-        .data-table tbody tr:hover { background-color: rgba(var(--accent-primary-rgb), 0.05); }
-        .episode-manage-list { list-style: none; margin-top: 1.5rem; max-height: 350px; overflow-y: auto; padding: 0.5rem; background-color: var(--bg-primary); border-radius: var(--border-radius); border: 1px solid var(--border-color); }
-        .episode-manage-list li { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-bottom: 1px solid var(--border-color); transition: background-color 0.2s ease; }
+        .data-table th { font-weight: 600; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.8px; color: var(--text-secondary); }
+        .data-table tbody tr { transition: background-color 0.2s ease; }
+        .data-table tbody tr:nth-child(even) { background-color: rgba(0,0,0,0.2); }
+        .data-table tbody tr:hover { background-color: rgba(var(--accent-primary-rgb), 0.1); }
+        .data-table .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-color); }
+
+        /* Gerenciador de Episódios */
+        .episode-manage-list { list-style: none; margin-top: 1.5rem; max-height: 400px; overflow-y: auto; padding: 0.5rem; background-color: var(--bg-primary); border-radius: var(--border-radius); border: 1px solid var(--border-color); }
+        .episode-manage-list li { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); transition: background-color 0.2s ease; }
         .episode-manage-list li:last-child { border-bottom: none; }
         .episode-manage-list li:hover { background-color: var(--bg-tertiary); }
         .ep-info { display: flex; align-items: center; gap: 1rem; }
         .ep-number { background-color: var(--accent-primary); color: white; font-weight: bold; width: 35px; height: 35px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; flex-shrink: 0; }
         .ep-delete-btn { background: none; border: none; color: var(--error); cursor: pointer; font-size: 1.2rem; transition: transform 0.2s, color 0.2s; }
         .ep-delete-btn:hover { transform: scale(1.2); color: #ff6b6b; }
-        #toast-notification { position: fixed; bottom: 2rem; right: 2rem; background-color: var(--bg-tertiary); color: var(--text-primary); padding: 1rem 1.5rem; border-radius: var(--border-radius); box-shadow: 0 5px 20px var(--shadow-color); z-index: 9999; border-left: 5px solid; opacity: 0; visibility: hidden; transform: translateX(100%); transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+        .no-content-message { text-align: center; color: var(--text-secondary); padding: 3rem; background: var(--bg-secondary); border-radius: var(--border-radius); border: 1px dashed var(--border-color); }
+
+        /* ==========================================================================
+           5. UTILITÁRIOS E ESTADOS (LOADING, NOTIFICAÇÕES, MOBILE)
+           ========================================================================== */
+        
+        /* Notificação Toast */
+        #toast-notification { 
+            position: fixed; bottom: 2rem; right: 2rem; background-color: var(--bg-tertiary); color: var(--text-primary); padding: 1rem 1.5rem;
+            border-radius: var(--border-radius); box-shadow: 0 5px 20px var(--shadow-color); z-index: 9999; border-left: 5px solid;
+            opacity: 0; visibility: hidden; transform: translateX(110%);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
         #toast-notification.show { opacity: 1; visibility: visible; transform: translateX(0); }
         #toast-notification.success { border-left-color: var(--success); }
         #toast-notification.error { border-left-color: var(--error); }
+
+        /* Spinner de Carregamento */
         .loading-spinner { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; color: var(--accent-primary); z-index: 10; display: none; }
-        .panel-loading .grid-view, .panel-loading .admin-form-container, .panel-loading .table-view { filter: blur(4px); opacity: 0.5; pointer-events: none; }
+        .panel-loading .grid-view, .panel-loading .admin-form-container, .panel-loading .table-view, .panel-loading .view-controls { filter: blur(4px); opacity: 0.5; pointer-events: none; }
         .panel-loading .loading-spinner { display: block; }
-         @media (max-width: 992px) {
+        
+        /* Mobile (Sidebar Toggle) */
+        #sidebar-toggle, .mobile-header-title { display: none; }
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background-color: rgba(0,0,0,0.6); z-index: 999; }
+        
+        @media (max-width: 992px) {
             .admin-sidebar { position: fixed; top: 0; left: 0; height: 100%; transform: translateX(-100%); }
             .admin-sidebar.is-open { transform: translateX(0); }
             .sidebar-overlay.is-active { display: block; }
             #sidebar-toggle { display: inline-flex; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; padding: 0.5rem; cursor: pointer; }
             .main-content-header .desktop-title { display: none; }
-            .mobile-header-title { display: block; font-size: 1.2rem; font-weight: 600; color: var(--text-primary); margin: 0; flex-grow: 1; }
+            .mobile-header-title { display: block; font-size: 1.2rem; font-weight: 600; color: var(--text-primary); margin: 0; flex-grow: 1; text-align: center; }
+            .main-content-body { padding: 1.5rem; }
+            .view-controls { flex-direction: column; align-items: stretch; gap: 1rem; }
+            .search-input { min-width: 100%; }
+
+            .items-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+            .item-card__image { height: 250px; }
+            .item-card:hover { transform: translateY(-5px); }
+            .stat-card:hover { transform: none; box-shadow: 0 4px 15px var(--shadow-color); }
+        }
+        @media (max-width: 576px) {
+            .items-grid { grid-template-columns: 1fr; }
+            .item-card__image { height: 350px; }
         }
     </style>
 </head>
@@ -128,28 +325,28 @@
         </nav>
         <div class="admin-sidebar-footer">
             <% if (user) { %>
-            <div class="user-profile-widget">
+            <a href="/perfil/editar" class="user-profile-widget">
                 <img src="<%= user.avatar || '/images/default-avatar.png' %>" alt="Avatar de <%= user.nome %>" onerror="this.onerror=null;this.src='/images/default-avatar.png';">
                 <div class="user-info">
                     <div class="user-name"><%= user.nome %></div>
-                    <a href="/perfil/editar" class="edit-link">Editar Perfil</a>
+                    <span class="edit-link">Editar Perfil</span>
                 </div>
-            </div>
-            <a href="/auth/logout" class="btn btn--primary" style="width:100%;">Sair <i class="fas fa-sign-out-alt"></i></a>
+            </a>
+            <a href="/auth/logout" id="admin-logout-btn" class="btn btn--primary" style="width:100%;"><i class="fas fa-sign-out-alt"></i> Sair</a>
             <% } %>
         </div>
     </aside>
 
     <main class="admin-main-content">
-        <div class="main-content-header">
-            <button id="sidebar-toggle"><i class="fas fa-bars"></i></button>
+        <header class="main-content-header">
+            <button id="sidebar-toggle" data-tooltip="Menu"><i class="fas fa-bars"></i></button>
             <h1 class="desktop-title"></h1>
             <h2 class="mobile-header-title"></h2>
-        </div>
+        </header>
         <div class="main-content-body">
             <div id="panel-dashboard" class="admin-panel">
-                <h2>Bem-vindo ao centro de comando, <strong><%= user.nome %></strong>.</h2>
-                <p>Use a navegação à esquerda para gerenciar todo o conteúdo do site.</p>
+                <h2>Bem-vindo, <strong><%= user.nome %></strong>.</h2>
+                <p>Use a navegação lateral para gerenciar todo o conteúdo do site.</p>
                 <div class="admin-stats">
                     <div class="stat-card"><h3>Animes Cadastrados</h3><p><%= totalAnimes %></p></div>
                     <div class="stat-card"><h3>Notícias Publicadas</h3><p><%= totalPosts %></p></div>
@@ -165,62 +362,33 @@
     <div id="toast-notification"></div>
 
     <template id="template-manage-animes">
-        <div class="view-controls" style="margin-bottom: 1.5rem;">
-            <button class="btn-show-form btn btn--primary"><i class="fas fa-plus-circle"></i><span class="btn-text"> Adicionar Novo Anime</span></button>
-        </div>
-        <div class="form-view" style="display: none;">
-            <div class="admin-form-container">
-                <h2 class="form-title">Adicionar Novo Anime</h2>
-                <form class="main-form" enctype="multipart/form-data">
-                    <input type="hidden" name="id"><input type="hidden" name="imagemCapa">
-                    <div class="form-group"><label for="titulo-anime">Título</label><input type="text" id="titulo-anime" name="titulo" class="input" required></div>
-                    <div class="form-group"><label for="sinopse-anime">Sinopse</label><textarea id="sinopse-anime" name="sinopse" class="input" rows="5" required></textarea></div>
-                    <div class="form-group"><label for="ano-anime">Ano de Lançamento</label><input type="number" id="ano-anime" name="anoLancamento" class="input" required></div>
-                    <div class="form-group"><label for="generos-anime">Gêneros (separados por vírgula)</label><input type="text" id="generos-anime" name="generos" class="input" required placeholder="Ação, Aventura, Fantasia"></div>
-                    <div class="form-group"><label for="capa-anime">Imagem da Capa</label><input type="file" id="capa-anime" name="imagem" class="input" accept="image/*"></div>
-                    <div class="form-group"><label for="nota-anime">Nota (0 a 10)</label><input type="number" id="nota-anime" step="0.1" name="classificacao" class="input"></div>
-                    <div style="display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: flex-end;">
-                        <button type="button" class="btn btn-cancel">Cancelar</button>
-                        <button type="submit" class="btn btn--primary"><i class="fas fa-save"></i> Salvar</button>
-                    </div>
-                </form>
+        <div class="view-controls">
+            <button class="btn-show-form btn btn--primary"><i class="fas fa-plus-circle"></i><span class="btn-text"> Adicionar Anime</span></button>
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="search" class="search-input" placeholder="Buscar por título...">
             </div>
         </div>
-        <div class="episode-manager-view" style="display: none;">
-            <div class="admin-form-container">
-                <h2 class="form-title">Gerenciar Episódios</h2>
-                <form class="episode-add-form">
-                    <input type="hidden" name="animeId">
-                    <h4>Adicionar Novo Episódio</h4>
-                    <div class="form-group"><label for="ep-numero">Número do Episódio</label><input type="number" id="ep-numero" name="numero" class="input" required></div>
-                    <div class="form-group"><label for="ep-titulo">Título do Episódio (opcional)</label><input type="text" id="ep-titulo" name="titulo" class="input"></div>
-                    <div class="form-group"><label for="ep-tipo">Tipo do Vídeo</label>
-                        <select id="ep-tipo" name="tipoVideo" class="input">
-                            <option value="iframe" selected>iFrame/Embed Padrão</option>
-                            <option value="gdrive">Link do Google Drive</option>
-                        </select>
-                    </div>
-                    <div class="form-group"><label for="ep-url">URL do Vídeo</label><input type="text" id="ep-url" name="urlVideo" class="input" placeholder="Cole o link aqui" required></div>
-                    <button type="submit" class="btn btn--primary btn--small">Adicionar Episódio</button>
-                </form>
-                <hr style="margin: 2rem 0; border-color: var(--border-color);">
-                <h4>Episódios Existentes</h4>
-                <div class="episode-manage-list-container"><ul class="episode-manage-list"><p class="no-episodes-message" style="text-align:center; color: var(--text-secondary); padding: 2rem;">Nenhum episódio cadastrado.</p></ul></div>
-                <button type="button" class="btn btn-cancel" style="margin-top: 1.5rem;">Voltar para Animes</button>
-            </div>
-        </div>
+        <div class="form-view" style="display: none;"><div class="admin-form-container"><h2 class="form-title">Adicionar Novo Anime</h2><form class="main-form" enctype="multipart/form-data"><input type="hidden" name="id"><input type="hidden" name="imagemCapa"><div class="form-group"><label for="titulo-anime">Título</label><input type="text" id="titulo-anime" name="titulo" class="input" required></div><div class="form-group"><label for="sinopse-anime">Sinopse</label><textarea id="sinopse-anime" name="sinopse" class="textarea" rows="5" required></textarea></div><div class="form-group"><label for="ano-anime">Ano de Lançamento</label><input type="number" id="ano-anime" name="anoLancamento" class="input" required></div><div class="form-group"><label for="generos-anime">Gêneros (separados por vírgula)</label><input type="text" id="generos-anime" name="generos" class="input" required placeholder="Ação, Aventura, Fantasia"></div><div class="form-group"><label for="capa-anime">Imagem da Capa</label><input type="file" id="capa-anime" name="imagem" class="input" accept="image/*"><div class="image-preview-container"><img src="" alt="Preview da capa" class="image-preview" style="display:none;"></div></div><div class="form-group"><label for="nota-anime">Nota (0 a 10)</label><input type="number" id="nota-anime" step="0.1" name="classificacao" class="input"></div><div style="display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: flex-end;"><button type="button" class="btn btn-cancel">Cancelar</button><button type="submit" class="btn btn--primary"><i class="fas fa-save"></i> Salvar</button></div></form></div></div>
+        <div class="episode-manager-view" style="display: none;"><div class="admin-form-container"><h2 class="form-title">Gerenciar Episódios</h2><form class="episode-add-form"><input type="hidden" name="animeId"><h4>Adicionar Novo Episódio</h4><div class="form-group"><label for="ep-numero">Número</label><input type="number" id="ep-numero" name="numero" class="input" required></div><div class="form-group"><label for="ep-titulo">Título (opcional)</label><input type="text" id="ep-titulo" name="titulo" class="input"></div><div class="form-group"><label for="ep-tipo">Tipo</label><select id="ep-tipo" name="tipoVideo" class="select"><option value="iframe" selected>iFrame/Embed</option><option value="gdrive">Google Drive</option></select></div><div class="form-group"><label for="ep-url">URL do Vídeo</label><input type="text" id="ep-url" name="urlVideo" class="input" required></div><button type="submit" class="btn btn--primary btn--small">Adicionar Episódio</button></form><hr style="margin: 2rem 0; border-color: var(--border-color);"><h4 style="margin-bottom:1rem;">Episódios Existentes</h4><div class="episode-manage-list-container"><ul class="episode-manage-list"></ul></div><button type="button" class="btn btn-cancel" style="margin-top: 1.5rem;">Voltar para Animes</button></div></div>
         <div class="grid-view"><div class="items-grid"></div></div>
     </template>
+    
     <template id="template-manage-posts">
-        <div class="view-controls" style="margin-bottom: 1.5rem;"><button class="btn-show-form btn btn--primary"><i class="fas fa-plus-circle"></i><span class="btn-text"> Adicionar Nova Notícia</span></button></div>
-        <div class="form-view" style="display: none;"><div class="admin-form-container"><h2 class="form-title">Adicionar Notícia</h2><form class="main-form" enctype="multipart/form-data"><input type="hidden" name="id"><input type="hidden" name="imagemDestaque"><div class="form-group"><label for="titulo-post">Título</label><input type="text" id="titulo-post" name="titulo" class="input" required></div><div class="form-group"><label for="conteudo-post">Conteúdo</label><textarea id="conteudo-post" name="conteudo" class="input" rows="10" required></textarea></div><div class="form-group"><label for="imagem-post">Imagem de Destaque</label><input type="file" id="imagem-post" name="imagem" class="input" accept="image/*"></div><div class="form-group"><label for="categoria-post">Categoria</label><input type="text" id="categoria-post" name="categoria" class="input" value="Notícia"></div><div class="form-group"><label for="tags-post">Tags (separadas por vírgula)</label><input type="text" id="tags-post" name="tags" class="input"></div><div class="form-group" style="display:flex;align-items:center;gap:10px"><input type="checkbox" id="destaque-post" name="emDestaque" style="width:auto;height:auto"><label for="destaque-post" style="margin-bottom:0">Marcar como Destaque</label></div><div style="display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: flex-end;"><button type="button" class="btn btn-cancel">Cancelar</button><button type="submit" class="btn btn--primary"><i class="fas fa-save"></i> Salvar</button></div></form></div></div>
+        <div class="view-controls"><button class="btn-show-form btn btn--primary"><i class="fas fa-plus-circle"></i><span class="btn-text"> Adicionar Notícia</span></button><div class="search-container"><i class="fas fa-search"></i><input type="search" class="search-input" placeholder="Buscar por título..."></div></div>
+        <div class="form-view" style="display: none;"><div class="admin-form-container"><h2 class="form-title">Adicionar Notícia</h2><form class="main-form" enctype="multipart/form-data"><input type="hidden" name="id"><input type="hidden" name="imagemDestaque"><div class="form-group"><label for="titulo-post">Título</label><input type="text" id="titulo-post" name="titulo" class="input" required></div><div class="form-group"><label for="conteudo-post">Conteúdo</label><textarea id="conteudo-post" name="conteudo" class="textarea" rows="10" required></textarea></div><div class="form-group"><label for="imagem-post">Imagem de Destaque</label><input type="file" id="imagem-post" name="imagem" class="input" accept="image/*"><div class="image-preview-container"><img src="" alt="Preview da imagem" class="image-preview" style="display:none;"></div></div><div class="form-group"><label for="categoria-post">Categoria</label><input type="text" id="categoria-post" name="categoria" class="input" value="Notícia"></div><div class="form-group"><label for="tags-post">Tags</label><input type="text" id="tags-post" name="tags" class="input" placeholder="Animes, Lançamentos, etc"></div><div class="form-group-checkbox"><input type="checkbox" id="destaque-post" name="emDestaque"><label for="destaque-post"><span class="custom-checkbox"></span> Marcar como Destaque</label></div><div style="display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: flex-end;"><button type="button" class="btn btn-cancel">Cancelar</button><button type="submit" class="btn btn--primary"><i class="fas fa-save"></i> Salvar</button></div></form></div></div>
         <div class="grid-view"><div class="items-grid"></div></div>
     </template>
+
     <template id="template-manage-users">
+        <div class="view-controls" style="justify-content: flex-end;"><div class="search-container"><i class="fas fa-search"></i><input type="search" class="search-input" placeholder="Buscar por nome ou email..."></div></div>
         <div class="table-view"><div class="table-container"><table class="data-table"><thead><tr><th>Avatar</th><th>Nome</th><th>Email</th><th>Cargo</th><th>Membro Desde</th><th>Ações</th></tr></thead><tbody class="table-body"></tbody></table></div></div>
     </template>
     
     <script>
+    // ==========================================================================
+    // INICIALIZAÇÃO E MANIPULADORES GERAIS
+    // ==========================================================================
     document.addEventListener('DOMContentLoaded', () => {
         const sidebar = document.querySelector('.admin-sidebar');
         const sidebarToggle = document.getElementById('sidebar-toggle');
@@ -230,27 +398,29 @@
         const mainContentBody = document.querySelector('.main-content-body');
         const toast = document.getElementById('toast-notification');
         const loadedTabs = new Set();
-        const currentUserId = Number('<%- user.id %>');
+        const currentUserId = Number('<%= user.id %>');
 
+        // --- Sidebar Logic ---
         const toggleSidebar = () => {
             sidebar.classList.toggle('is-open');
             sidebarOverlay.classList.toggle('is-active');
         };
-
         if (sidebarToggle && sidebarOverlay) {
             sidebarToggle.addEventListener('click', toggleSidebar);
             sidebarOverlay.addEventListener('click', toggleSidebar);
         }
 
-        const showToast = (message, type = 'success') => {
+        // --- Toast Notification Logic ---
+        const showToast = (message, type = 'success', duration = 4000) => {
             toast.textContent = message;
             toast.className = `show ${type}`;
-            setTimeout(() => { toast.className = ''; }, 4000);
+            setTimeout(() => { toast.className = ''; }, duration);
         };
 
+        // --- API Helper Function ---
         const api = async (endpoint, options = {}) => {
             const button = options.button;
-            if(button) {
+            if (button) {
                 button.disabled = true;
                 const originalContent = button.innerHTML;
                 button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
@@ -266,13 +436,14 @@
                 showToast(err.message, 'error');
                 return { success: false, error: err.message };
             } finally {
-                 if(button) {
+                 if (button) {
                     button.disabled = false;
                     button.innerHTML = options.originalContent;
                 }
             }
         };
-
+        
+        // --- Navigation Logic ---
         const updateMainHeader = (htmlContent, textContent) => {
             if (desktopTitle) desktopTitle.innerHTML = htmlContent;
             if (mobileTitle) mobileTitle.textContent = textContent || desktopTitle?.textContent || 'Painel';
@@ -280,10 +451,13 @@
 
         const handleNavigation = (link) => {
             const targetId = link.dataset.target;
+            if (!targetId) return;
+            
             updateMainHeader(link.innerHTML, link.textContent.trim());
             document.querySelectorAll('.admin-nav .nav-link').forEach(l => l.classList.remove('active'));
             link.classList.add('active');
             mainContentBody.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+            
             const targetPanel = document.getElementById(targetId);
             if (targetPanel) {
                 targetPanel.classList.add('active');
@@ -300,37 +474,66 @@
             const link = e.target.closest('a.nav-link');
             if (!link || link.target === '_blank') return;
             e.preventDefault();
+            
             if (link.classList.contains('quick-action')) {
                 const type = link.dataset.action.includes('anime') ? 'animes' : 'posts';
                 const targetLink = document.querySelector(`.nav-link[data-target="panel-${type}"]`);
                 if (targetLink) {
                     handleNavigation(targetLink);
-                    setTimeout(() => document.getElementById(`panel-${type}`).querySelector('.btn-show-form')?.click(), 50);
+                    // Await panel initialization before clicking
+                    setTimeout(() => document.getElementById(`panel-${type}`).querySelector('.btn-show-form')?.click(), 100);
                 }
             } else {
                 handleNavigation(link);
             }
         });
         
+        // --- Logout Logic ---
+        document.getElementById('admin-logout-btn')?.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const button = e.currentTarget;
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saindo...';
+            const data = await api('auth/logout');
+            showToast(data.success ? 'Logout bem-sucedido! Redirecionando...' : 'Erro no logout. Redirecionando...', data.success ? 'success' : 'error');
+            setTimeout(() => window.location.href = '/', 1500);
+        });
+        
+        // Initial state
         document.querySelector('.nav-link[data-target="panel-dashboard"]').click();
         
+        // ==========================================================================
+        // DYNAMIC CONTENT MANAGER
+        // ==========================================================================
         function initManager(type) {
             const panel = document.getElementById(`panel-${type}`);
             const template = document.getElementById(`template-manage-${type}`);
             if (!panel || !template) return;
-            panel.innerHTML = '';
+            
+            panel.innerHTML = ''; // Clear loading spinner
             panel.appendChild(template.content.cloneNode(true));
             
-            const views = { form: panel.querySelector('.form-view'), grid: panel.querySelector('.grid-view'), table: panel.querySelector('.table-view'), episodes: panel.querySelector('.episode-manager-view'), controls: panel.querySelector('.view-controls') };
+            // --- DOM Element Cache ---
+            const views = {
+                form: panel.querySelector('.form-view'),
+                grid: panel.querySelector('.grid-view'),
+                table: panel.querySelector('.table-view'),
+                episodes: panel.querySelector('.episode-manager-view'),
+                controls: panel.querySelector('.view-controls')
+            };
             const mainForm = panel.querySelector('.main-form');
             const episodeForm = panel.querySelector('.episode-add-form');
-            let isEditing = false, editingId = null;
+            const searchInput = panel.querySelector('.search-input');
+            
+            // --- State Variables ---
+            let isEditing = false, editingId = null, fullData = [];
 
+            // --- View & Form Management ---
             const switchView = (viewName) => {
                 Object.values(views).filter(v => v).forEach(v => v.style.display = 'none');
                 if (views[viewName]) views[viewName].style.display = 'block';
                 const defaultView = (type === 'animes' || type === 'posts') ? 'grid' : 'table';
-                if(views.controls) views.controls.style.display = (viewName === defaultView) ? 'block' : 'none';
+                if (views.controls) views.controls.style.display = (viewName === defaultView) ? 'flex' : 'none';
             };
 
             const resetForm = (form) => {
@@ -339,142 +542,157 @@
                 form.querySelector('[name="id"]')?.setAttribute('value', '');
                 const imageHiddenInput = form.querySelector('[name*="imagem"]');
                 if (imageHiddenInput && imageHiddenInput.type === 'hidden') imageHiddenInput.setAttribute('value', '');
+                // Reset image preview
+                const previewImg = form.querySelector('.image-preview');
+                if(previewImg) { previewImg.style.display = 'none'; previewImg.src = ''; }
+
                 isEditing = false;
                 editingId = null;
-                panel.querySelector('.form-title').textContent = `Adicionar Novo ${type === 'animes' ? 'Anime' : 'Notícia'}`;
+                const formTitle = type === 'animes' ? 'Anime' : (type === 'posts' ? 'Notícia' : 'Usuário');
+                panel.querySelector('.form-title').textContent = `Adicionar Novo ${formTitle}`;
             };
-
+            
+            // --- Rendering Functions ---
             const createCardHTML = (item, itemType) => {
                 if (itemType === 'animes') {
                     const epCount = item.episodios ? item.episodios.length : 0;
-                    return `<img src="${item.imagemCapa || '/images/placeholder_poster.png'}" alt="Capa" class="item-card__image" onerror="this.onerror=null;this.src='/images/placeholder_poster.png';"><div class="item-card__content"><h3 class="item-card__title">${item.titulo}</h3><div class="item-card__meta"><span><i class="fas fa-calendar-alt fa-fw"></i> ${item.anoLancamento || 'N/A'}</span><span><i class="fas fa-list-ol fa-fw"></i> ${epCount} Eps</span></div></div><div class="item-card__actions"><button title="Editar" class="btn btn--small btn-edit"><i class="fas fa-edit"></i></button><button title="Episódios" class="btn btn--small btn-episodes"><i class="fas fa-list-ol"></i></button><button title="Deletar" class="btn btn--small btn-delete"><i class="fas fa-trash"></i></button></div>`;
+                    return `<img src="${item.imagemCapa || '/images/placeholder_poster.png'}" alt="Capa" class="item-card__image" onerror="this.onerror=null;this.src='/images/placeholder_poster.png';"><div class="item-card__content"><h3 class="item-card__title">${item.titulo}</h3><div class="item-card__meta"><span><i class="fas fa-calendar-alt fa-fw"></i> ${item.anoLancamento || 'N/A'}</span><span><i class="fas fa-star fa-fw"></i> ${item.classificacao || 'N/A'}</span></div></div><div class="item-card__actions"><button data-tooltip="Editar" class="btn btn-icon-only btn-edit"><i class="fas fa-edit"></i></button><button data-tooltip="Episódios (${epCount})" class="btn btn-icon-only btn-episodes"><i class="fas fa-list-ol"></i></button><button data-tooltip="Deletar" class="btn btn-icon-only btn-delete"><i class="fas fa-trash"></i></button></div>`;
                 }
                 if (itemType === 'posts') {
-                    return `<img src="${item.imagemDestaque || '/images/placeholder_news.png'}" alt="Imagem" class="item-card__image" onerror="this.onerror=null;this.src='/images/placeholder_news.png';"><div class="item-card__content"><h3 class="item-card__title">${item.titulo} ${item.emDestaque ? '<i class="fas fa-star" style="color:#FFD700; font-size:0.8em;"></i>' : ''}</h3><div class="item-card__meta"><span>Por ${item.autor?.nome || 'Admin'}</span><span>${new Date(item.createdAt).toLocaleDateString('pt-BR')}</span></div></div><div class="item-card__actions"><button title="Editar" class="btn btn--small btn-edit"><i class="fas fa-edit"></i></button><button title="Deletar" class="btn btn--small btn-delete"><i class="fas fa-trash"></i></button></div>`;
+                    const authorName = item.autor?.nome || 'Admin';
+                    return `<img src="${item.imagemDestaque || '/images/placeholder_news.png'}" alt="Imagem" class="item-card__image" onerror="this.onerror=null;this.src='/images/placeholder_news.png';"><div class="item-card__content"><h3 class="item-card__title">${item.titulo} ${item.emDestaque ? '<i class="fas fa-star" style="color:#FFD700; font-size:0.8em; vertical-align: middle;"></i>' : ''}</h3><div class="item-card__meta"><span>Por ${authorName}</span><span>${new Date(item.createdAt).toLocaleDateString('pt-BR')}</span></div></div><div class="item-card__actions"><button data-tooltip="Editar" class="btn btn-icon-only btn-edit"><i class="fas fa-edit"></i></button><button data-tooltip="Deletar" class="btn btn-icon-only btn-delete"><i class="fas fa-trash"></i></button></div>`;
                 }
+                return '';
             };
-            
-            const renderGrid = (items, itemType) => {
+
+            const renderGrid = (items) => {
                 const gridContainer = panel.querySelector('.items-grid');
-                gridContainer.innerHTML = !items || items.length === 0 ? `<p class="empty-message" style="grid-column: 1 / -1; text-align: center; color: var(--text-secondary); padding: 40px;">Nenhum item encontrado.</p>` : '';
+                gridContainer.innerHTML = !items || items.length === 0 ? `<div class="no-content-message">Nenhum ${type === 'animes' ? 'anime' : 'notícia'} encontrado.</div>` : '';
                 if(items) items.forEach(item => {
                     const card = document.createElement('div');
                     card.className = 'item-card';
                     card.dataset.id = item.id;
-                    card.innerHTML = createCardHTML(item, itemType);
+                    card.innerHTML = createCardHTML(item, type);
                     gridContainer.appendChild(card);
                 });
             };
 
             const renderTable = (items) => {
                 const tableBody = panel.querySelector('.table-body');
-                tableBody.innerHTML = !items || items.length === 0 ? `<tr><td colspan="6" style="text-align:center; padding: 40px;">Nenhum usuário encontrado.</td></tr>` : '';
+                tableBody.innerHTML = !items || items.length === 0 ? `<tr><td colspan="6"><div class="no-content-message">Nenhum usuário encontrado.</div></td></tr>` : '';
                 if(items) items.forEach(item => {
                     const row = document.createElement('tr');
                     row.dataset.id = item.id;
-                    row.innerHTML = `<td><img src="${item.avatar || '/images/default-avatar.png'}" width="40" height="40" style="border-radius: 50%; object-fit: cover;" onerror="this.onerror=null;this.src='/images/default-avatar.png';"/></td><td>${item.nome}</td><td>${item.email}</td><td>${item.role}</td><td>${new Date(item.createdAt).toLocaleDateString('pt-BR')}</td><td><button title="Deletar" class="btn btn--small btn-delete" ${item.id === currentUserId ? 'disabled' : ''}><i class="fas fa-trash"></i></button></td>`;
+                    row.innerHTML = `<td><img src="${item.avatar || '/images/default-avatar.png'}" class="user-avatar" onerror="this.onerror=null;this.src='/images/default-avatar.png';"/></td><td>${item.nome}</td><td>${item.email}</td><td>${item.role}</td><td>${new Date(item.createdAt).toLocaleDateString('pt-BR')}</td><td><button data-tooltip="Deletar" class="btn btn-icon-only btn-delete" ${item.id === currentUserId ? 'disabled' : ''}><i class="fas fa-trash"></i></button></td>`;
                     tableBody.appendChild(row);
                 });
             };
-
-            const loadData = async () => {
-                panel.classList.add('panel-loading');
-                const { data } = await api(type);
-                if (type === 'animes' || type === 'posts') renderGrid(data, type);
-                else if (type === 'users') renderTable(data);
-                panel.classList.remove('panel-loading');
-                switchView((type === 'animes' || type === 'posts') ? 'grid' : 'table');
-            };
-
+            
             const renderEpisodeList = (episodes = []) => {
                 const list = panel.querySelector('.episode-manage-list');
-                list.innerHTML = episodes.length === 0 ? `<p class="no-episodes-message" style="text-align:center; color: var(--text-secondary); padding: 2rem;">Nenhum episódio cadastrado.</p>` : '';
-                episodes.forEach(ep => {
+                const sortedEpisodes = episodes.sort((a, b) => a.numero - b.numero);
+                list.innerHTML = sortedEpisodes.length === 0 ? `<li class="no-content-message" style="border:none; padding:1rem;">Nenhum episódio cadastrado.</li>` : '';
+                sortedEpisodes.forEach(ep => {
                     const li = document.createElement('li');
                     li.dataset.epNum = ep.numero;
-                    li.innerHTML = `<div class="ep-info"><span class="ep-number">${ep.numero}</span><span>${ep.titulo || `Episódio ${ep.numero}`}</span></div><button class="ep-delete-btn" title="Deletar Episódio"><i class="fas fa-times-circle"></i></button>`;
+                    li.innerHTML = `<div class="ep-info"><span class="ep-number">${ep.numero}</span><span>${ep.titulo || `Episódio ${ep.numero}`}</span></div><button class="ep-delete-btn" data-tooltip="Deletar Episódio"><i class="fas fa-times-circle"></i></button>`;
                     list.appendChild(li);
                 });
             };
-            
-            panel.addEventListener('click', async (e) => {
-                const button = e.target.closest('button');
-                if (!button || button.disabled) return;
-                const parentCard = button.closest('.item-card') || button.closest('tr');
-                const id = parentCard?.dataset.id;
-                
-                if (button.classList.contains('btn-show-form')) { resetForm(mainForm); switchView('form'); }
-                if (button.classList.contains('btn-cancel')) { resetForm(mainForm); switchView((type === 'animes' || type === 'posts') ? 'grid' : 'table'); }
-                if (button.classList.contains('btn-delete') && id && confirm('Tem certeza? A ação é irreversível.')) {
-                    const result = await api(`${type}/${id}`, { method: 'DELETE', button });
-                    if (result.success) { showToast('Item deletado!', 'success'); parentCard.remove(); }
+
+            // --- Data Loading & Search ---
+            const loadData = async () => {
+                panel.classList.add('panel-loading');
+                const result = await api(type);
+                if(result.success) {
+                    fullData = result.data || [];
+                    if (type === 'animes' || type === 'posts') renderGrid(fullData);
+                    else if (type === 'users') renderTable(fullData);
                 }
-                if (button.classList.contains('btn-edit') && id) {
-                    panel.classList.add('panel-loading');
-                    const { data } = await api(`${type}/${id}`);
-                    panel.classList.remove('panel-loading');
-                    if (!data) return;
-                    isEditing = true; editingId = id;
-                    panel.querySelector('.form-title').textContent = `Editar ${type === 'animes' ? 'Anime' : 'Notícia'}`;
-                    Object.keys(data).forEach(key => {
-                        const input = mainForm.querySelector(`[name="${key}"]`);
-                        if (input) {
-                            if (input.type === 'checkbox') input.checked = !!data[key];
-                            else input.value = Array.isArray(data[key]) ? data[key].join(', ') : data[key];
-                        }
-                    });
-                    switchView('form');
-                }
-                if (button.classList.contains('btn-episodes') && id) {
-                    const { data: anime } = await api(`animes/${id}`);
-                    if (!anime) return;
-                    episodeForm.querySelector('[name="animeId"]').value = anime.id;
-                    panel.querySelector('.episode-manager-view .form-title').innerText = `Episódios: ${anime.titulo}`;
-                    renderEpisodeList(anime.episodios);
-                    switchView('episodes');
-                }
+                panel.classList.remove('panel-loading');
+                const defaultView = (type === 'animes' || type === 'posts') ? 'grid' : 'table';
+                switchView(defaultView);
+            };
+
+            if (searchInput) searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filteredData = fullData.filter(item => {
+                    if (type === 'users') return item.nome.toLowerCase().includes(searchTerm) || item.email.toLowerCase().includes(searchTerm);
+                    return item.titulo.toLowerCase().includes(searchTerm);
+                });
+                if (type === 'animes' || type === 'posts') renderGrid(filteredData);
+                else if (type === 'users') renderTable(filteredData);
             });
 
-            if (mainForm) mainForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const submitButton = mainForm.querySelector('button[type="submit"]');
-                const formData = new FormData(mainForm);
+            // --- Event Listeners ---
+            if (mainForm) {
+                // Image Preview Listener
                 const fileInput = mainForm.querySelector('input[type="file"]');
-                if (fileInput && fileInput.files[0]) {
-                    const uploadFormData = new FormData();
-                    uploadFormData.append('imagem', fileInput.files[0]);
-                    const uploadResult = await api('upload/image', { method: 'POST', body: uploadFormData, button: submitButton });
-                    if (!uploadResult.success) return;
-                    const imageFieldName = type === 'animes' ? 'imagemCapa' : 'imagemDestaque';
-                    formData.set(imageFieldName, uploadResult.filePath);
+                const previewImg = mainForm.querySelector('.image-preview');
+                if (fileInput && previewImg) {
+                    fileInput.addEventListener('change', (e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                            previewImg.src = URL.createObjectURL(file);
+                            previewImg.style.display = 'block';
+                            previewImg.onload = () => URL.revokeObjectURL(previewImg.src); // free memory
+                        } else {
+                            previewImg.style.display = 'none';
+                        }
+                    });
                 }
-                const body = Object.fromEntries(formData.entries());
-                delete body.imagem;
-                const result = await api(isEditing ? `${type}/${editingId}` : type, { method: isEditing ? 'PUT' : 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body), button: submitButton });
-                if (result.success && result.data) {
-                    showToast('Salvo com sucesso!', 'success');
-                    const gridContainer = panel.querySelector('.items-grid');
-                    if (isEditing) {
-                        gridContainer.querySelector(`.item-card[data-id="${editingId}"]`).innerHTML = createCardHTML(result.data, type);
-                    } else {
-                        const newCard = document.createElement('div');
-                        newCard.className = 'item-card';
-                        newCard.dataset.id = result.data.id;
-                        newCard.innerHTML = createCardHTML(result.data, type);
-                        gridContainer.querySelector('.empty-message')?.remove();
-                        gridContainer.prepend(newCard);
+                
+                // Form Submit Listener
+                mainForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const submitButton = mainForm.querySelector('button[type="submit"]');
+                    const formData = new FormData(mainForm);
+                    
+                    // Handle image upload separately
+                    if (fileInput && fileInput.files[0]) {
+                        const uploadFormData = new FormData();
+                        uploadFormData.append('imagem', fileInput.files[0]);
+                        const uploadResult = await api('upload/image', { method: 'POST', body: uploadFormData, button: submitButton });
+                        if (!uploadResult.success) return;
+                        const imageFieldName = type === 'animes' ? 'imagemCapa' : 'imagemDestaque';
+                        formData.set(imageFieldName, uploadResult.filePath);
                     }
-                    resetForm(mainForm);
-                    switchView((type === 'animes' || type === 'posts') ? 'grid' : 'table');
-                }
-            });
-            
+                    
+                    // Handle checkbox
+                    if (type === 'posts') formData.set('emDestaque', mainForm.querySelector('[name="emDestaque"]').checked);
+
+                    const body = Object.fromEntries(formData.entries());
+                    delete body.imagem; // remove the file object
+
+                    const result = await api(isEditing ? `${type}/${editingId}` : type, {
+                        method: isEditing ? 'PUT' : 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(body),
+                        button: submitButton
+                    });
+
+                    if (result.success && result.data) {
+                        showToast('Salvo com sucesso!', 'success');
+                        await loadData(); // Reload all data to ensure consistency
+                        resetForm(mainForm);
+                        const defaultView = (type === 'animes' || type === 'posts') ? 'grid' : 'table';
+                        switchView(defaultView);
+                    }
+                });
+            }
+
             if (episodeForm) {
                 episodeForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     const animeId = episodeForm.querySelector('[name="animeId"]').value;
-                    const result = await api(`animes/${animeId}/episodes`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(Object.fromEntries(new FormData(episodeForm))), button: episodeForm.querySelector('button[type="submit"]') });
-                    if (result.success) {
+                    const submitButton = episodeForm.querySelector('button[type="submit"]');
+                    const result = await api(`animes/${animeId}/episodes`, { 
+                        method: 'POST', 
+                        headers: {'Content-Type': 'application/json'}, 
+                        body: JSON.stringify(Object.fromEntries(new FormData(episodeForm))), 
+                        button: submitButton 
+                    });
+                    if (result.success && result.data?.episodios) {
                         showToast('Episódio adicionado!', 'success');
                         episodeForm.reset();
                         episodeForm.querySelector('[name="numero"]').focus();
@@ -492,6 +710,69 @@
                     }
                 });
             }
+            
+            // Delegated click listener for the entire panel
+            panel.addEventListener('click', async (e) => {
+                const button = e.target.closest('button');
+                if (!button || button.disabled) return;
+
+                const parentCard = button.closest('.item-card') || button.closest('tr');
+                const id = parentCard?.dataset.id;
+                
+                if (button.classList.contains('btn-show-form')) { resetForm(mainForm); switchView('form'); }
+                if (button.classList.contains('btn-cancel')) { 
+                    resetForm(mainForm); 
+                    const defaultView = (type === 'animes' || type === 'posts') ? 'grid' : 'table';
+                    switchView(defaultView); 
+                }
+                if (button.classList.contains('btn-delete') && id && confirm('Tem certeza? A ação é irreversível.')) {
+                    const result = await api(`${type}/${id}`, { method: 'DELETE', button });
+                    if (result.success) { 
+                        showToast('Item deletado!', 'success'); 
+                        parentCard.style.transition = 'opacity 0.5s ease';
+                        parentCard.style.opacity = '0';
+                        setTimeout(() => parentCard.remove(), 500);
+                    }
+                }
+                if (button.classList.contains('btn-edit') && id) {
+                    panel.classList.add('panel-loading');
+                    const { data } = await api(`${type}/${id}`);
+                    panel.classList.remove('panel-loading');
+                    if (!data) return;
+
+                    isEditing = true; editingId = id;
+                    panel.querySelector('.form-title').textContent = `Editar ${type === 'animes' ? 'Anime' : 'Notícia'}`;
+                    Object.keys(data).forEach(key => {
+                        const input = mainForm.querySelector(`[name="${key}"]`);
+                        if (input) {
+                            if (input.type === 'checkbox') input.checked = !!data[key];
+                            else input.value = Array.isArray(data[key]) ? data[key].join(', ') : data[key];
+                        }
+                    });
+                    
+                    // Handle image preview for editing
+                    const imageFieldName = type === 'animes' ? 'imagemCapa' : 'imagemDestaque';
+                    if (data[imageFieldName] && previewImg) {
+                        previewImg.src = data[imageFieldName];
+                        previewImg.style.display = 'block';
+                    }
+
+                    switchView('form');
+                }
+                if (button.classList.contains('btn-episodes') && id) {
+                    panel.classList.add('panel-loading');
+                    const { data: anime } = await api(`animes/${id}`);
+                    panel.classList.remove('panel-loading');
+                    if (!anime) return;
+                    
+                    episodeForm.querySelector('[name="animeId"]').value = anime.id;
+                    panel.querySelector('.episode-manager-view .form-title').innerText = `Episódios de: ${anime.titulo}`;
+                    renderEpisodeList(anime.episodios);
+                    switchView('episodes');
+                }
+            });
+
+            // --- Initial Load ---
             loadData();
         }
     });

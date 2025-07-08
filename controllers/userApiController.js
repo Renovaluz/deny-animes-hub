@@ -14,6 +14,7 @@ exports.getAllUsers = async (req, res) => {
     try {
         const users = await User.findAll({ 
             order: [['createdAt', 'DESC']],
+            // Seleciona apenas os campos necessários para a exibição no painel
             attributes: ['id', 'nome', 'email', 'role', 'createdAt', 'avatar'] 
         });
         res.status(200).json({ success: true, count: users.length, data: users });
@@ -32,10 +33,22 @@ exports.updateUserByAdmin = async (req, res) => {
     try {
         const { nome, email, role } = req.body;
         const user = await User.findByPk(req.params.id);
-        if (!user) return res.status(404).json({ success: false, error: 'Usuário não encontrado' });
+
+        if (!user) {
+            return res.status(404).json({ success: false, error: 'Usuário não encontrado.' });
+        }
         
-        await user.update({ nome, email, role });
-        res.status(200).json({ success: true, data: user });
+        // Atualiza os campos fornecidos
+        user.nome = nome || user.nome;
+        user.email = email || user.email;
+        user.role = role || user.role;
+        
+        await user.save();
+
+        const updatedUser = user.get({ plain: true });
+        delete updatedUser.senha;
+
+        res.status(200).json({ success: true, data: updatedUser });
     } catch (err) {
         console.error("Erro em updateUserByAdmin:", err);
         res.status(400).json({ success: false, error: err.message });
@@ -50,8 +63,12 @@ exports.updateUserByAdmin = async (req, res) => {
 exports.deleteUserByAdmin = async (req, res) => {
     try {
         const user = await User.findByPk(req.params.id);
-        if (!user) return res.status(404).json({ success: false, error: 'Usuário não encontrado' });
 
+        if (!user) {
+            return res.status(404).json({ success: false, error: 'Usuário não encontrado.' });
+        }
+
+        // Impede que um administrador delete a si mesmo
         if (Number(req.user.id) === Number(req.params.id)) {
             return res.status(400).json({ success: false, error: 'Você não pode deletar sua própria conta de administrador.' });
         }
@@ -108,12 +125,16 @@ exports.updateUserProfile = async (req, res) => {
  */
 exports.updateUserAvatar = async (req, res) => {
     try {
-        if (!req.file) return res.status(400).json({ success: false, error: 'Nenhum arquivo de imagem enviado.' });
+        if (!req.file) {
+            return res.status(400).json({ success: false, error: 'Nenhum arquivo de imagem enviado.' });
+        }
 
         const user = await User.findByPk(req.user.id);
-        if (!user) return res.status(404).json({ success: false, error: 'Usuário não encontrado' });
+        if (!user) {
+            return res.status(404).json({ success: false, error: 'Usuário não encontrado.' });
+        }
 
-        // CORREÇÃO CRUCIAL: Salva o caminho PÚBLICO completo, incluindo a pasta 'avatars'
+        // CORREÇÃO CRUCIAL: Salva o caminho PÚBLICO completo no banco de dados.
         const avatarPath = `/uploads/avatars/${req.file.filename}`;
         user.avatar = avatarPath;
         await user.save();
@@ -135,12 +156,16 @@ exports.updateUserAvatar = async (req, res) => {
  */
 exports.updateUserCapa = async (req, res) => {
     try {
-        if (!req.file) return res.status(400).json({ success: false, error: 'Nenhum arquivo de imagem enviado.' });
+        if (!req.file) {
+            return res.status(400).json({ success: false, error: 'Nenhum arquivo de imagem enviado.' });
+        }
 
         const user = await User.findByPk(req.user.id);
-        if (!user) return res.status(404).json({ success: false, error: 'Usuário não encontrado' });
+        if (!user) {
+            return res.status(404).json({ success: false, error: 'Usuário não encontrado.' });
+        }
 
-        // CORREÇÃO CRUCIAL: Salva o caminho PÚBLICO completo, incluindo a pasta 'capas'
+        // CORREÇÃO CRUCIAL: Salva o caminho PÚBLICO completo no banco de dados.
         // O nome do campo no seu model é 'capaPerfil'
         const capaPath = `/uploads/capas/${req.file.filename}`;
         user.capaPerfil = capaPath;

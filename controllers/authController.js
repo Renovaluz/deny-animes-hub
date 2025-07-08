@@ -1,93 +1,89 @@
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken'); 
 const db = require('../models');
 const User = db.User;
 
-// Função auxiliar para gerar e enviar o token
+// Função auxiliar para gerar e enviar o token em um cookie
 const enviarToken = (user, statusCode, res) => {
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-        expiresIn: '30d'
-    });
+    try {
+        const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, {
+            expiresIn: '30d'
+        });
 
-    res.cookie('token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 30 * 24 * 60 * 60 * 1000 // 30 dias
-    });
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 30 * 24 * 60 * 60 * 1000 // 30 dias
+        });
 
-    // Remove a senha do objeto do usuário antes de enviar
-    const userSemSenha = user.get({ plain: true });
-    delete userSemSenha.senha;
+        const userSemSenha = user.get({ plain: true });
+        delete userSemSenha.senha;
 
-    res.status(statusCode).json({
-        success: true,
-        user: userSemSenha,
-        token
-    });
+        res.status(statusCode).json({
+            success: true,
+            user: userSemSenha,
+            token
+        });
+    } catch (error) {
+        console.error("Erro ao gerar token:", error);
+        res.status(500).json({ success: false, error: "Erro interno ao processar autenticação." });
+    }
 };
 
 // @desc    Registrar um novo usuário
-// @route   POST /auth/registrar
-exports.registrar = async (req, res, next) => {
+exports.registrar = async (req, res) => {
     try {
         const { nome, email, senha } = req.body;
+        if (!nome || !email || !senha) {
+            return res.status(400).json({ success: false, error: 'Por favor, preencha todos os campos.' });
+        }
         const user = await User.create({ nome, email, senha });
         enviarToken(user, 201, res);
     } catch (error) {
-        // Envia uma resposta de erro JSON mais clara
         if (error.name === 'SequelizeUniqueConstraintError') {
             return res.status(400).json({ success: false, error: 'Este e-mail já está em uso.' });
         }
+        console.error("Erro no registro:", error);
         res.status(500).json({ success: false, error: 'Erro no servidor ao registrar.' });
     }
 };
 
-
-// =========================================================================
-// CORREÇÃO CRUCIAL APLICADA AQUI
-// =========================================================================
 // @desc    Fazer login de um usuário
-// @route   POST /auth/login
-exports.login = async (req, res, next) => {
+exports.login = async (req, res) => {
     try {
         const { email, senha } = req.body;
-
         if (!email || !senha) {
             return res.status(400).json({ success: false, error: 'Por favor, forneça e-mail e senha.' });
         }
         
-        // CORRIGIDO: Usamos .scope('comSenha') para FORÇAR o Sequelize a incluir
-        // o campo da senha na busca, ignorando o defaultScope.
         const user = await User.scope('comSenha').findOne({ where: { email } });
 
-        if (!user) {
-            return res.status(401).json({ success: false, error: 'Credenciais inválidas.' });
-        }
-
-        // Agora `user.senha` existe e podemos comparar
-        const isMatch = await user.compararSenha(senha);
-
-        if (!isMatch) {
-            return res.status(401).json({ success: false, error: 'Credenciais inválidas.' });
+        if (!user || !(await user.compararSenha(senha))) {
+            return res.status(401).json({ success: false, error: 'E-mail ou senha inválidos.' });
         }
         
         enviarToken(user, 200, res);
 
     } catch (error) {
         console.error("Erro no login:", error);
-        res.status(500).json({ success: false, error: 'Erro no servidor.' });
+        res.status(500).json({ success: false, error: 'Erro no servidor durante o login.' });
     }
 };
-// =========================================================================
-// FIM DA CORREÇÃO
-// =========================================================================
 
-
+// ==========================================================
+// CORREÇÃO APLICADA AQUI
+// ==========================================================
 // @desc    Fazer logout de um usuário
-// @route   GET /auth/logout
 exports.logout = (req, res) => {
+    // Limpa o cookie 'token' fazendo-o expirar imediatamente.
     res.cookie('token', 'none', {
-        expires: new Date(Date.now() + 10 * 1000),
+        expires: new Date(Date.now()), // Expira agora
         httpOnly: true
     });
-    res.status(200).json({ success: true, data: {} });
+    
+    // Redireciona o navegador para a página de login.
+    res.redirect('/login');
 };
+// ==========================================================
+// FIM DA CORREÇÃO
+// ==========================================================

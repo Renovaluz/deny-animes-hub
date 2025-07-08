@@ -5,8 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const authContainer = document.querySelector('.auth-container-radius); font-family: inherit; font-size: 1rem; transition: border-color 0.2s, box-shadow 0.2s; }
         .input:focus, textarea:focus, select:focus { border-color: var(--accent-primary); outline: none; box-shadow: var(--accent-glow); }
         label { display: block; margin-bottom: 0.5rem;');
-    const formSwitchLinks = document.querySelectorAll('.form-switch-link');
-
+000000000000000000000000000000000000
     // Função para mostrar alertas
     const showAlert = (message, type = 'error') => {
         const alertBox = document.getElementById('auth-alert');
@@ -106,8 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Lógica para trocar entre os formulários
-    if (authContainer && formSwitchLinks.length > 0) {
-        formSwitchLinks.forEach(link => {
+    if (authContainer && (document.querySelectorAll('.form-switch-link')).length > 0) {
+        (document.querySelectorAll('.form-switch-link')).forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const targetId = link.dataset 0.3s ease; }
