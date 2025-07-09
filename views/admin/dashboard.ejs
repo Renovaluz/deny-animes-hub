@@ -229,558 +229,270 @@
             </ul>
         </nav>
         <div class="admin-sidebar-footer">
-            <% if (user) { %>
-            <a href="/perfil/editar" class="user-profile-widget">
-                <img src="<%= user.avatar || '/images/default-avatar.png' %>" alt="Avatar de <%= user.nome %>" onerror="this.onerror=null;this.src='/images/default-avatar.png';">
-                <div class="user-info">
-                    <div class="user-name"><%= user.nome %></div>
-                    <span class="edit-link">Editar Perfil</span>
-                </div>
-            </a>
-            <a href="/auth/logout" id="admin-logout-btn" class="btn btn--primary" style="width:100%;"><i class="fas fa-sign-out-alt"></i> Sair</a>
-            <% } %>
+            <div class="user-profile-widget"><img src="<%= user.avatar || '/images/default-avatar.png' %>" alt="Avatar de <%= user.nome %>" onerror="this.onerror=null;this.src='/images/default-avatar.png';"><div class="user-info"><div class="user-name"><%= user.nome %></div><a href="/perfil/editar" class="edit-link">Editar Perfil</a></div></div>
+            <a href="/auth/logout" class="btn btn--primary btn--small" style="width:100%;">Sair <i class="fas fa-sign-out-alt"></i></a>
         </div>
     </aside>
 
     <main class="admin-main-content">
-        <header class="main-content-header">
-            <button id="sidebar-toggle" data-tooltip="Menu"><i class="fas fa-bars"></i></button>
+        <div class="main-content-header">
+            <button id="sidebar-toggle"><i class="fas fa-bars"></i></button>
             <h1 class="desktop-title"></h1>
             <h2 class="mobile-header-title"></h2>
-        </header>
+        </div>
         <div class="main-content-body">
-            <div id="panel-dashboard" class="admin-panel">
-                <h2>Bem-vindo, <strong><%= user.nome %></strong>.</h2>
-                <p>Use a navegação lateral para gerenciar todo o conteúdo do site.</p>
-                <div class="admin-stats">
-                    <div class="stat-card"><h3>Animes Cadastrados</h3><p><%= totalAnimes %></p></div>
-                    <div class="stat-card"><h3>Notícias Publicadas</h3><p><%= totalPosts %></p></div>
-                    <div class="stat-card"><h3>Usuários Registrados</h3><p><%= totalUsers %></p></div>
-                </div>
-            </div>
-            <div id="panel-animes" class="admin-panel"><div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i></div></div>
-            <div id="panel-posts" class="admin-panel"><div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i></div></div>
-            <div id="panel-users" class="admin-panel"><div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i></div></div>
+            <div id="panel-dashboard" class="admin-panel"><p>Bem-vindo ao centro de comando, <strong><%= user.nome %></strong>. Use a navegação para gerenciar o conteúdo.</p><div class="admin-stats"><div class="stat-card"><h3>Animes Cadastrados</h3><p><%= totalAnimes %></p></div><div class="stat-card"><h3>Notícias Publicadas</h3><p><%= totalPosts %></p></div><div class="stat-card"><h3>Usuários Registrados</h3><p><%= totalUsers %></p></div></div></div>
+            <div id="panel-animes" class="admin-panel"></div>
+            <div id="panel-posts" class="admin-panel"></div>
+            <div id="panel-users" class="admin-panel"></div>
         </div>
     </main>
     
     <div id="toast-notification"></div>
 
-    <!-- ==========================================================================
-       TEMPLATE PARA GERENCIAMENTO DE ANIMES E EPISÓDIOS (MODIFICADO)
-       ========================================================================== -->
     <template id="template-manage-animes">
-        <div class="view-controls">
-            <button class="btn-show-form btn btn--primary"><i class="fas fa-plus-circle"></i><span class="btn-text"> Adicionar Anime</span></button>
-            <div class="search-container">
-                <i class="fas fa-search"></i>
-                <input type="search" class="search-input" placeholder="Buscar por título...">
-            </div>
-        </div>
-        <div class="form-view" style="display: none;"><div class="admin-form-container"><h2 class="form-title">Adicionar Novo Anime</h2><form onsubmit="return false" class="main-form" enctype="multipart/form-data"><input type="hidden" name="id"><input type="hidden" name="imagemCapa"><div class="form-group"><label for="titulo-anime">Título</label><input type="text" id="titulo-anime" name="titulo" class="input" required></div><div class="form-group"><label for="sinopse-anime">Sinopse</label><textarea id="sinopse-anime" name="sinopse" class="textarea" rows="5" required></textarea></div><div class="form-group"><label for="ano-anime">Ano de Lançamento</label><input type="number" id="ano-anime" name="anoLancamento" class="input" required></div><div class="form-group"><label for="generos-anime">Gêneros (separados por vírgula)</label><input type="text" id="generos-anime" name="generos" class="input" required placeholder="Ação, Aventura, Fantasia"></div><div class="form-group"><label for="capa-anime">Imagem da Capa</label><input type="file" id="capa-anime" name="imagem" class="input" accept="image/*"><div class="image-preview-container"><img src="" alt="Preview da capa" class="image-preview" style="display:none;"></div></div><div class="form-group"><label for="nota-anime">Nota (0 a 10)</label><input type="number" id="nota-anime" step="0.1" name="classificacao" class="input"></div><div style="display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: flex-end;"><button type="button" class="btn btn-cancel">Cancelar</button><button type="submit" class="btn btn--primary"><i class="fas fa-save"></i> Salvar</button></div></form></div></div>
-        
-        <div class="episode-manager-view" style="display: none;">
-            <div class="admin-form-container">
-                <h2 class="form-title">Gerenciar Episódios</h2>
-                <form class="episode-add-form">
-                    <input type="hidden" name="animeId">
-                    <h4>Adicionar Novo Episódio</h4>
-                    <div class="form-group">
-                        <label for="ep-numero">Número do Episódio</label>
-                        <input type="number" id="ep-numero" name="numero" class="input" required min="0">
-                    </div>
-                    <div class="form-group">
-                        <label for="ep-titulo">Título do Episódio (opcional)</label>
-                        <input type="text" id="ep-titulo" name="titulo" class="input">
-                    </div>
-                    <div class="form-group">
-                        <label for="ep-tipo">Fonte do Vídeo</label>
-                        <select id="ep-tipo" name="tipoVideo" class="select">
-                            <option value="iframe" selected><span class="select-option-icon icon-iframe"></span>iFrame / Embed</option>
-                            <option value="gdrive"><span class="select-option-icon icon-gdrive"></span>Google Drive</option>
-                            <option value="mediafire"><span class="select-option-icon icon-mediafire"></span>MediaFire</option>
-                            <option value="mega"><span class="select-option-icon icon-mega"></span>Mega</option>
-                            <option value="mediabox"><span class="select-option-icon icon-mediabox"></span>MediaBox</option>
-                            <option value="upload"><span class="select-option-icon icon-upload"></span>Upload do PC</option>
-                        </select>
-                    </div>
-                    <!-- Campo para URL (visível por padrão) -->
-                    <div class="form-group" id="ep-url-group">
-                        <label for="ep-url">URL do Vídeo</label>
-                        <input type="text" id="ep-url" name="urlVideo" class="input">
-                    </div>
-                    <!-- Campo para Upload de Arquivo (oculto por padrão) -->
-                    <div class="form-group" id="ep-file-group" style="display: none;">
-                        <label for="ep-file">Arquivo de Vídeo</label>
-                        <input type="file" id="ep-file" name="videoFile" class="input" accept="video/mp4,video/mkv,video/webm">
-                        <div class="upload-progress-bar">
-                            <div class="upload-progress-bar-inner"></div>
-                        </div>
-                        <span class="upload-progress-text">0%</span>
-                    </div>
-                    <button type="submit" class="btn btn--primary btn--small">
-                        <i class="fas fa-plus"></i> Adicionar Episódio
-                    </button>
-                </form>
-                <hr style="margin: 2rem 0; border-color: var(--border-color);">
-                <h4 style="margin-bottom:1rem;">Episódios Existentes</h4>
-                <div class="episode-manage-list-container"><ul class="episode-manage-list"></ul></div>
-                <button type="button" class="btn btn-cancel" style="margin-top: 1.5rem;">Voltar para Animes</button>
-            </div>
-        </div>
-        <div class="grid-view"><div class="items-grid"></div></div>
+        <div style="margin-bottom: 1.5rem;"><button class="btn-show-form btn btn--primary"><i class="fas fa-plus-circle"></i><span class="btn-text"> Adicionar Novo Anime</span></button></div>
+        <div class="form-view" style="display: none;"><div class="admin-form-container"><h2 class="form-title">Adicionar Novo Anime</h2><form class="main-form" enctype="multipart/form-data"><input type="hidden" name="id"><input type="hidden" name="imagemCapa"><div class="form-group"><label for="titulo-anime">Título</label><input type="text" id="titulo-anime" name="titulo" class="input" required></div><div class="form-group"><label for="sinopse-anime">Sinopse</label><textarea id="sinopse-anime" name="sinopse" class="input" rows="5" required></textarea></div><div class="form-group"><label for="ano-anime">Ano</label><input type="number" id="ano-anime" name="anoLancamento" class="input" required></div><div class="form-group"><label for="generos-anime">Gêneros</label><input type="text" id="generos-anime" name="generos" class="input" required></div><div class="form-group"><label for="capa-anime">Capa</label><input type="file" id="capa-anime" name="imagem" class="input" accept="image/*"></div><div class="form-group"><label for="nota-anime">Nota</label><input type="number" id="nota-anime" step="0.1" name="classificacao" class="input"></div><div style="display: flex; gap: 1rem; margin-top: 1.5rem;"><button type="submit" class="btn btn--primary"><i class="fas fa-save"></i> Salvar</button><button type="button" class="btn btn--secondary btn-cancel">Cancelar</button></div></form></div></div>
+        <div class="episode-manager-view" style="display: none;"><div class="admin-form-container"><h2 class="form-title">Episódios</h2><form class="episode-add-form"><input type="hidden" name="animeId"><h4>Adicionar Episódio</h4><div class="form-group"><label for="ep-numero">Número</label><input type="number" id="ep-numero" name="numero" class="input" required></div><div class="form-group"><label for="ep-titulo">Título</label><input type="text" id="ep-titulo" name="titulo" class="input" required></div><div class="form-group"><label for="ep-url">URL</label><input type="text" id="ep-url" name="urlVideo" class="input" required></div><div class="form-group"><label for="ep-tipo">Tipo</label><select id="ep-tipo" name="tipoVideo" class="input"><option value="iframe">iFrame</option><option value="gdrive">Google Drive</option></select></div><button type="submit" class="btn btn--primary btn--small">Adicionar</button></form><hr style="margin: 2rem 0; border-color: var(--border-color);"><h4>Episódios Existentes</h4><ul class="episode-manage-list"></ul><button type="button" class="btn btn--secondary btn-cancel" style="margin-top: 1.5rem;">Voltar</button></div></div>
+        <div class="grid-view"><div class="items-grid"></div><div class="view-more-container" style="display: none;"><button class="btn btn-view-more"><i class="fas fa-plus"></i> Ver Mais</button></div><div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i></div></div>
     </template>
     
     <template id="template-manage-posts">
-        <div class="view-controls"><button class="btn-show-form btn btn--primary"><i class="fas fa-plus-circle"></i><span class="btn-text"> Adicionar Notícia</span></button><div class="search-container"><i class="fas fa-search"></i><input type="search" class="search-input" placeholder="Buscar por título..."></div></div>
-        <div class="form-view" style="display: none;"><div class="admin-form-container"><h2 class="form-title">Adicionar Notícia</h2><form class="main-form" enctype="multipart/form-data"><input type="hidden" name="id"><input type="hidden" name="imagemDestaque"><div class="form-group"><label for="titulo-post">Título</label><input type="text" id="titulo-post" name="titulo" class="input" required></div><div class="form-group"><label for="conteudo-post">Conteúdo</label><textarea id="conteudo-post" name="conteudo" class="textarea" rows="10" required></textarea></div><div class="form-group"><label for="imagem-post">Imagem de Destaque</label><input type="file" id="imagem-post" name="imagem" class="input" accept="image/*"><div class="image-preview-container"><img src="" alt="Preview da imagem" class="image-preview" style="display:none;"></div></div><div class="form-group"><label for="categoria-post">Categoria</label><input type="text" id="categoria-post" name="categoria" class="input" value="Notícia"></div><div class="form-group"><label for="tags-post">Tags</label><input type="text" id="tags-post" name="tags" class="input" placeholder="Animes, Lançamentos, etc"></div><div class="form-group-checkbox"><input type="checkbox" id="destaque-post" name="emDestaque"><label for="destaque-post"><span class="custom-checkbox"></span> Marcar como Destaque</label></div><div style="display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: flex-end;"><button type="button" class="btn btn-cancel">Cancelar</button><button type="submit" class="btn btn--primary"><i class="fas fa-save"></i> Salvar</button></div></form></div></div>
-        <div class="grid-view"><div class="items-grid"></div></div>
+        <div style="margin-bottom: 1.5rem;"><button class="btn-show-form btn btn--primary"><i class="fas fa-plus-circle"></i><span class="btn-text"> Adicionar Nova Notícia</span></button></div>
+        <div class="form-view" style="display: none;"><div class="admin-form-container"><h2 class="form-title">Adicionar Notícia</h2><form class="main-form" enctype="multipart/form-data"><input type="hidden" name="id"><input type="hidden" name="imagemDestaque"><div class="form-group"><label for="titulo-post">Título</label><input type="text" id="titulo-post" name="titulo" class="input" required></div><div class="form-group"><label for="conteudo-post">Conteúdo</label><textarea id="conteudo-post" name="conteudo" class="input" rows="10" required></textarea></div><div class="form-group"><label for="imagem-post">Imagem</label><input type="file" id="imagem-post" name="imagem" class="input" accept="image/*"></div><div class="form-group"><label for="categoria-post">Categoria</label><input type="text" id="categoria-post" name="categoria" class="input" value="Notícia"></div><div class="form-group"><label for="tags-post">Tags</label><input type="text" id="tags-post" name="tags" class="input"></div><div class="form-group" style="display:flex;align-items:center;gap:10px"><input type="checkbox" id="destaque-post" name="emDestaque" style="width:auto;height:auto"><label for="destaque-post" style="margin-bottom:0">Destaque</label></div><div style="display: flex; gap: 1rem; margin-top: 1.5rem;"><button type="submit" class="btn btn--primary"><i class="fas fa-save"></i> Salvar</button><button type="button" class="btn btn--secondary btn-cancel">Cancelar</button></div></form></div></div>
+        <div class="grid-view"><div class="items-grid"></div><div class="view-more-container" style="display: none;"><button class="btn btn-view-more"><i class="fas fa-plus"></i> Ver Mais</button></div><div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i></div></div>
     </template>
 
     <template id="template-manage-users">
-        <div class="view-controls" style="justify-content: flex-end;"><div class="search-container"><i class="fas fa-search"></i><input type="search" class="search-input" placeholder="Buscar por nome ou email..."></div></div>
-        <div class="table-view"><div class="table-container"><table class="data-table"><thead><tr><th>Avatar</th><th>Nome</th><th>Email</th><th>Cargo</th><th>Membro Desde</th><th>Ações</th></tr></thead><tbody class="table-body"></tbody></table></div></div>
+        <div class="table-view"><div class="table-container"><table class="data-table"><thead><tr><th>Avatar</th><th>Nome</th><th>Email</th><th>Cargo</th><th>Membro Desde</th><th>Ações</th></tr></thead><tbody class="table-body"></tbody></table></div><div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i></div></div>
     </template>
     
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // ... (todo o seu script JS de inicialização e handlers gerais permanece o mesmo)
-        // Apenas a função initManager será modificada.
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.querySelector('.admin-sidebar');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebarOverlay = document.querySelector('.sidebar-overlay');
+            const desktopTitle = document.querySelector('.main-content-header .desktop-title');
+            const mobileTitle = document.querySelector('.main-content-header .mobile-header-title');
+            const mainContentBody = document.querySelector('.main-content-body');
+            const toast = document.getElementById('toast-notification');
+            const loadedTabs = new Set();
+            const currentUserId = Number('<%= user.id %>');
+            const ITEMS_PER_PAGE = 18;
 
-        // ==========================================================================
-        // INICIALIZAÇÃO E MANIPULADORES GERAIS
-        // ==========================================================================
-        const sidebar = document.querySelector('.admin-sidebar');
-        const sidebarToggle = document.getElementById('sidebar-toggle');
-        const sidebarOverlay = document.querySelector('.sidebar-overlay');
-        const desktopTitle = document.querySelector('.main-content-header .desktop-title');
-        const mobileTitle = document.querySelector('.main-content-header .mobile-header-title');
-        const mainContentBody = document.querySelector('.main-content-body');
-        const toast = document.getElementById('toast-notification');
-        const loadedTabs = new Set();
-        const currentUserId = Number('<%= user.id %>');
-
-        const toggleSidebar = () => {
-            sidebar.classList.toggle('is-open');
-            sidebarOverlay.classList.toggle('is-active');
-        };
-        if (sidebarToggle && sidebarOverlay) {
-            sidebarToggle.addEventListener('click', toggleSidebar);
-            sidebarOverlay.addEventListener('click', toggleSidebar);
-        }
-
-        const showToast = (message, type = 'success', duration = 4000) => {
-            toast.textContent = message;
-            toast.className = `show ${type}`;
-            setTimeout(() => { toast.className = ''; }, duration);
-        };
-
-        const api = async (endpoint, options = {}) => {
-            const button = options.button;
-            if (button) {
-                button.disabled = true;
-                const originalContent = button.innerHTML;
-                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                options.originalContent = originalContent;
+            const toggleSidebar = () => { sidebar.classList.toggle('is-open'); sidebarOverlay.classList.toggle('is-active'); };
+            if (sidebarToggle && sidebarOverlay) {
+                sidebarToggle.addEventListener('click', toggleSidebar);
+                sidebarOverlay.addEventListener('click', toggleSidebar);
             }
-            try {
-                const response = await fetch(`/api/${endpoint}`, options);
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.error || `Erro ${response.status}`);
-                return data;
-            } catch (err) {
-                console.error(`API Error on ${endpoint}:`, err);
-                showToast(err.message, 'error');
-                if (button) { // Restaura o botão mesmo em caso de erro
-                    button.disabled = false;
-                    button.innerHTML = options.originalContent;
-                }
-                return { success: false, error: err.message };
-            } finally {
-                 if (button && !options.isUploading) { // Não restaura se for upload, pois o processo é mais longo
-                    button.disabled = false;
-                    button.innerHTML = options.originalContent;
-                }
-            }
-        };
-        
-        const updateMainHeader = (htmlContent, textContent) => {
-            if (desktopTitle) desktopTitle.innerHTML = htmlContent;
-            if (mobileTitle) mobileTitle.textContent = textContent || desktopTitle?.textContent || 'Painel';
-        };
 
-        const handleNavigation = (link) => {
-            const targetId = link.dataset.target;
-            if (!targetId) return;
-            updateMainHeader(link.innerHTML, link.textContent.trim());
-            document.querySelectorAll('.admin-nav .nav-link').forEach(l => l.classList.remove('active'));
-            link.classList.add('active');
-            mainContentBody.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
-            const targetPanel = document.getElementById(targetId);
-            if (targetPanel) {
-                targetPanel.classList.add('active');
+            const showToast = (message, type = 'success') => {
+                toast.textContent = message;
+                toast.className = `show ${type}`;
+                setTimeout(() => { toast.className = ''; }, 5000);
+            };
+
+            const api = async (endpoint, options = {}) => {
+                try {
+                    const response = await fetch(`/api/${endpoint}`, options);
+                    const text = await response.text();
+                    if (!response.ok) {
+                        let errorMsg = `Erro do Servidor: ${response.status}`;
+                        try { const errorData = JSON.parse(text); errorMsg = errorData.error || errorMsg; } catch (e) { /* ignore */ }
+                        throw new Error(errorMsg);
+                    }
+                    return text ? JSON.parse(text) : {};
+                } catch (err) {
+                    console.error(`API Error on ${endpoint}:`, err);
+                    showToast(err.message, 'error');
+                    return { success: false, error: err.message };
+                }
+            };
+
+            const updateMainHeader = (htmlContent, textContent) => {
+                if (desktopTitle) desktopTitle.innerHTML = htmlContent;
+                if (mobileTitle) mobileTitle.textContent = textContent || desktopTitle?.textContent || 'Painel';
+            };
+
+            const handleNavigation = (link) => {
+                if (!link) return;
+                const targetId = link.dataset.target;
+                const titleHTML = link.innerHTML;
+                const titleText = link.textContent.trim();
+                document.querySelectorAll('.admin-nav .nav-link').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                mainContentBody.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+                const targetPanel = document.getElementById(targetId);
+                if (targetPanel) targetPanel.classList.add('active');
+                updateMainHeader(titleHTML, titleText);
                 const type = targetId.split('-')[1];
                 if (type && type !== 'dashboard' && !loadedTabs.has(type)) {
                     initManager(type);
                     loadedTabs.add(type);
                 }
-            }
-            if (window.innerWidth <= 992 && sidebar.classList.contains('is-open')) toggleSidebar();
-        };
-
-        document.querySelector('.admin-nav').addEventListener('click', (e) => {
-            const link = e.target.closest('a.nav-link');
-            if (!link || link.target === '_blank') return;
-            e.preventDefault();
-            if (link.classList.contains('quick-action')) {
-                const type = link.dataset.action.includes('anime') ? 'animes' : 'posts';
-                const targetLink = document.querySelector(`.nav-link[data-target="panel-${type}"]`);
-                if (targetLink) {
-                    handleNavigation(targetLink);
-                    setTimeout(() => document.getElementById(`panel-${type}`).querySelector('.btn-show-form')?.click(), 100);
-                }
-            } else { handleNavigation(link); }
-        });
-        
-        document.getElementById('admin-logout-btn')?.addEventListener('click', async (e) => {
-            e.preventDefault();
-            const button = e.currentTarget;
-            button.disabled = true;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saindo...';
-            const data = await api('auth/logout');
-            showToast(data.success ? 'Logout bem-sucedido! Redirecionando...' : 'Erro no logout. Redirecionando...', data.success ? 'success' : 'error');
-            setTimeout(() => window.location.href = '/', 1500);
-        });
-        
-        document.querySelector('.nav-link[data-target="panel-dashboard"]').click();
-        
-        // ==========================================================================
-        // DYNAMIC CONTENT MANAGER (FUNÇÃO MODIFICADA)
-        // ==========================================================================
-        function initManager(type) {
-            const panel = document.getElementById(`panel-${type}`);
-            const template = document.getElementById(`template-manage-${type}`);
-            if (!panel || !template) return;
-            
-            panel.innerHTML = '';
-            panel.appendChild(template.content.cloneNode(true));
-            
-            const views = { form: panel.querySelector('.form-view'), grid: panel.querySelector('.grid-view'), table: panel.querySelector('.table-view'), episodes: panel.querySelector('.episode-manager-view'), controls: panel.querySelector('.view-controls') };
-            const mainForm = panel.querySelector('.main-form');
-            const episodeForm = panel.querySelector('.episode-add-form');
-            const searchInput = panel.querySelector('.search-input');
-            let isEditing = false, editingId = null, fullData = [];
-
-            const switchView = (viewName) => {
-                Object.values(views).filter(v => v).forEach(v => v.style.display = 'none');
-                if (views[viewName]) views[viewName].style.display = 'block';
-                const defaultView = (type === 'animes' || type === 'posts') ? 'grid' : 'table';
-                if(views.controls) views.controls.style.display = (viewName === defaultView) ? 'flex' : 'none';
+                mainContentBody.scrollTop = 0;
+                if (window.innerWidth <= 992 && sidebar.classList.contains('is-open')) toggleSidebar();
             };
 
-            const resetForm = (form) => {
-                if (!form) return;
-                form.reset();
-                form.querySelector('[name="id"]')?.setAttribute('value', '');
-                const imageHiddenInput = form.querySelector('[name*="imagem"]');
-                if (imageHiddenInput && imageHiddenInput.type === 'hidden') imageHiddenInput.setAttribute('value', '');
-                const previewImg = form.querySelector('.image-preview');
-                if(previewImg) { previewImg.style.display = 'none'; previewImg.src = ''; }
-                isEditing = false;
-                editingId = null;
-                const formTitleText = type === 'animes' ? 'Anime' : (type === 'posts' ? 'Notícia' : 'Usuário');
-                const formTitleEl = panel.querySelector('.form-title');
-                if (formTitleEl) formTitleEl.textContent = `Adicionar Novo ${formTitleText}`;
-            };
-            
-            const createCardHTML = (item, itemType) => {
-                if (itemType === 'animes') {
-                    const epCount = item.episodios ? item.episodios.length : 0;
-                    return `<img src="${item.imagemCapa || '/images/placeholder_poster.png'}" alt="Capa" class="item-card__image" onerror="this.onerror=null;this.src='/images/placeholder_poster.png';"><div class="item-card__content"><h3 class="item-card__title">${item.titulo}</h3><div class="item-card__meta"><span><i class="fas fa-calendar-alt fa-fw"></i> ${item.anoLancamento || 'N/A'}</span><span><i class="fas fa-star fa-fw"></i> ${item.classificacao || 'N/A'}</span></div></div><div class="item-card__actions"><button data-tooltip="Editar" class="btn btn-icon-only btn-edit"><i class="fas fa-edit"></i></button><button data-tooltip="Episódios (${epCount})" class="btn btn-icon-only btn-episodes"><i class="fas fa-list-ol"></i></button><button data-tooltip="Deletar" class="btn btn-icon-only btn-delete"><i class="fas fa-trash"></i></button></div>`;
-                }
-                if (itemType === 'posts') {
-                    const authorName = item.autor?.nome || 'Admin';
-                    return `<img src="${item.imagemDestaque || '/images/placeholder_news.png'}" alt="Imagem" class="item-card__image" onerror="this.onerror=null;this.src='/images/placeholder_news.png';"><div class="item-card__content"><h3 class="item-card__title">${item.titulo} ${item.emDestaque ? '<i class="fas fa-star" style="color:#FFD700; font-size:0.8em; vertical-align: middle;"></i>' : ''}</h3><div class="item-card__meta"><span>Por ${authorName}</span><span>${new Date(item.createdAt).toLocaleDateString('pt-BR')}</span></div></div><div class="item-card__actions"><button data-tooltip="Editar" class="btn btn-icon-only btn-edit"><i class="fas fa-edit"></i></button><button data-tooltip="Deletar" class="btn btn-icon-only btn-delete"><i class="fas fa-trash"></i></button></div>`;
-                }
-                return '';
-            };
-            
-            const renderGrid = (items) => {
-                const gridContainer = panel.querySelector('.items-grid');
-                if (!gridContainer) return;
-                gridContainer.innerHTML = !items || items.length === 0 ? `<div class="no-content-message">Nenhum ${type === 'animes' ? 'anime' : 'notícia'} encontrado.</div>` : '';
-                if(items) items.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'item-card';
-                    card.dataset.id = item.id;
-                    card.innerHTML = createCardHTML(item, type);
-                    gridContainer.appendChild(card);
-                });
-            };
-
-            const renderTable = (items) => {
-                const tableBody = panel.querySelector('.table-body');
-                if (!tableBody) return;
-                tableBody.innerHTML = !items || items.length === 0 ? `<tr><td colspan="6"><div class="no-content-message">Nenhum usuário encontrado.</div></td></tr>` : '';
-                if(items) items.forEach(item => {
-                    const row = document.createElement('tr');
-                    row.dataset.id = item.id;
-                    row.innerHTML = `<td><img src="${item.avatar || '/images/default-avatar.png'}" class="user-avatar" onerror="this.onerror=null;this.src='/images/default-avatar.png';"/></td><td>${item.nome}</td><td>${item.email}</td><td>${item.role}</td><td>${new Date(item.createdAt).toLocaleDateString('pt-BR')}</td><td><button data-tooltip="Deletar" class="btn btn-icon-only btn-delete" ${item.id === currentUserId ? 'disabled' : ''}><i class="fas fa-trash"></i></button></td>`;
-                    tableBody.appendChild(row);
-                });
-            };
-            
-            const renderEpisodeList = (episodes = []) => {
-                const list = panel.querySelector('.episode-manage-list');
-                if (!list) return;
-                const sortedEpisodes = episodes.sort((a, b) => a.numero - b.numero);
-                list.innerHTML = sortedEpisodes.length === 0 ? `<li class="no-content-message" style="border:none; padding:1rem;">Nenhum episódio cadastrado.</li>` : '';
-                sortedEpisodes.forEach(ep => {
-                    const li = document.createElement('li');
-                    li.dataset.epNum = ep.numero;
-                    li.innerHTML = `<div class="ep-info"><span class="ep-number">${ep.numero}</span><span>${ep.titulo || `Episódio ${ep.numero}`}</span></div><button class="ep-delete-btn" data-tooltip="Deletar Episódio"><i class="fas fa-times-circle"></i></button>`;
-                    list.appendChild(li);
-                });
-            };
-
-            const loadData = async () => {
-                panel.classList.add('panel-loading');
-                const result = await api(type);
-                if(result.success) {
-                    fullData = result.data || [];
-                    if (type === 'animes' || type === 'posts') renderGrid(fullData);
-                    else if (type === 'users') renderTable(fullData);
-                }
-                panel.classList.remove('panel-loading');
-                const defaultView = (type === 'animes' || type === 'posts') ? 'grid' : 'table';
-                switchView(defaultView);
-            };
-
-            if (searchInput) searchInput.addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                const filteredData = fullData.filter(item => {
-                    if (type === 'users') return item.nome.toLowerCase().includes(searchTerm) || item.email.toLowerCase().includes(searchTerm);
-                    return item.titulo.toLowerCase().includes(searchTerm);
-                });
-                if (type === 'animes' || type === 'posts') renderGrid(filteredData);
-                else if (type === 'users') renderTable(filteredData);
+            document.querySelector('.admin-nav').addEventListener('click', (e) => {
+                const link = e.target.closest('a.nav-link');
+                if (!link) return;
+                if (link.target !== '_blank') e.preventDefault(); else return;
+                if (link.classList.contains('quick-action')) {
+                    const action = link.dataset.action;
+                    const targetLink = action === 'add-anime' ? document.querySelector('.nav-link[data-target="panel-animes"]') : document.querySelector('.nav-link[data-target="panel-posts"]');
+                    if (targetLink) { targetLink.click(); setTimeout(() => { const btn = document.querySelector(`#panel-${action.includes('anime') ? 'animes' : 'posts'} .btn-show-form`); if(btn) btn.click(); }, 100); }
+                } else { handleNavigation(link); }
             });
+            
+            document.querySelector('.nav-link[data-target="panel-dashboard"]').click();
 
-            if (mainForm) {
-                // ... (código do mainForm submit permanece o mesmo)
-            }
+            function initManager(type) {
+                const template = document.getElementById(`template-manage-${type}`);
+                if (!template) return;
+                const content = template.content.cloneNode(true);
+                const targetPanel = document.getElementById(`panel-${type}`);
+                targetPanel.innerHTML = '';
+                targetPanel.appendChild(content);
+                const views = { form: targetPanel.querySelector('.form-view'), table: targetPanel.querySelector('.table-view'), grid: targetPanel.querySelector('.grid-view'), episodes: targetPanel.querySelector('.episode-manager-view') };
+                const mainForm = targetPanel.querySelector('.main-form');
+                let isEditing = false, editingId = null;
 
-            if (episodeForm) {
-                const epTypeSelect = episodeForm.querySelector('#ep-tipo');
-                const epUrlGroup = episodeForm.querySelector('#ep-url-group');
-                const epFileGroup = episodeForm.querySelector('#ep-file-group');
-                const epUrlInput = episodeForm.querySelector('#ep-url');
-                const epFileInput = episodeForm.querySelector('#ep-file');
-                const progressBar = episodeForm.querySelector('.upload-progress-bar');
-                const progressBarInner = episodeForm.querySelector('.upload-progress-bar-inner');
-                const progressText = episodeForm.querySelector('.upload-progress-text');
-                
-                // Lógica para alternar campos de URL/Arquivo
-                epTypeSelect.addEventListener('change', () => {
-                    const selectedType = epTypeSelect.value;
-                    if (selectedType === 'upload') {
-                        epUrlGroup.style.display = 'none';
-                        epFileGroup.style.display = 'block';
-                        epUrlInput.required = false;
-                        epFileInput.required = true;
-                    } else {
-                        epUrlGroup.style.display = 'block';
-                        epFileGroup.style.display = 'none';
-                        epUrlInput.required = true;
-                        epFileInput.required = false;
+                const showView = (viewName) => {
+                    const isGridView = type === 'posts' || type === 'animes';
+                    const defaultView = isGridView ? 'grid' : 'table';
+                    if (viewName === 'default') viewName = defaultView;
+                    Object.values(views).filter(v => v).forEach(v => { if (v) v.style.display = 'none'; });
+                    if (views[viewName]) {
+                        views[viewName].style.display = 'block';
+                        const addBtnContainer = targetPanel.querySelector('div[style*="margin-bottom"]');
+                        if (addBtnContainer) addBtnContainer.style.display = (viewName === defaultView) ? 'block' : 'none';
                     }
-                });
-
-                episodeForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    const submitButton = episodeForm.querySelector('button[type="submit"]');
-                    const originalButtonContent = submitButton.innerHTML;
-                    const animeId = episodeForm.querySelector('[name="animeId"]').value;
-                    const formData = new FormData(episodeForm);
-                    
-                    let videoUrl = formData.get('urlVideo');
-                    const videoType = formData.get('tipoVideo');
-
-                    // Lógica de Upload de Vídeo
-                    if (videoType === 'upload') {
-                        const videoFile = epFileInput.files[0];
-                        if (!videoFile) {
-                            showToast('Por favor, selecione um arquivo de vídeo.', 'error');
-                            return;
-                        }
-
-                        submitButton.disabled = true;
-                        progressBar.style.display = 'block';
-                        progressText.style.display = 'block';
-                        submitButton.innerHTML = '<i class="fas fa-upload"></i> Enviando...';
-
-                        const uploadFormData = new FormData();
-                        uploadFormData.append('video', videoFile);
-                        
-                        // Usando XMLHttpRequest para ter acesso ao progresso do upload
-                        const xhr = new XMLHttpRequest();
-                        xhr.open('POST', '/api/upload/video', true);
-
-                        xhr.upload.onprogress = (event) => {
-                            if (event.lengthComputable) {
-                                const percentComplete = (event.loaded / event.total) * 100;
-                                progressBarInner.style.width = percentComplete + '%';
-                                progressText.textContent = Math.round(percentComplete) + '%';
-                            }
-                        };
-
-                        xhr.onload = async () => {
-                            if (xhr.status === 200) {
-                                const uploadResult = JSON.parse(xhr.responseText);
-                                if (uploadResult.success) {
-                                    videoUrl = uploadResult.filePath;
-                                    // Agora que temos a URL, podemos salvar o episódio
-                                    await saveEpisode(animeId, videoUrl, videoType, formData, submitButton, originalButtonContent);
-                                } else {
-                                    showToast(uploadResult.error || 'Falha no upload do vídeo.', 'error');
-                                    resetUploadUI();
-                                }
-                            } else {
-                                showToast(`Erro no upload: ${xhr.statusText}`, 'error');
-                                resetUploadUI();
-                            }
-                        };
-
-                        xhr.onerror = () => {
-                            showToast('Erro de rede durante o upload.', 'error');
-                            resetUploadUI();
-                        };
-                        
-                        xhr.send(uploadFormData);
-                    } else {
-                        // Se não for upload, salva diretamente
-                        await saveEpisode(animeId, videoUrl, videoType, formData, submitButton, originalButtonContent);
-                    }
-                });
-
-                const saveEpisode = async (animeId, videoUrl, videoType, formData, button, originalContent) => {
-                    const episodeData = {
-                        numero: formData.get('numero'),
-                        titulo: formData.get('titulo'),
-                        tipoVideo: videoType,
-                        urlVideo: videoUrl
-                    };
-
-                    button.disabled = true;
-                    button.innerHTML = '<i class="fas fa-save"></i> Salvando...';
-
-                    const result = await api(`animes/${animeId}/episodes`, {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify(episodeData)
-                        // Não passamos o botão aqui pois já estamos controlando manualmente
-                    });
-
-                    if (result.success && result.data?.episodios) {
-                        showToast('Episódio adicionado com sucesso!', 'success');
-                        episodeForm.reset();
-                        epTypeSelect.dispatchEvent(new Event('change')); // Reseta a UI do form
-                        episodeForm.querySelector('[name="numero"]').focus();
-                        renderEpisodeList(result.data.episodios);
-                    }
-                    
-                    button.disabled = false;
-                    button.innerHTML = originalContent;
-                    resetUploadUI();
                 };
 
-                const resetUploadUI = () => {
-                    progressBar.style.display = 'none';
-                    progressText.style.display = 'none';
-                    progressBarInner.style.width = '0%';
-                    progressText.textContent = '0%';
-                    const submitButton = episodeForm.querySelector('button[type="submit"]');
-                    submitButton.disabled = false;
-                    submitButton.innerHTML = '<i class="fas fa-plus"></i> Adicionar Episódio';
+                const renderGrid = (items, itemType) => {
+                    const gridContainer = targetPanel.querySelector('.items-grid');
+                    const viewMoreContainer = targetPanel.querySelector('.view-more-container');
+                    gridContainer.innerHTML = '';
+                    if (!items || items.length === 0) {
+                        gridContainer.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; color: var(--text-secondary); padding: 40px;">Nenhum item encontrado.</p>`;
+                        if(viewMoreContainer) viewMoreContainer.style.display = 'none'; return;
+                    }
+                    items.forEach((item, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'item-card';
+                        card.dataset.id = item.id;
+                        if (index >= ITEMS_PER_PAGE) card.classList.add('hidden-item');
+                        let cardHTML = '';
+                        if (itemType === 'animes') {
+                            cardHTML = `<img src="${item.imagemCapa || '/images/placeholder_poster.png'}" alt="Capa" class="item-card__image item-card__image--poster" onerror="this.onerror=null;this.src='/images/placeholder_poster.png';"><div class="item-card__content"><h3 class="item-card__title">${item.titulo}</h3><div class="item-card__meta"><span><i class="fas fa-calendar-alt fa-fw"></i> ${item.anoLancamento}</span><span><i class="fas fa-list-ol fa-fw"></i> ${item.episodios ? item.episodios.length : 0}</span></div></div><div class="item-card__actions"><button title="Editar" class="btn btn--small btn--secondary btn-edit"><i class="fas fa-edit"></i><span class="btn-text"> Editar</span></button><button title="Episódios" class="btn btn--small btn--secondary btn-episodes"><i class="fas fa-list-ol"></i><span class="btn-text"> Eps</span></button><button title="Deletar" class="btn btn--small btn--secondary btn-delete"><i class="fas fa-trash"></i></button></div>`;
+                        } else if (itemType === 'posts') {
+                            cardHTML = `<img src="${item.imagemDestaque || '/images/placeholder_news.png'}" alt="Imagem" class="item-card__image item-card__image--landscape" onerror="this.onerror=null;this.src='/images/placeholder_news.png';"><div class="item-card__content"><h3 class="item-card__title">${item.titulo}</h3><div class="item-card__meta"><span>Por ${item.autor?.nome || 'Desconhecido'}</span><span>${new Date(item.createdAt).toLocaleDateString('pt-BR')}</span></div></div><div class="item-card__actions"><button title="Editar" class="btn btn--small btn--secondary btn-edit"><i class="fas fa-edit"></i> <span class="btn-text">Editar</span></button><button title="Deletar" class="btn btn--small btn--secondary btn-delete"><i class="fas fa-trash"></i> <span class="btn-text">Deletar</span></button></div>`;
+                        }
+                        card.innerHTML = cardHTML;
+                        gridContainer.appendChild(card);
+                    });
+                    if (items.length > ITEMS_PER_PAGE) { if(viewMoreContainer) viewMoreContainer.style.display = 'block'; } else { if(viewMoreContainer) viewMoreContainer.style.display = 'none'; }
                 };
                 
-                panel.querySelector('.episode-manage-list').addEventListener('click', async (e) => {
-                    const deleteButton = e.target.closest('.ep-delete-btn');
-                    if (deleteButton && confirm('Deletar este episódio?')) {
-                        const animeId = episodeForm.querySelector('[name="animeId"]').value;
-                        const epItem = deleteButton.closest('li');
-                        const epNum = epItem.dataset.epNum;
-                        const result = await api(`animes/${animeId}/episodes/${epNum}`, { method: 'DELETE', button: deleteButton });
-                        if(result.success) { showToast('Episódio deletado.', 'success'); epItem.remove(); }
+                const renderTable = (items) => {
+                    const tableBody = targetPanel.querySelector('.table-body');
+                    if(!tableBody) return;
+                    tableBody.innerHTML = '';
+                    if (!items || items.length === 0) { tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 40px;">Nenhum usuário encontrado.</td></tr>`; return; }
+                    items.forEach(item => {
+                        const row = document.createElement('tr');
+                        row.dataset.id = item.id;
+                        row.innerHTML = `<td><img src="${item.avatar || '/images/default-avatar.png'}" width="40" height="40" style="border-radius: 50%; object-fit: cover;" onerror="this.onerror=null;this.src='/images/default-avatar.png';"/></td><td>${item.nome}</td><td>${item.email}</td><td>${item.role}</td><td>${new Date(item.createdAt).toLocaleDateString('pt-BR')}</td><td class="actions-cell"><button title="Deletar" class="btn btn--small btn-delete" ${item.id === currentUserId ? 'disabled title="Você não pode deletar a si mesmo"' : ''}><i class="fas fa-trash"></i></button></td>`;
+                        tableBody.appendChild(row);
+                    });
+                };
+
+                const loadData = async () => {
+                    targetPanel.classList.add('loading');
+                    const { data } = await api(type);
+                    if (data) {
+                        if (type === 'animes' || type === 'posts') renderGrid(data, type);
+                        else if (type === 'users') renderTable(data);
+                    }
+                    targetPanel.classList.remove('loading');
+                };
+
+                targetPanel.addEventListener('click', async (e) => {
+                    const button = e.target.closest('button');
+                    if (!button || button.disabled) return;
+                    if (button.classList.contains('btn-view-more')) { targetPanel.querySelectorAll('.item-card.hidden-item').forEach(card => card.classList.remove('hidden-item')); button.parentElement.style.display = 'none'; return; }
+                    const parentElement = button.closest('tr') || button.closest('.item-card');
+                    const id = parentElement?.dataset.id;
+                    if (button.classList.contains('btn-show-form')) { mainForm.reset(); isEditing = false; editingId = null; targetPanel.querySelector('.form-title').textContent = `Adicionar Novo ${type.slice(0,-1)}`; showView('form'); }
+                    else if (button.classList.contains('btn-cancel')) { showView('default'); }
+                    else if (button.classList.contains('btn-delete') && id) {
+                        if (confirm('Tem certeza? A ação é irreversível.')) {
+                            const result = await api(`${type}/${id}`, { method: 'DELETE' });
+                            if (result.success) { showToast('Item deletado com sucesso!', 'success'); loadData(); }
+                        }
+                    } else if (button.classList.contains('btn-edit') && id) {
+                        const { data: itemData } = await api(`${type}/${id}`);
+                        if (!itemData) return;
+                        isEditing = true; editingId = id;
+                        targetPanel.querySelector('.form-title').textContent = `Editar ${type.slice(0, -1)}`;
+                        Object.keys(itemData).forEach(key => {
+                            const input = mainForm.querySelector(`[name="${key}"]`);
+                            if(input) {
+                                if(input.type === 'checkbox') input.checked = itemData[key];
+                                else input.value = Array.isArray(itemData[key]) ? itemData[key].join(', ') : itemData[key];
+                            }
+                        });
+                        showView('form');
+                    } else if (button.classList.contains('btn-episodes') && id) {
+                        const { data: anime } = await api(`animes/${id}`);
+                        if (!anime) return;
+                        const epManager = views.episodes;
+                        epManager.querySelector('[name="animeId"]').value = anime.id;
+                        epManager.querySelector('.form-title').innerText = `Episódios de: ${anime.titulo}`;
+                        // renderEpisodeList(anime.episodios || []);
+                        showView('episodes');
                     }
                 });
-            }
-            
-            panel.addEventListener('click', async (e) => {
-                const button = e.target.closest('button');
-                if (!button || button.disabled) return;
-                const parentCard = button.closest('.item-card') || button.closest('tr');
-                const id = parentCard?.dataset.id;
                 
-                if (button.classList.contains('btn-show-form')) { resetForm(mainForm); switchView('form'); }
-                if (button.classList.contains('btn-cancel')) { 
-                    resetForm(mainForm);
-                    if (episodeForm) {
-                        episodeForm.reset();
-                        episodeForm.querySelector('#ep-tipo').dispatchEvent(new Event('change'));
-                    }
-                    const defaultView = (type === 'animes' || type === 'posts') ? 'grid' : 'table';
-                    switchView(defaultView); 
-                }
-                if (button.classList.contains('btn-delete') && id && confirm('Tem certeza? A ação é irreversível.')) {
-                    const result = await api(`${type}/${id}`, { method: 'DELETE', button });
-                    if (result.success) { 
-                        showToast('Item deletado!', 'success'); 
-                        parentCard.style.transition = 'opacity 0.5s ease';
-                        parentCard.style.opacity = '0';
-                        setTimeout(() => parentCard.remove(), 500);
-                    }
-                }
-                if (button.classList.contains('btn-edit') && id) {
-                    panel.classList.add('panel-loading');
-                    const { data } = await api(`${type}/${id}`);
-                    panel.classList.remove('panel-loading');
-                    if (!data) return;
-                    isEditing = true; editingId = id;
-                    panel.querySelector('.form-title').textContent = `Editar ${type === 'animes' ? 'Anime' : 'Notícia'}`;
-                    Object.keys(data).forEach(key => {
-                        const input = mainForm.querySelector(`[name="${key}"]`);
-                        if (input) {
-                            if (input.type === 'checkbox') input.checked = !!data[key];
-                            else input.value = Array.isArray(data[key]) ? data[key].join(', ') : data[key];
+                if (mainForm) { 
+                    mainForm.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        const submitButton = mainForm.querySelector('button[type="submit"]');
+                        const originalButtonContent = submitButton.innerHTML;
+                        submitButton.disabled = true; submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+                        const formData = new FormData(mainForm);
+                        const fileInput = mainForm.querySelector('input[type="file"]');
+                        if (fileInput && fileInput.files[0]) {
+                            const uploadFormData = new FormData();
+                            uploadFormData.append('imagem', fileInput.files[0]);
+                            const uploadResult = await api('upload/image', { method: 'POST', body: uploadFormData });
+                            if (!uploadResult.success) {
+                                showToast(uploadResult.error, 'error');
+                                submitButton.disabled = false; submitButton.innerHTML = originalButtonContent; return;
+                            }
+                            const imageFieldName = type === 'animes' ? 'imagemCapa' : 'imagemDestaque';
+                            formData.set(imageFieldName, uploadResult.filePath);
                         }
+                        const body = Object.fromEntries(formData.entries());
+                        delete body.imagem;
+                        const endpoint = isEditing ? `${type}/${editingId}` : type;
+                        const method = isEditing ? 'PUT' : 'POST';
+                        const result = await api(endpoint, { method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body) });
+                        if (result.success) { 
+                            showToast('Salvo com sucesso!', 'success'); 
+                            showView('default'); 
+                            loadData();
+                        } else {
+                            showToast(result.error || 'Erro ao salvar.', 'error');
+                        }
+                        submitButton.disabled = false; submitButton.innerHTML = originalButtonContent;
                     });
-                    const imageFieldName = type === 'animes' ? 'imagemCapa' : 'imagemDestaque';
-                    const previewImg = mainForm.querySelector('.image-preview');
-                    if (data[imageFieldName] && previewImg) {
-                        previewImg.src = data[imageFieldName];
-                        previewImg.style.display = 'block';
-                    }
-                    switchView('form');
                 }
-                if (button.classList.contains('btn-episodes') && id) {
-                    panel.classList.add('panel-loading');
-                    const { data: anime } = await api(`animes/${id}`);
-                    panel.classList.remove('panel-loading');
-                    if (!anime) return;
-                    
-                    episodeForm.querySelector('[name="animeId"]').value = anime.id;
-                    const episodeManagerTitle = panel.querySelector('.episode-manager-view .form-title');
-                    if (episodeManagerTitle) episodeManagerTitle.innerText = `Episódios de: ${anime.titulo}`;
-                    
-                    renderEpisodeList(anime.episodios);
-                    switchView('episodes');
-                }
-            });
-
-            loadData();
-        }
-    });
+                
+                loadData();
+            }
+        });
     </script>
 </body>
 </html>
