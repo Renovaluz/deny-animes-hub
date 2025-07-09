@@ -1,6 +1,6 @@
 <%- include('partials/header', { page_name: 'index' }) %>
 <!-- Script de proteção chamado com 'defer' para não bloquear o carregamento -->
-    <script src="/js/protect.js" defer></script>
+<script src="/js/protect.js" defer></script>
 <!-- ======================================= -->
 <!-- SEÇÃO HERO CAROUSEL -->
 <!-- ======================================= -->
@@ -35,7 +35,7 @@
 <!-- ======================================= -->
 <div class="main-layout container">
     <main class="main-content-area">
-        <!-- SEÇÃO DE FILTROS (RESTAURADA) -->
+        <!-- SEÇÃO DE FILTROS -->
         <section class="filters-section animated-section fade-in-up">
             <header class="filters-header">
                 <h2><i class="fas fa-atom"></i> Filtrar Dimensões</h2>
@@ -63,24 +63,36 @@
 
         <!-- SEÇÃO DE LISTAGEM DE ANIMES (COM CARROSSÉIS) -->
         <section id="animes" class="anime-list animated-section fade-in-up">
-            <h2 class="section-title-main"><i class="fas fa-layer-group"></i> Catálogo Completo</h2>
+             
              <!-- Container para os resultados da busca/filtro (inicialmente oculto) -->
              <div class="anime-grid-results" id="filtered-results-container" style="display: none;"></div>
-             <!-- Container para os carrosséis alfabéticos (inicialmente visível) -->
+             
+             <!-- Container para os carrosséis alfabéticos -->
              <div id="original-carousels-container">
                 <% if (locals.animes && animes.length > 0) { %>
                     <%
                         const animesAgrupados = animes.reduce((acc, anime) => {
-                            const primeiraLetra = anime.titulo[0].toUpperCase();
-                            let grupo = '';
-                            if ('ABCDE'.includes(primeiraLetra)) grupo = 'A - E';
-                            else if ('FGHIJ'.includes(primeiraLetra)) grupo = 'F - J';
-                            else if ('KLMNO'.includes(primeiraLetra)) grupo = 'K - O';
-                            else if ('PQRST'.includes(primeiraLetra)) grupo = 'P - T';
-                            else if ('UVWXYZ'.includes(primeiraLetra)) grupo = 'U - Z';
-                            else grupo = '#';
-                            if (!acc[grupo]) acc[grupo] = [];
-                            acc[grupo].push(anime);
+                            const tituloStr = String(anime.titulo || '');
+                            if (!tituloStr) return acc;
+
+                            const primeiraLetra = tituloStr[0].toUpperCase();
+                            let grupo = null; // Inicia como nulo
+
+                            // Teste Regex para verificar se é uma letra de A a Z
+                            if (/[A-Z]/.test(primeiraLetra)) {
+                                if (/[A-E]/.test(primeiraLetra)) grupo = 'A - E';
+                                else if (/[F-J]/.test(primeiraLetra)) grupo = 'F - J';
+                                else if (/[K-O]/.test(primeiraLetra)) grupo = 'K - O';
+                                else if (/[P-T]/.test(primeiraLetra)) grupo = 'P - T';
+                                else if (/[U-Z]/.test(primeiraLetra)) grupo = 'U - Z';
+                            }
+                            
+                            // Apenas adiciona ao grupo se um grupo válido (A-Z) foi encontrado
+                            if (grupo) {
+                                if (!acc[grupo]) acc[grupo] = [];
+                                acc[grupo].push(anime);
+                            }
+
                             return acc;
                         }, {});
                     %>
@@ -90,7 +102,6 @@
                             <h3 class="carousel-title"><%= grupo %></h3>
                             <div class="anime-carousel-container">
                                 <% animesAgrupados[grupo].forEach(anime => { %>
-                                    <!-- A ESTRUTURA DO CARD COM OS ATRIBUTOS CORRETOS -->
                                     <article class="anime-card" data-id="<%= anime.id %>" data-title="<%= anime.titulo.toLowerCase() %>" data-genres="<%= anime.generos.join(',').toLowerCase() %>" data-rating="<%= anime.classificacao %>">
                                        <div class="anime-card__image-container">
                                             <a href="/anime/<%= anime.id %>" title="Ver detalhes de <%= anime.titulo %>">
