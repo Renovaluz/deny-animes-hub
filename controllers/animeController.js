@@ -1,122 +1,162 @@
-// controllers/animeController.js
+// ====================================================================================
+//
+//              DenyAnimeHub - Controller: Animes
+//
+// Versão:        2.0 (Titan)
+// Descrição:     Este controller gerencia toda a lógica de negócios (CRUD) para os animes.
+//                Ele interage com os modelos 'Anime' e 'Episodio' do Sequelize para
+//                realizar operações no banco de dados. As funções aqui são projetadas
+//                para serem robustas, com tratamento de erros detalhado e uso de transações
+//                para garantir a consistência dos dados.
+//
+// ====================================================================================
 
-const db = require('../models');
-const Anime = db.Anime;
+'use strict';
+const { Anime, Episodio, sequelize } = require('../models');
 
 /**
- * Converte um link de compartilhamento do Google Drive em um link de embed direto e funcional.
- * @param {string} url - O link original do Google Drive (ex: .../file/d/FILE_ID/view?usp=sharing)
- * @returns {string} - O link de embed para ser usado em um iframe (ex: .../file/d/FILE_ID/preview)
+ * Cria um novo anime no banco de dados.
+ * Utiliza uma transação para garantir que a operação seja atômica.
+ * @route POST /api/animes
  */
-function convertGoogleDriveLink(url) {
-    if (!url || !url.includes('drive.google.com')) {
-        return url; // Retorna a URL original se não for do Google Drive
-    }
+exports.createAnime = async (req, res) => {
+    const transaction = await sequelize.transaction();
     try {
-        const regex = /https:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/;
-        const match = url.match(regex);
-        if (match && match[1]) {
-            const fileId = match[1];
-            return `https://drive.google.com/file/d/${fileId}/preview`;
-        }
-        return url; // Retorna a URL original se o formato for inesperado
-    } catch (e) {
-        console.error("Erro ao converter link do Google Drive:", e);
-        return url;
-    }
-}
+        const { titulo, sinopse, anoLancamento, generos, classificacao, imagemCapa } = req.body;
 
+        // Validação de entrada rigorosa
+        if (!titulo || !sinopse || !anoLancamento || !generos || !imagemCapa) {
+             await transaction.rollback();
+             return res.status(400).json({ success: false, error: 'Todos os campos, incluindo a URL da capa, são obrigatórios.' });
+        }
+        if (titulo.length < 3) {
+            await transaction.rollback();
+            return res.status(400).json({ success: false, error: 'O título deve ter pelo menos 3 caracteres.' });
+        }
+
+        const novoAnime = await Anime.create({
+            titulo,
+            sinopse,
+            anoLancamento,
+            generos, // O modelo já lida com a conversão de string para array
+            classificacao: classificacao || null, // Permite valor nulo
+            imagemCapa
+        }, { transaction });
+        
+        // Se tudo deu certo, confirma a transação
+        await transaction.commit();
+        
+        console.log(`[Anime Controller] Anime criado com sucesso: ID ${novoAnime.id} - ${novoAnime.titulo}`);
+        res.status(201).json({ success: true, data: novoAnime });
+
+    } catch (error) {
+        // Se qualquer parte falhar, reverte todas as mudanças no banco de dados
+        await transaction.rollback();
+        console.error("[Anime Controller] Erro ao criar anime:", error);
+
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            return res.status(409).json({ success: false, error: 'Conflito: Um anime com este título já existe no banco de dados.' });
+        }
+        res.status(500).json({ success: false, error: 'Ocorreu um erro inesperado no servidor ao tentar criar o anime.' });
+    }
+};
+
+/**
+ * Busca todos os animes. Para o painel de admin, inclui uma contagem de episódios
+ * para otimizar a performance, evitando carregar todos os dados de todos os episódios.
+ * @route GET /api/animes
+ */
 exports.getAllAnimes = async (req, res) => {
     try {
-        const animes = await Anime.findAll({ order: [['createdAt', 'DESC']] });
+        const animes = await Anime.findAll({
+            include: [{
+                model: Episodio,
+                as: 'episodios',
+                attributes: ['id'] // Apenas o ID para a contagem (Sequelize faz `COUNT(episodios.id)`)
+            }],
+            order: [['createdAt', 'DESC']]
+        });
         res.status(200).json({ success: true, data: animes });
-    } catch (err) {
-        res.status(500).json({ success: false, error: 'Erro de Servidor.' });
+    } catch (error) {
+        console.error("[Anime Controller] Erro ao buscar todos os animes:", error);
+        res.status(500).json({ success: false, error: 'Ocorreu um erro no servidor ao listar os animes.' });
     }
 };
 
+/**
+ * Busca um anime específico por seu ID.
+ * Inclui todos os dados de todos os episódios associados, ordenados.
+ * @route GET /api/animes/:id
+ */
 exports.getAnimeById = async (req, res) => {
     try {
-        const anime = await Anime.findByPk(req.params.id);
-        if (!anime) return res.status(404).json({ success: false, error: 'Anime não encontrado.' });
+        const { id } = req.params;
+        const anime = await Anime.findByPk(id, {
+            include: [{
+                model: Episodio,
+                as: 'episodios',
+                order: [['temporada', 'ASC'], ['numero', 'ASC']]
+            }]
+        });
+
+        if (!anime) {
+            return res.status(404).json({ success: false, error: 'Anime não encontrado.' });
+        }
         res.status(200).json({ success: true, data: anime });
-    } catch (err) {
-        res.status(500).json({ success: false, error: 'Erro de Servidor.' });
+    } catch (error) {
+        console.error(`[Anime Controller] Erro ao buscar anime por ID (${req.params.id}):`, error);
+        res.status(500).json({ success: false, error: 'Ocorreu um erro no servidor ao buscar os detalhes do anime.' });
     }
 };
 
-exports.createAnime = async (req, res) => {
-    try {
-        const { generos, ...animeData } = req.body;
-        if (!animeData.id) delete animeData.id; // Garante que o ID é removido se for nulo/undefined
-        const generosArray = generos ? generos.split(',').map(g => g.trim()) : [];
-        const novoAnime = await Anime.create({ ...animeData, generos: generosArray });
-        res.status(201).json({ success: true, data: novoAnime });
-    } catch (err) {
-        console.error("Erro ao criar anime:", err);
-        res.status(400).json({ success: false, error: err.message || 'Erro ao processar requisição.' });
-    }
-};
-
+/**
+ * Atualiza os dados de um anime existente.
+ * @route PUT /api/animes/:id
+ */
 exports.updateAnime = async (req, res) => {
+    const transaction = await sequelize.transaction();
     try {
-        const anime = await Anime.findByPk(req.params.id);
-        if (!anime) return res.status(404).json({ success: false, error: 'Anime não encontrado.' });
+        const { id } = req.params;
+        const [updatedRows] = await Anime.update(req.body, { 
+            where: { id: id },
+            transaction 
+        });
+
+        if (updatedRows > 0) {
+            const updatedAnime = await Anime.findByPk(id, { transaction });
+            await transaction.commit();
+            return res.status(200).json({ success: true, data: updatedAnime });
+        }
         
-        const { generos, ...animeData } = req.body;
-        const generosArray = generos ? generos.split(',').map(g => g.trim()) : [];
-        
-        await anime.update({ ...animeData, generos: generosArray });
-        res.status(200).json({ success: true, data: anime });
-    } catch (err) {
-        res.status(400).json({ success: false, error: err.message });
+        await transaction.rollback();
+        return res.status(404).json({ success: false, error: 'Anime não encontrado para atualização.' });
+
+    } catch (error) {
+        await transaction.rollback();
+        console.error(`[Anime Controller] Erro ao atualizar anime ID (${req.params.id}):`, error);
+        res.status(500).json({ success: false, error: 'Não foi possível atualizar o anime.' });
     }
 };
 
+/**
+ * Deleta um anime do banco de dados.
+ * Graças à configuração 'onDelete: CASCADE' no modelo, todos os episódios
+ * associados a este anime serão deletados automaticamente pelo banco de dados.
+ * @route DELETE /api/animes/:id
+ */
 exports.deleteAnime = async (req, res) => {
     try {
-        const anime = await Anime.findByPk(req.params.id);
-        if (!anime) return res.status(404).json({ success: false, error: 'Anime não encontrado.' });
-        await anime.destroy();
-        res.status(200).json({ success: true, message: 'Anime deletado com sucesso.' });
-    } catch (err) {
-        res.status(500).json({ success: false, error: 'Erro de Servidor.' });
-    }
-};
+        const { id } = req.params;
+        const deletedRows = await Anime.destroy({ where: { id: id } });
 
-exports.addEpisode = async (req, res) => {
-    try {
-        const anime = await Anime.findByPk(req.params.id);
-        if (!anime) return res.status(404).json({ success: false, error: 'Anime não encontrado.' });
-
-        const episodiosAtuais = anime.episodios || [];
-        if (episodiosAtuais.some(ep => ep.numero.toString() === req.body.numero.toString())) {
-            return res.status(400).json({ success: false, error: `Episódio nº ${req.body.numero} já existe.` });
+        if (deletedRows === 0) {
+            return res.status(404).json({ success: false, error: 'Anime não encontrado.' });
         }
         
-        const novoEpisodio = req.body;
-        if (novoEpisodio.tipoVideo === 'gdrive') {
-            novoEpisodio.urlVideo = convertGoogleDriveLink(novoEpisodio.urlVideo);
-        }
-        
-        const novosEpisodios = [...episodiosAtuais, novoEpisodio].sort((a, b) => Number(a.numero) - Number(b.numero));
-        await anime.update({ episodios: novosEpisodios });
-        
-        res.status(201).json({ success: true, data: anime.get({ plain: true }) });
-    } catch (err) {
-        res.status(400).json({ success: false, error: err.message });
-    }
-};
-
-exports.deleteEpisode = async (req, res) => {
-    try {
-        const anime = await Anime.findByPk(req.params.id);
-        if (!anime) return res.status(404).json({ success: false, error: 'Anime não encontrado.' });
-
-        const episodiosAtualizados = (anime.episodios || []).filter(ep => ep.numero.toString() !== req.params.epNum.toString());
-        await anime.update({ episodios: episodiosAtualizados });
-        res.status(200).json({ success: true, message: 'Episódio deletado.' });
-    } catch (err) {
-        res.status(400).json({ success: false, error: err.message });
+        console.log(`[Anime Controller] Anime deletado com sucesso: ID ${id}`);
+        res.status(200).json({ success: true, message: 'Anime e todos os seus episódios foram deletados com sucesso.' });
+    } catch (error) {
+        console.error(`[Anime Controller] Erro ao deletar anime ID (${req.params.id}):`, error);
+        res.status(500).json({ success: false, error: 'Ocorreu um erro no servidor ao deletar o anime.' });
     }
 };

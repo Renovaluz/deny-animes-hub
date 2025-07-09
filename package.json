@@ -4,8 +4,8 @@
   "description": "Um hub completo para fãs de animes.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "node app.js",
+    "dev": "nodemon app.js",
     "data:import": "node seeder -i",
     "data:destroy": "node seeder -d",
     "admin:create": "node manage-admin.js --create",
