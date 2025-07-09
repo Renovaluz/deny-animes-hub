@@ -8,24 +8,229 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/css/style.css">
+    
+    <!-- Link para o seu CSS principal (assumindo que está em /public/css/style.css) -->
+    <link rel="stylesheet" href="/css/style.css"> 
     <link rel="icon" href="/images/1.ico" type="image/ico">
+    
+    <!-- Script de proteção chamado com 'defer' para não bloquear o carregamento -->
+    <script src="/js/protect.js" defer></script>
+    
     <style>
+        /* ==========================================================================
+           ESTILOS PARA A PÁGINA DE LOGIN E SELETOR DE TEMA
+           ========================================================================== */
+
+        /* 1. Variáveis de Tema (Dark e Light) */
+        :root {
+            --primary-bg-dark: #121212;
+            --secondary-bg-dark: #1E1E1E;
+            --text-primary-dark: #FFFFFF;
+            --text-secondary-dark: #A0A0A0;
+            --border-dark: #333333;
+            --accent-red: #E50914;
+            
+            --primary-bg-light: #F3F4F6;
+            --secondary-bg-light: #FFFFFF;
+            --text-primary-light: #111827;
+            --text-secondary-light: #4B5563;
+            --border-light: #D1D5DB;
+        }
+
+        /* 2. Aplicação das Variáveis de Tema */
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Modo Escuro (Padrão) */
+        body[data-theme="dark"] {
+            background-color: var(--primary-bg-dark);
+            background-image: linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.8)), url('/images/berserk_legacy.jpg');
+            background-size: cover;
+            background-position: center;
+            color: var(--text-primary-dark);
+        }
+
+        /* Modo Claro */
+        body[data-theme="light"] {
+            background-color: var(--primary-bg-light);
+            color: var(--text-primary-light);
+        }
+        
+        /* 3. Estilos do Container de Autenticação */
+        .auth-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-form {
+            background-color: var(--secondary-bg-dark);
+            padding: 2.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-dark);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: none;
+            flex-direction: column;
+            gap: 1.5rem;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        body[data-theme="light"] .auth-form {
+            background-color: var(--secondary-bg-light);
+            border-color: var(--border-light);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-form.active-form {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-form__header { text-align: center; }
+        .auth-form__header h2 {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--accent-red);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        body[data-theme="light"] .auth-form__header h2 {
+            color: var(--text-primary-light);
+        }
+        .auth-form__header .form-title {
+            font-size: 1.1rem;
+            color: var(--text-secondary-dark);
+            font-weight: 400;
+            margin-top: -0.5rem;
+        }
+        body[data-theme="light"] .auth-form__header .form-title {
+            color: var(--text-secondary-light);
+        }
+
+        .auth-form__group label { font-weight: 500; font-size: 0.9rem; margin-bottom: 0.5rem; display: block; color: var(--text-secondary-dark); }
+        .auth-form__group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 5px;
+            border: 1px solid var(--border-dark);
+            background-color: var(--primary-bg-dark);
+            color: var(--text-primary-dark);
+            font-size: 1rem;
+        }
+        body[data-theme="light"] .auth-form__group label { color: var(--text-secondary-light); }
+        body[data-theme="light"] .auth-form__group input {
+            border-color: var(--border-light);
+            background-color: var(--primary-bg-light);
+            color: var(--text-primary-light);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.9rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .btn--primary {
+            background-color: var(--accent-red);
+            color: white;
+        }
+        .btn--primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(229, 9, 20, 0.4);
+        }
+
+        .auth-form__footer {
+            font-size: 0.9rem;
+            text-align: center;
+            color: var(--text-secondary-dark);
+        }
+        body[data-theme="light"] .auth-form__footer {
+            color: var(--text-secondary-light);
+        }
+        .auth-form__footer a {
+            color: var(--accent-red);
+            font-weight: 600;
+        }
+        body[data-theme="light"] .auth-form__footer a {
+            color: var(--text-primary-light);
+        }
+        .auth-form__footer .back-link {
+            display: block;
+            margin-top: 1rem;
+            color: var(--text-secondary-dark);
+        }
+        body[data-theme="light"] .auth-form__footer .back-link {
+            color: var(--text-secondary-light);
+        }
+        
         .auth-alert { display: none; padding: 1rem; margin-bottom: 1.5rem; border-radius: 5px; text-align: center; font-weight: 500; }
         .auth-alert.error { background-color: #EF4444; color: white; }
         .auth-alert.success { background-color: #10B981; color: white; }
+
+        /* 4. Botão de Seletor de Tema */
+        #theme-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 1px solid var(--border-dark);
+            background-color: var(--secondary-bg-dark);
+            color: var(--text-secondary-dark);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+        body[data-theme="light"] #theme-toggle {
+            border-color: var(--border-light);
+            background-color: var(--secondary-bg-light);
+            color: var(--text-secondary-light);
+        }
+        #theme-toggle:hover {
+            transform: scale(1.1);
+            color: var(--accent-red);
+        }
+        #theme-toggle .fa-sun { display: none; }
+        #theme-toggle .fa-moon { display: block; }
+        body[data-theme="light"] #theme-toggle .fa-sun { display: block; }
+        body[data-theme="light"] #theme-toggle .fa-moon { display: none; }
     </style>
 </head>
-<body class="login-page" data-theme="dark">
+<body data-theme="dark">
+
+    <!-- Botão de Seletor de Tema -->
+    <button id="theme-toggle" title="Alterar Tema">
+        <i class="fas fa-sun"></i>
+        <i class="fas fa-moon"></i>
+    </button>
 
     <div class="auth-container">
         <div id="auth-alert" class="auth-alert"></div>
-        <li>
-                    <button class="theme-switch" id="theme-toggle" aria-label="Alternar tema">
-                        <i class="fas fa-moon icon-moon"></i>
-                        <i class="fas fa-sun icon-sun"></i>
-                    </button>
-                </li>
+
         <form class="auth-form active-form" id="login-form">
             <div class="auth-form__header">
                 <h2>DenyAnimeHub</h2>
@@ -47,6 +252,7 @@
                  <a href="/" class="back-link"><i class="fas fa-home"></i> Voltar ao Início</a>
             </div>
         </form>
+
         <form class="auth-form" id="register-form">
             <div class="auth-form__header">
                 <h2>DenyAnimeHub</h2>
@@ -81,7 +287,19 @@
             const authContainer = document.querySelector('.auth-container');
             const formSwitchLinks = document.querySelectorAll('.form-switch-link');
             const alertBox = document.getElementById('auth-alert');
+            
+            // --- LÓGICA DO SELETOR DE TEMA ---
+            const themeToggle = document.getElementById('theme-toggle');
+            const currentTheme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', currentTheme);
 
+            themeToggle.addEventListener('click', () => {
+                let newTheme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                document.body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+
+            // --- LÓGICA DOS FORMULÁRIOS ---
             const showAlert = (message, type = 'error') => {
                 if (!alertBox) { alert(message); return; }
                 alertBox.textContent = message;
@@ -105,7 +323,7 @@
                             body: JSON.stringify({ email, senha }),
                         });
                         const data = await response.json();
-                        if (data.success) {
+                        if (response.ok) { // Verifica se a resposta foi bem-sucedida (status 2xx)
                             showAlert('Login bem-sucedido! Redirecionando...', 'success');
                             window.location.href = data.user.role === 'admin' ? '/admin/dashboard' : '/';
                         } else {
@@ -137,11 +355,12 @@
                             body: JSON.stringify({ nome, email, senha }),
                         });
                         const data = await response.json();
-                        if (data.success) {
+                        if (response.ok) {
                             showAlert('Conta criada! Redirecionando para o login...', 'success');
                             setTimeout(() => {
                                 document.getElementById('login-email').value = email;
                                 document.querySelector('.form-switch-link[data-target="login-form"]').click();
+                                alertBox.style.display = 'none'; // Limpa o alerta de sucesso
                             }, 2000);
                         } else {
                             showAlert(data.error || 'Ocorreu um erro.');
@@ -166,6 +385,14 @@
                     });
                 });
             }
+
+            // Exibir mensagens de erro/sucesso da URL (se houver)
+            const params = new URLSearchParams(window.location.search);
+            const erro = params.get('erro');
+            const sucesso = params.get('sucesso');
+            if (erro) showAlert(erro, 'error');
+            if (sucesso) showAlert(sucesso, 'success');
+
         });
     </script>
 </body>

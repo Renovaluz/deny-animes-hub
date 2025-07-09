@@ -207,6 +207,8 @@
         @media (max-width: 992px) { .admin-sidebar { position: fixed; top: 0; left: 0; height: 100%; transform: translateX(-100%); } .admin-sidebar.is-open { transform: translateX(0); } .sidebar-overlay.is-active { display: block; } #sidebar-toggle { display: inline-flex; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; padding: 0.5rem; cursor: pointer; } .main-content-header .desktop-title { display: none; } .mobile-header-title { display: block; font-size: 1.2rem; font-weight: 600; color: var(--text-primary); margin: 0; flex-grow: 1; text-align: center; } .main-content-body { padding: 1.5rem; } .view-controls { flex-direction: column; align-items: stretch; gap: 1rem; } .search-input { min-width: 100%; } .items-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; } .item-card__image { height: 250px; } .item-card:hover { transform: translateY(-5px); } .stat-card:hover { transform: none; box-shadow: 0 4px 15px var(--shadow-color); } }
         @media (max-width: 576px) { .items-grid { grid-template-columns: 1fr; } .item-card__image { height: 350px; } }
     </style>
+    <!-- Script de proteção chamado com 'defer' para não bloquear o carregamento -->
+    <script src="/js/protect.js" defer></script>
 </head>
 <body class="page-admin">
 

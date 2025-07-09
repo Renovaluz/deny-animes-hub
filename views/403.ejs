@@ -1,5 +1,6 @@
 <%- include('partials/header', { page_name: '403', titulo: 'Erro 403' }) %>
-
+<!-- Script de proteção chamado com 'defer' para não bloquear o carregamento -->
+    <script src="/js/protect.js" defer></script>
 <div class="container" style="text-align: center; padding: 80px 20px;">
     <h1 style="font-size: 6rem; color: var(--accent-primary); margin-bottom: 20px;">403</h1>
     <h2>Acesso Negado</h2>

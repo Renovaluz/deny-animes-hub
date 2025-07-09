@@ -542,7 +542,7 @@ ul, ol { list-style: none; } /* Remove default list styles */
 
 /* --- COMMUNITY HUB (Index Page) --- */
 #community-hub {
-  background: linear-gradient(145deg, rgba(var(--accent-primary-rgb), 0.9), rgba(var(--accent-secondary-rgb), 0.9)), url('images/fundo2.png') no-repeat center center fixed;
+  background: linear-gradient(145deg, rgba(var(--accent-primary-rgb), 0.9), rgba(var(--accent-secondary-rgb), 0.9)), url('images/fundo.png') no-repeat center center fixed;
   background-size: cover; color: #fff; padding: var(--space-7) var(--space-6);
   border-radius: var(--border-radius-lg); margin-top: var(--space-8); text-align: center;
   box-shadow: var(--shadow-xl), 0 0 30px rgba(var(--shadow-glow-rgb), 0.2); position: relative; overflow: hidden;
