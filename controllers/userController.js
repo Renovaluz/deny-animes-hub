@@ -1,157 +1,87 @@
-const db = require('../models');
-const User = db.User;
+// ====================================================================================
+//
+//              DenyAnimeHub - Controller: Usuários (Versão à Prova de Falhas)
+//
+// Versão:        3.0 (Final e Completa)
+// Descrição:     Este controller gerencia todas as operações relacionadas a usuários.
+//                Foi reescrito para garantir exportações explícitas e evitar erros
+//                de 'undefined' durante a importação no app.js.
+//
+// ====================================================================================
 
-// ===================================
-// FUNÇÕES PARA O ADMIN
-// ===================================
+'use strict';
+const { User } = require('../models');
 
-/**
- * @desc    Admin: Obter todos os usuários para o painel.
- * @route   GET /api/users
- * @access  Privado (Admin)
- */
-exports.getAllUsers = async (req, res) => {
+const userController = {};
+
+// FUNÇÕES DE ADMIN
+userController.getAllUsers = async (req, res) => {
     try {
-        const users = await User.findAll({ 
-            order: [['createdAt', 'DESC']],
-            attributes: ['id', 'nome', 'email', 'role', 'createdAt', 'avatar'] 
-        });
+        const users = await User.findAll({ order: [['createdAt', 'DESC']], attributes: ['id', 'nome', 'email', 'role', 'createdAt', 'avatar'] });
         res.status(200).json({ success: true, count: users.length, data: users });
-    } catch (err) {
-        console.error("Erro em getAllUsers:", err);
-        res.status(500).json({ success: false, error: 'Erro de servidor ao buscar usuários.' });
-    }
+    } catch (err) { res.status(500).json({ success: false, error: 'Erro de servidor ao buscar usuários.' }); }
 };
 
-/**
- * @desc    Admin: Atualiza os dados de um usuário específico.
- * @route   PUT /api/users/:id
- * @access  Privado (Admin)
- */
-exports.updateUserByAdmin = async (req, res) => {
+userController.updateUserByAdmin = async (req, res) => {
     try {
         const { nome, email, role } = req.body;
         const user = await User.findByPk(req.params.id);
-        if (!user) return res.status(404).json({ success: false, error: 'Usuário não encontrado' });
-        
+        if (!user) return res.status(404).json({ success: false, error: 'Usuário não encontrado.' });
         await user.update({ nome, email, role });
-        res.status(200).json({ success: true, data: user });
-    } catch (err) {
-        console.error("Erro em updateUserByAdmin:", err);
-        res.status(400).json({ success: false, error: err.message });
-    }
+        const updatedUser = user.get({ plain: true });
+        delete updatedUser.senha;
+        res.status(200).json({ success: true, data: updatedUser });
+    } catch (err) { res.status(400).json({ success: false, error: 'Falha ao atualizar o usuário.' }); }
 };
 
-/**
- * @desc    Admin: Deleta um usuário específico.
- * @route   DELETE /api/users/:id
- * @access  Privado (Admin)
- */
-exports.deleteUserByAdmin = async (req, res) => {
+userController.deleteUserByAdmin = async (req, res) => {
     try {
         const user = await User.findByPk(req.params.id);
-        if (!user) return res.status(404).json({ success: false, error: 'Usuário não encontrado' });
-
-        if (Number(req.user.id) === Number(req.params.id)) {
-            return res.status(400).json({ success: false, error: 'Você não pode deletar sua própria conta de administrador.' });
-        }
-        
+        if (!user) return res.status(404).json({ success: false, error: 'Usuário não encontrado.' });
+        if (Number(req.user.id) === Number(req.params.id)) return res.status(400).json({ success: false, error: 'Você não pode deletar sua própria conta.' });
         await user.destroy();
         res.status(200).json({ success: true, message: 'Usuário deletado com sucesso.' });
-    } catch (err) {
-        console.error("Erro em deleteUserByAdmin:", err);
-        res.status(500).json({ success: false, error: err.message });
-    }
+    } catch (err) { res.status(500).json({ success: false, error: 'Erro de servidor ao deletar usuário.' }); }
 };
 
-
-// ===================================
-// FUNÇÕES PARA O USUÁRIO LOGADO
-// ===================================
-
-/**
- * @desc    Usuário: Atualiza o próprio perfil (nome, bio).
- * @route   PUT /api/user/profile
- * @access  Privado
- */
-exports.updateUserProfile = async (req, res) => {
+// FUNÇÕES DE USUÁRIO LOGADO
+userController.updateUserProfile = async (req, res) => {
     try {
         const { nome, bio } = req.body;
-        
-        if (!nome || nome.trim() === '') {
-            return res.status(400).json({ success: false, error: 'O nome de usuário não pode ficar em branco.' });
-        }
-
+        if (!nome || nome.trim() === '') return res.status(400).json({ success: false, error: 'O nome de usuário não pode ficar em branco.' });
         const user = await User.findByPk(req.user.id);
-        if (!user) {
-            return res.status(404).json({ success: false, error: 'Sessão inválida, usuário não encontrado.' });
-        }
-
-        user.nome = nome;
-        user.bio = bio;
-        await user.save();
-
+        if (!user) return res.status(404).json({ success: false, error: 'Usuário não encontrado.' });
+        await user.update({ nome, bio });
         const updatedUser = user.get({ plain: true });
         delete updatedUser.senha;
-
-        res.status(200).json({ success: true, message: 'Perfil atualizado com sucesso!', user: updatedUser });
-    } catch (err) {
-        console.error("Erro em updateUserProfile:", err);
-        res.status(400).json({ success: false, error: err.message || 'Ocorreu um erro ao atualizar o perfil.' });
-    }
+        res.status(200).json({ success: true, message: 'Perfil atualizado!', user: updatedUser });
+    } catch (err) { res.status(400).json({ success: false, error: 'Erro ao atualizar o perfil.' }); }
 };
 
-/**
- * @desc    Usuário: Atualiza o próprio avatar.
- * @route   POST /api/user/profile/avatar
- * @access  Privado
- */
-exports.updateUserAvatar = async (req, res) => {
+userController.updateUserAvatar = async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ success: false, error: 'Nenhum arquivo de imagem enviado.' });
-
         const user = await User.findByPk(req.user.id);
-        if (!user) return res.status(404).json({ success: false, error: 'Usuário não encontrado' });
-
-        // CORREÇÃO CRUCIAL: Salva o caminho PÚBLICO completo, incluindo a pasta 'avatars'
-        const avatarPath = `/uploads/avatars/${req.file.filename}`;
-        user.avatar = avatarPath;
+        if (!user) return res.status(404).json({ success: false, error: 'Usuário não encontrado.' });
+        user.avatar = `/uploads/avatars/${req.file.filename}`;
         await user.save();
-        
         const updatedUser = user.get({ plain: true });
         delete updatedUser.senha;
-        
         res.status(200).json({ success: true, message: 'Avatar atualizado!', user: updatedUser });
-    } catch (err) {
-        console.error("Erro em updateUserAvatar:", err);
-        res.status(400).json({ success: false, error: err.message });
-    }
+    } catch (err) { res.status(400).json({ success: false, error: err.message }); }
 };
 
-/**
- * @desc    Usuário: Atualiza a própria capa do perfil.
- * @route   POST /api/user/profile/capa
- * @access  Privado
- */
-exports.updateUserCapa = async (req, res) => {
+userController.updateUserCapa = async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ success: false, error: 'Nenhum arquivo de imagem enviado.' });
-
         const user = await User.findByPk(req.user.id);
-        if (!user) return res.status(404).json({ success: false, error: 'Usuário não encontrado' });
-
-        // CORREÇÃO CRUCIAL: Salva o caminho PÚBLICO completo, incluindo a pasta 'capas'
-        // O nome do campo no seu model é 'capaPerfil'
-        const capaPath = `/uploads/capas/${req.file.filename}`;
-        user.capaPerfil = capaPath;
+        if (!user) return res.status(404).json({ success: false, error: 'Usuário não encontrado.' });
+        user.capaPerfil = `/uploads/capas/${req.file.filename}`;
         await user.save();
-        
         const updatedUser = user.get({ plain: true });
         delete updatedUser.senha;
-        
         res.status(200).json({ success: true, message: 'Capa do perfil atualizada!', user: updatedUser });
-    } catch (err) {
-        console.error("Erro em updateUserCapa:", err);
-        res.status(400).json({ success: false, error: err.message });
-    }
+    } catch (err) { res.status(400).json({ success: false, error: err.message }); }
 };
+
+module.exports = userController;

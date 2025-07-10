@@ -89,6 +89,7 @@
         h4 { font-size: 1.1rem; color: var(--text-tertiary); }
         p { margin-bottom: 1rem; color: var(--text-secondary); }
         img { max-width: 100%; display: block; }
+        hr { border: 0; height: 1px; background-color: var(--border-color); margin: 2rem 0; }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -133,7 +134,7 @@
         .admin-sidebar-header a:hover img { transform: rotate(15deg) scale(1.1); }
         .sidebar-section-title { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-tertiary); padding: 0 1.5rem; margin: 1.5rem 0 0.5rem; }
         .admin-nav { list-style: none; flex-grow: 1; overflow-y: auto; padding: 0 1rem; }
-        .admin-nav ul { list-style-type: none; } /* REGRRA RESTAURADA */
+        .admin-nav ul { list-style-type: none; }
         .admin-nav .nav-link { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem; margin-bottom: 0.5rem; border-radius: var(--border-radius); color: var(--text-secondary); font-weight: 500; transition: all 0.2s ease; cursor: pointer; border-left: 4px solid transparent; }
         .admin-nav .nav-link:hover { background-color: var(--bg-tertiary); color: var(--text-primary); }
         .admin-nav .nav-link.active { background: linear-gradient(90deg, rgba(var(--accent-primary-rgb), 0.15) 0%, rgba(var(--accent-primary-rgb), 0) 100%); color: var(--accent-primary); border-left-color: var(--accent-primary); font-weight: 600; text-shadow: 0 0 10px rgba(var(--accent-primary-rgb), 0.5); }
@@ -199,7 +200,6 @@
         html.light-theme .theme-toggler .fa-sun { display: inline-block; }
         html.light-theme .theme-toggler .fa-moon { display: none; }
         .option-icon { width: 1em; height: 1em; margin-right: 8px; vertical-align: -0.15em; }
-
         @media (max-width: 992px) { #sidebar-toggle { display: inline-flex; } .main-content-header .desktop-title { display: none; } .mobile-header-title { display: block; } /* etc. */ }
     </style>
 </head>
@@ -238,7 +238,6 @@
             <button class="theme-toggler" id="theme-toggler" title="Alternar Tema"><i class="fas fa-moon"></i><i class="fas fa-sun"></i></button>
         </div>
         <div class="main-content-body">
-            <!-- Os painéis permanecem como estavam, para o JS gerenciá-los -->
             <div id="panel-dashboard" class="admin-panel active">
                  <p>Bem-vindo ao centro de comando, <strong><%= user.nome %></strong>. Use a navegação para gerenciar o conteúdo.</p>
                 <div class="admin-stats">
@@ -255,16 +254,15 @@
     
     <div id="toast-notification"></div>
 
-    <!-- SEUS TEMPLATES ORIGINAIS, MAS COM AS NOVAS FUNCIONALIDADES -->
     <template id="template-manage-animes">
-        <div style="margin-bottom: 1.5rem;"><button class="btn-show-form btn btn--primary"><i class="fas fa-plus-circle"></i> Adicionar Novo Anime</button></div>
-        <div class="form-view" style="display: none;"><div class="admin-form-container"><h2 class="form-title">Adicionar Novo Anime</h2><form class="main-form"><input type="hidden" name="id"><div class="form-group"><label for="titulo-anime">Título</label><input type="text" name="titulo" class="input" required></div><div class="form-group"><label for="sinopse-anime">Sinopse</label><textarea name="sinopse" class="textarea" rows="5" required></textarea></div><div class="form-group"><label for="ano-anime">Ano</label><input type="number" name="anoLancamento" class="input" required></div><div class="form-group"><label for="generos-anime">Gêneros (separados por vírgula)</label><input type="text" name="generos" class="input" required></div><div class="form-group"><label for="capa-anime-upload">Capa (Upload do Dispositivo)</label><input type="file" name="imagemCapaFile" class="input" accept="image/jpeg, image/png, image/webp"><div class="upload-progress-bar"><div class="upload-progress-bar-inner"></div></div><span class="upload-progress-text"></span></div><div class="form-group"><label for="nota-anime">Nota</label><input type="number" step="0.1" name="classificacao" class="input"></div><div style="display: flex; gap: 1rem; margin-top: 1.5rem;"><button type="submit" class="btn btn--primary"><i class="fas fa-save"></i> Salvar</button><button type="button" class="btn btn-cancel">Cancelar</button></div></form></div></div>
-        <div class="episode-manager-view" style="display: none;"><div class="admin-form-container"><h2 class="form-title-episodes">Gerenciar Episódios</h2><form class="episode-add-form"><input type="hidden" name="animeId"><h4>Adicionar Novo Episódio</h4><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;"><div class="form-group"><label for="ep-temporada">Temporada</label><input type="number" name="temporada" class="input" required min="1" value="1"></div><div class="form-group"><label for="ep-numero">Número do Ep.</label><input type="number" name="numero" class="input" required min="0"></div></div><div class="form-group"><label for="ep-titulo">Título (opcional)</label><input type="text" name="titulo" class="input"></div><div class="form-group"><label for="episode-type-selector">Fonte do Vídeo</label><select name="tipoVideo" class="select" id="episode-type-selector"></select></div><div class="form-group" id="video-url-group"><label for="ep-url">URL do Vídeo</label><input type="text" name="urlVideo" class="input"></div><div class="form-group" id="video-upload-group" style="display: none;"><label for="ep-upload">Arquivo de Vídeo</label><input type="file" name="videoFile" class="input" accept="video/mp4,video/x-matroska"><div class="upload-progress-bar"><div class="upload-progress-bar-inner"></div></div><span class="upload-progress-text"></span></div><button type="submit" class="btn btn--primary btn--small"><i class="fas fa-plus"></i> Adicionar Episódio</button></form><hr style="margin: 2rem 0; border-color: var(--border-color);"><h4>Episódios Existentes</h4><div class="form-group" style="max-width: 300px;"><label for="season-selector">Filtrar por Temporada</label><select id="season-selector" class="select"></select></div><ul class="episode-manage-list"></ul><button type="button" class="btn btn-cancel" style="margin-top: 1.5rem;"><i class="fas fa-arrow-left"></i> Voltar</button></div></div>
+        <div class="view-header" style="margin-bottom: 1.5rem;"><button class="btn-show-form btn btn--primary"><i class="fas fa-plus-circle"></i> Adicionar Novo Anime</button></div>
+        <div class="form-view" style="display: none;"><div class="admin-form-container"><h2 class="form-title">Adicionar Novo Anime</h2><form class="main-form"><input type="hidden" name="id"><div class="form-group"><label>Título</label><input type="text" name="titulo" class="input" required></div><div class="form-group"><label>Sinopse</label><textarea name="sinopse" class="textarea" rows="5" required></textarea></div><div class="form-group"><label>Ano</label><input type="number" name="anoLancamento" class="input" required></div><div class="form-group"><label>Gêneros (separados por vírgula)</label><input type="text" name="generos" class="input" required></div><div class="form-group"><label>Capa (Upload do Dispositivo)</label><input type="file" name="imagemCapaFile" class="input" accept="image/*"><div class="upload-progress-bar"><div class="upload-progress-bar-inner"></div></div><span class="upload-progress-text"></span></div><div class="form-group"><label>Nota</label><input type="number" step="0.1" name="classificacao" class="input"></div><div style="display: flex; gap: 1rem; margin-top: 1.5rem;"><button type="submit" class="btn btn--primary"><i class="fas fa-save"></i> Salvar</button><button type="button" class="btn-cancel">Cancelar</button></div></form></div></div>
+        <div class="episode-manager-view" style="display: none;"><div class="admin-form-container"><h2 class="form-title-episodes">Gerenciar Episódios</h2><form class="episode-add-form"><input type="hidden" name="animeId"><h4>Adicionar Novo Episódio</h4><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;"><div class="form-group"><label>Temporada</label><input type="number" name="temporada" class="input" required min="1" value="1"></div><div class="form-group"><label>Número do Ep.</label><input type="number" name="numero" class="input" required min="0"></div></div><div class="form-group"><label>Título (opcional)</label><input type="text" name="titulo" class="input"></div><div class="form-group"><label>Fonte do Vídeo</label><select name="tipoVideo" class="select" id="episode-type-selector"></select></div><div class="form-group" id="video-url-group"><label>URL do Vídeo</label><input type="text" name="urlVideo" class="input"></div><div class="form-group" id="video-upload-group" style="display: none;"><label>Arquivo de Vídeo</label><input type="file" name="videoFile" class="input" accept="video/*"><div class="upload-progress-bar"><div class="upload-progress-bar-inner"></div></div><span class="upload-progress-text"></span></div><button type="submit" class="btn btn--primary btn--small"><i class="fas fa-plus"></i> Adicionar Episódio</button></form><hr style="margin: 2rem 0;"><h4>Episódios Existentes</h4><div class="form-group" style="max-width: 300px;"><label>Filtrar por Temporada</label><select id="season-selector" class="select"></select></div><ul class="episode-manage-list"></ul><button type="button" class="btn btn-cancel" style="margin-top: 1.5rem;"><i class="fas fa-arrow-left"></i> Voltar</button></div></div>
         <div class="grid-view"><div class="items-grid"></div><div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i></div></div>
     </template>
     <template id="template-manage-posts">
         <div style="margin-bottom: 1.5rem;"><button class="btn-show-form btn btn--primary"><i class="fas fa-pen-alt"></i> Adicionar Notícia</button></div>
-        <div class="form-view" style="display: none;"><div class="admin-form-container"><h2 class="form-title">Adicionar Notícia</h2><form class="main-form"><input type="hidden" name="id"><div class="form-group"><label for="titulo-post">Título</label><input type="text" name="titulo" class="input" required></div><div class="form-group"><label for="conteudo-post">Conteúdo</label><textarea name="conteudo" class="textarea" rows="10" required></textarea></div><div class="form-group"><label for="imagem-post">URL da Imagem</label><input type="text" name="imagemDestaque" class="input"></div><div class="form-group"><label for="categoria-post">Categoria</label><input type="text" name="categoria" class="input" value="Notícia"></div><div class="form-group"><label for="tags-post">Tags</label><input type="text" name="tags" class="input"></div><div class="form-group" style="display:flex;align-items:center;gap:10px"><input type="checkbox" name="emDestaque" style="width:auto;height:auto"><label for="destaque-post" style="margin-bottom:0">Destaque</label></div><div style="display: flex; gap: 1rem; margin-top: 1.5rem;"><button type="submit" class="btn btn--primary"><i class="fas fa-save"></i> Salvar</button><button type="button" class="btn btn-cancel">Cancelar</button></div></form></div></div>
+        <div class="form-view" style="display: none;"><div class="admin-form-container"><h2 class="form-title">Adicionar Notícia</h2><form class="main-form"><input type="hidden" name="id"><div class="form-group"><label>Título</label><input type="text" name="titulo" class="input" required></div><div class="form-group"><label>Conteúdo</label><textarea name="conteudo" class="textarea" rows="10" required></textarea></div><div class="form-group"><label>URL da Imagem</label><input type="text" name="imagemDestaque" class="input"></div><div class="form-group"><label>Categoria</label><input type="text" name="categoria" class="input" value="Notícia"></div><div class="form-group"><label>Tags</label><input type="text" name="tags" class="input"></div><div class="form-group" style="display:flex;align-items:center;gap:10px"><input type="checkbox" name="emDestaque" style="width:auto;height:auto"><label style="margin-bottom:0">Destaque</label></div><div style="display: flex; gap: 1rem; margin-top: 1.5rem;"><button type="submit" class="btn btn--primary"><i class="fas fa-save"></i> Salvar</button><button type="button" class="btn btn-cancel">Cancelar</button></div></form></div></div>
         <div class="grid-view"><div class="items-grid"></div><div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i></div></div>
     </template>
     <template id="template-manage-users">
@@ -282,53 +280,48 @@
             currentUserId: '<%= user.id %>'
         };
         const dom = {
-            sidebar: document.querySelector('.admin-sidebar'),
-            sidebarToggle: document.getElementById('sidebar-toggle'),
-            sidebarOverlay: document.querySelector('.sidebar-overlay'),
-            desktopTitle: document.querySelector('.desktop-title'),
-            mobileTitle: document.querySelector('.mobile-header-title'),
-            mainContentBody: document.querySelector('.main-content-body'),
-            toast: document.getElementById('toast-notification'),
-            themeToggler: document.getElementById('theme-toggler'),
-            navLinks: document.querySelectorAll('.admin-nav .nav-link')
+            sidebar: document.querySelector('.admin-sidebar'), sidebarToggle: document.getElementById('sidebar-toggle'), sidebarOverlay: document.querySelector('.sidebar-overlay'),
+            desktopTitle: document.querySelector('.desktop-title'), mobileTitle: document.querySelector('.mobile-header-title'),
+            mainContentBody: document.querySelector('.main-content-body'), toast: document.getElementById('toast-notification'),
+            themeToggler: document.getElementById('theme-toggler'), navLinks: document.querySelectorAll('.admin-nav .nav-link')
         };
         
         // ==========================================================================
         // MÓDULO 2: FUNÇÕES UTILITÁRIAS
         // ==========================================================================
         const showToast = (message, type = 'success') => { dom.toast.textContent = message; dom.toast.className = `show ${type}`; setTimeout(() => { dom.toast.className = ''; }, 4000); };
-        
         const apiCall = async (endpoint, options = {}) => {
             try {
-                const isFormData = options.body instanceof FormData;
-                if (!isFormData) { options.headers = { 'Content-Type': 'application/json', ...options.headers }; if(options.body) options.body = JSON.stringify(options.body); }
+                if (!(options.body instanceof FormData)) {
+                    options.headers = { 'Content-Type': 'application/json', ...options.headers };
+                    if (options.body) options.body = JSON.stringify(options.body);
+                }
                 const response = await fetch(`/api/${endpoint}`, options);
                 const data = await response.json();
-                if (!response.ok || !data.success) throw new Error(data.error || 'Erro desconhecido na API.');
+                if (!response.ok || !data.success) throw new Error(data.error || 'Erro na API.');
                 return data;
-            } catch (err) { console.error(`API Error:`, err); showToast(err.message, 'error'); return { success: false, error: err.message }; }
+            } catch (err) {
+                showToast(err.message, 'error');
+                return { success: false };
+            }
         };
-
-        const uploadFile = (endpoint, file, form) => {
-            return new Promise((resolve, reject) => {
-                const formData = new FormData();
-                formData.append('file', file);
-                const progressBarContainer = form.querySelector('.upload-progress-bar');
-                const progressText = form.querySelector('.upload-progress-text');
-                const progressBar = progressBarContainer.querySelector('.upload-progress-bar-inner');
-                
-                progressBarContainer.style.display = 'block';
-                progressText.style.display = 'block';
-                progressBar.style.width = '0%'; // Reset a barra
-
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', `/api/upload/${endpoint}`, true);
-                xhr.upload.onprogress = e => { if (e.lengthComputable) { const p = (e.loaded / e.total) * 100; progressBar.style.width = `${p}%`; progressText.textContent = `Enviando... ${Math.round(p)}%`; }};
-                xhr.onload = () => { if (xhr.status === 200) resolve(JSON.parse(xhr.responseText)); else reject(JSON.parse(xhr.responseText)); };
-                xhr.onerror = () => reject({ success: false, error: 'Erro de rede.' });
-                xhr.send(formData);
-            });
-        };
+        const uploadFile = (endpoint, file, form) => new Promise((resolve, reject) => {
+            const formData = new FormData();
+            formData.append('file', file);
+            const progressBarContainer = form.querySelector('.upload-progress-bar');
+            const progressText = form.querySelector('.upload-progress-text');
+            if (!progressBarContainer || !progressText) return reject(new Error("Elementos de progresso não encontrados."));
+            const progressBar = progressBarContainer.querySelector('.upload-progress-bar-inner');
+            progressBarContainer.style.display = 'block';
+            progressText.style.display = 'block';
+            progressBar.style.width = '0%';
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', `/api/upload/${endpoint}`, true);
+            xhr.upload.onprogress = e => { if (e.lengthComputable) { const p = (e.loaded / e.total) * 100; progressBar.style.width = `${p}%`; progressText.textContent = `Enviando... ${Math.round(p)}%`; }};
+            xhr.onload = () => { if (xhr.status === 200) resolve(JSON.parse(xhr.responseText)); else reject(JSON.parse(xhr.responseText)); };
+            xhr.onerror = () => reject({ success: false, error: 'Erro de rede.' });
+            xhr.send(formData);
+        });
 
         // ==========================================================================
         // MÓDULO 3: GERENCIAMENTO DE TEMA E SIDEBAR
@@ -336,7 +329,6 @@
         const applyTheme = (theme) => { document.documentElement.className = theme; localStorage.setItem('theme', theme); };
         dom.themeToggler.addEventListener('click', () => applyTheme(document.documentElement.classList.contains('dark-theme') ? 'light-theme' : 'dark-theme'));
         applyTheme(localStorage.getItem('theme') || 'dark-theme');
-
         const toggleSidebar = () => { dom.sidebar.classList.toggle('is-open'); dom.sidebarOverlay.classList.toggle('is-active'); };
         if (dom.sidebarToggle) dom.sidebarToggle.addEventListener('click', toggleSidebar);
         if (dom.sidebarOverlay) dom.sidebarOverlay.addEventListener('click', toggleSidebar);
@@ -356,19 +348,16 @@
                 }
             }
         };
-
         dom.navLinks.forEach(link => {
             link.addEventListener('click', e => {
                 if (link.getAttribute('href') === '/') return;
                 e.preventDefault();
-                
                 if (link.classList.contains('quick-action')) {
                     const panelType = link.dataset.action.includes('anime') ? 'animes' : 'posts';
                     const targetLink = document.querySelector(`.nav-link[data-target="panel-${panelType}"]`);
-                    if(targetLink) { targetLink.click(); setTimeout(() => document.querySelector(`#panel-${panelType} .btn-show-form`)?.click(), 150); }
+                    if (targetLink) { targetLink.click(); setTimeout(() => document.querySelector(`#panel-${panelType} .btn-show-form`)?.click(), 150); }
                     return;
                 }
-
                 dom.navLinks.forEach(l => l.classList.remove('active'));
                 link.classList.add('active');
                 dom.desktopTitle.innerHTML = link.innerHTML;
@@ -376,7 +365,6 @@
                 switchPanel(link.dataset.target);
             });
         });
-
         const initPanel = (type) => {
             const panel = document.getElementById(`panel-${type}`);
             const template = document.getElementById(`template-manage-${type}`);
@@ -394,19 +382,8 @@
             const panel = document.getElementById('panel-animes');
             const views = { grid: panel.querySelector('.grid-view'), form: panel.querySelector('.form-view'), episodes: panel.querySelector('.episode-manager-view') };
             const forms = { anime: panel.querySelector('.main-form'), episode: panel.querySelector('.episode-add-form') };
-            let isEditing = false, editingId = null;
-
-            // **CORRIGIDO**: Função showView agora verifica se viewHeader existe
-            const showView = (view) => {
-                Object.values(views).forEach(el => el.style.display = 'none');
-                if (views[view]) views[view].style.display = 'block';
-                
-                const viewHeader = panel.querySelector('.view-header');
-                if (viewHeader) {
-                    viewHeader.style.display = view === 'grid' ? 'block' : 'none';
-                }
-            };
-            
+            let isEditing = false, editingSlug = null;
+            const showView = (view) => { Object.values(views).forEach(el => el.style.display = 'none'); if (views[view]) views[view].style.display = 'block'; const vh = panel.querySelector('.view-header'); if(vh) vh.style.display = view === 'grid' ? 'block' : 'none'; };
             const loadAnimes = async () => {
                 views.grid.classList.add('panel-loading');
                 const { data } = await apiCall('animes');
@@ -414,213 +391,43 @@
                 const grid = views.grid.querySelector('.items-grid');
                 grid.innerHTML = '';
                 if (!data || data.length === 0) { grid.innerHTML = '<p class="no-content-message">Nenhum anime cadastrado.</p>'; return; }
-                data.sort((a,b) => b.id - a.id).forEach(anime => {
-                    grid.innerHTML += `<div class="item-card" data-id="${anime.id}"><img src="${anime.imagemCapa || '/images/placeholder_poster.png'}" class="item-card__image" onerror="this.onerror=null;this.src='/images/placeholder_poster.png';"><div class="item-card__content"><h3 class="item-card__title">${anime.titulo}</h3><div class="item-card__meta"><span>${anime.anoLancamento}</span><span>${anime.episodios?.length || 0} Eps</span></div></div><div class="item-card__actions"><button class="btn btn--small btn-edit" title="Editar Anime"><i class="fas fa-edit"></i></button><button class="btn btn--small btn-episodes" title="Gerenciar Episódios"><i class="fas fa-list-ol"></i></button><button class="btn btn--small btn-delete" title="Deletar Anime"><i class="fas fa-trash"></i></button></div></div>`;
+                data.sort((a, b) => b.id - a.id).forEach(anime => {
+                    grid.innerHTML += `<div class="item-card" data-slug="${anime.slug}"><a href="/anime/${anime.slug}" target="_blank"><img src="${anime.imagemCapa || '/images/placeholder_poster.png'}" class="item-card__image" onerror="this.onerror=null;this.src='/images/placeholder_poster.png';"></a><div class="item-card__content"><h3 class="item-card__title">${anime.titulo}</h3><div class="item-card__meta"><span>${anime.anoLancamento}</span><span>${anime.episodios?.length || 0} Eps</span></div></div><div class="item-card__actions"><button class="btn btn--small btn-edit" title="Editar"><i class="fas fa-edit"></i></button><button class="btn btn--small btn-episodes" title="Episódios"><i class="fas fa-list-ol"></i></button><button class="btn btn--small btn-delete" title="Deletar"><i class="fas fa-trash"></i></button></div></div>`;
                 });
             };
-
-            const episodeTypes = {
-                iframe: { label: 'iFrame/Embed', icon: `<i class="fa-solid fa-code option-icon"></i>`, needsUrl: true },
-                gdrive: { label: 'Google Drive', icon: `<svg class="option-icon" viewBox="0 0 38.4 33.5"><path d="M9.6,33.5l9.6-16.8h19.2L28.8,33.5H9.6z" fill="#ffc107"/><path d="M0,16.8l9.6,16.7,9.6-16.7L9.6,0,0,16.8z" fill="#1967d2"/><path d="M12.8,0l9.6,16.8h-19.2L12.8,0z" fill="#34a853"/></svg>`, needsUrl: true },
-                mega: { label: 'Mega.nz', icon: `<svg class="option-icon" viewBox="0 0 24 24"><path fill="#d9272e" d="M12 2A10 10 0 1 0 12 22A10 10 0 0 0 12 2ZM18.7 10.15L15.3 16.5H12.65L14.4 13.5H9.6L7.35 17.55L6.1 16.8L9.9 10.15H12.25L10.5 13.15H15.3L17.55 9.1L18.7 10.15Z"/></svg>`, needsUrl: true },
-                mediafire: { label: 'MediaFire', icon: `<svg class="option-icon" viewBox="0 0 24 24"><path fill="#1c98f9" d="M11.39 6.25c-.25-.26-.59-.4-1.04-.4a1.71 1.71 0 0 0-1.72 1.7c0 .95.77 1.72 1.72 1.72c.45 0 .79-.14 1.04-.4l.01-.01c.26-.26.4-.6.4-1.05c0-.44-.14-.78-.4-1.04l-.01.01Zm4.62 0c-.26-.26-.6-.4-1.05-.4c-.95 0-1.7.77-1.7 1.7c0 .95.76 1.72 1.7 1.72c.46 0 .8-.14 1.05-.4l.01-.01c.26-.26.4-.6.4-1.05c0-.44-.14-.78-.4-1.04l-.01.01ZM8.2 12.5l2.6 4.5H5L8.2 12.5Zm8.18 4.5l-2.6-4.5l3.2-4.5h5.5l-6.1 9Z"/></svg>`, needsUrl: true },
-                upload: { label: 'Upload Local', icon: `<i class="fa-solid fa-cloud-arrow-up option-icon"></i>`, needsUrl: false },
-            };
-            const epTypeSelector = views.episodes.querySelector('#episode-type-selector');
-            epTypeSelector.innerHTML = Object.entries(episodeTypes).map(([k,v]) => `<option value="${k}">${v.icon} ${v.label}</option>`).join('');
-            epTypeSelector.addEventListener('change', e => {
-                const needsUrl = episodeTypes[e.target.value]?.needsUrl;
-                views.episodes.querySelector('#video-url-group').style.display = needsUrl ? 'block' : 'none';
-                views.episodes.querySelector('#video-upload-group').style.display = !needsUrl ? 'block' : 'none';
-            });
+            const episodeTypes = { iframe: { label: 'iFrame/Embed', icon: `<i class="fa-solid fa-code option-icon"></i>`, needsUrl: true }, gdrive: { label: 'Google Drive', icon: `<svg class="option-icon" viewBox="0 0 38.4 33.5"><path d="M9.6,33.5l9.6-16.8h19.2L28.8,33.5H9.6z" fill="#ffc107"/><path d="M0,16.8l9.6,16.7,9.6-16.7L9.6,0,0,16.8z" fill="#1967d2"/><path d="M12.8,0l9.6,16.8h-19.2L12.8,0z" fill="#34a853"/></svg>`, needsUrl: true }, mega: { label: 'Mega.nz', icon: `<svg class="option-icon" viewBox="0 0 24 24"><path fill="#d9272e" d="M12 2A10 10 0 1 0 12 22A10 10 0 0 0 12 2ZM18.7 10.15L15.3 16.5H12.65L14.4 13.5H9.6L7.35 17.55L6.1 16.8L9.9 10.15H12.25L10.5 13.15H15.3L17.55 9.1L18.7 10.15Z"/></svg>`, needsUrl: true }, mediafire: { label: 'MediaFire', icon: `<svg class="option-icon" viewBox="0 0 24 24"><path fill="#1c98f9" d="M11.39 6.25c-.25-.26-.59-.4-1.04-.4a1.71 1.71 0 0 0-1.72 1.7c0 .95.77 1.72 1.72 1.72c.45 0 .79-.14 1.04-.4l.01-.01c.26-.26.4-.6.4-1.05c0-.44-.14-.78-.4-1.04l-.01.01Zm4.62 0c-.26-.26-.6-.4-1.05-.4c-.95 0-1.7.77-1.7 1.7c0 .95.76 1.72 1.7 1.72c.46 0 .8-.14 1.05-.4l.01-.01c.26-.26.4-.6.4-1.05c0-.44-.14-.78-.4-1.04l-.01.01ZM8.2 12.5l2.6 4.5H5L8.2 12.5Zm8.18 4.5l-2.6-4.5l3.2-4.5h5.5l-6.1 9Z"/></svg>`, needsUrl: true }, upload: { label: 'Upload Local', icon: `<i class="fa-solid fa-cloud-arrow-up option-icon"></i>`, needsUrl: false }, };
+            const epTypeSelector = views.episodes.querySelector('#episode-type-selector'); epTypeSelector.innerHTML = Object.entries(episodeTypes).map(([k, v]) => `<option value="${k}">${v.icon} ${v.label}</option>`).join('');
+            epTypeSelector.addEventListener('change', e => { const n = episodeTypes[e.target.value]?.needsUrl; views.episodes.querySelector('#video-url-group').style.display = n ? 'block' : 'none'; views.episodes.querySelector('#video-upload-group').style.display = !n ? 'block' : 'none'; });
             epTypeSelector.dispatchEvent(new Event('change'));
-
-            const updateEpisodeUI = (episodes = [], selectedSeason = null) => {
-                const seasonSelector = views.episodes.querySelector('#season-selector');
-                const episodeList = views.episodes.querySelector('.episode-manage-list');
-                const seasons = [...new Set(episodes.map(e => e.temporada))].sort((a,b) => a-b);
-                if (seasons.length === 0) seasons.push(1);
-                seasonSelector.innerHTML = seasons.map(s => `<option value="${s}">Temporada ${s}</option>`).join('');
-                seasonSelector.value = selectedSeason || seasons[seasons.length - 1] || 1;
-                episodeList.innerHTML = '';
-                episodes.filter(e => e.temporada == seasonSelector.value).sort((a,b) => a.numero - b.numero).forEach(ep => {
-                    episodeList.innerHTML += `<li data-id="${ep.id}"><div class="ep-info"><span class="ep-number">${ep.numero}</span><span class="ep-title">${ep.titulo || `Episódio ${ep.numero}`}</span></div><button class="ep-delete-btn" title="Deletar"><i class="fas fa-trash"></i></button></li>`;
-                });
-                if(episodeList.innerHTML === '') episodeList.innerHTML = `<li class="no-content-message" style="border:none;">Nenhum episódio para esta temporada.</li>`;
-            };
-
-            forms.anime.addEventListener('submit', async e => {
-                e.preventDefault();
-                const btn = e.target.querySelector('button[type="submit"]');
-                btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
-                
-                const body = Object.fromEntries(new FormData(forms.anime).entries());
-                const capaFile = body.imagemCapaFile;
-                delete body.imagemCapaFile;
-
-                if(capaFile && capaFile.size > 0) {
-                    try {
-                        const uploadRes = await uploadFile('capa', capaFile, forms.anime);
-                        if(uploadRes.success) body.imagemCapa = uploadRes.filePath;
-                        else throw new Error(uploadRes.error);
-                    } catch(err) { showToast(err.message, 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Salvar'; return; }
-                }
-
-                body.generos = body.generos.split(',').map(g => g.trim());
-                const res = await apiCall(isEditing ? `animes/${editingId}` : 'animes', { method: isEditing ? 'PUT' : 'POST', body });
-                if (res.success) { showToast(`Anime ${isEditing ? 'atualizado' : 'criado'}!`, 'success'); showView('grid'); loadAnimes(); }
-                btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Salvar';
-            });
-
-            forms.episode.addEventListener('submit', async e => {
-                e.preventDefault();
-                const btn = e.target.querySelector('button[type="submit"]');
-                btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adicionando...';
-                
-                const body = Object.fromEntries(new FormData(forms.episode).entries());
-                const videoFile = body.videoFile;
-                delete body.videoFile;
-
-                if (body.tipoVideo === 'upload' && videoFile && videoFile.size > 0) {
-                     try {
-                        const uploadRes = await uploadFile('video', videoFile, forms.episode);
-                        if(uploadRes.success) body.urlVideo = uploadRes.filePath;
-                        else throw new Error(uploadRes.error);
-                    } catch(err) { showToast(err.message, 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-plus"></i> Adicionar Episódio'; return; }
-                } else if (!body.urlVideo && episodeTypes[body.tipoVideo]?.needsUrl) {
-                    showToast('A URL do vídeo é obrigatória para este tipo.', 'error');
-                    btn.disabled = false; btn.innerHTML = '<i class="fas fa-plus"></i> Adicionar Episódio';
-                    return;
-                }
-
-                const res = await apiCall('episodios', { method: 'POST', body });
-                if (res.success) {
-                    showToast('Episódio adicionado!', 'success');
-                    e.target.reset();
-                    epTypeSelector.dispatchEvent(new Event('change'));
-                    forms.episode.querySelector('[name="temporada"]').value = body.temporada;
-                    const { data: updatedAnime } = await apiCall(`animes/${body.animeId}`);
-                    if (updatedAnime) { state.currentManagedAnime = updatedAnime; updateEpisodeUI(updatedAnime.episodios, body.temporada); }
-                }
-                btn.disabled = false; btn.innerHTML = '<i class="fas fa-plus"></i> Adicionar Episódio';
-            });
-            
-            panel.addEventListener('click', async e => {
-                const button = e.target.closest('button');
-                if(!button) return;
-                if (button.classList.contains('btn-show-form')) { isEditing = false; forms.anime.reset(); panel.querySelector('.form-title').textContent = 'Adicionar Novo Anime'; showView('form'); return; }
-                if (button.classList.contains('btn-cancel')) { showView('grid'); return; }
-                
-                const card = button.closest('.item-card, li');
-                if (!card) return;
-                const id = card.dataset.id;
-                
-                if (button.classList.contains('btn-edit')) {
-                    const { data } = await apiCall(`animes/${id}`);
-                    if (data) { isEditing = true; editingId = id; panel.querySelector('.form-title').textContent = 'Editar Anime'; Object.entries(data).forEach(([k,v]) => { const i = forms.anime.querySelector(`[name="${k}"]`); if(i) i.value = Array.isArray(v) ? v.join(', ') : v; }); showView('form'); }
-                } else if (button.classList.contains('btn-delete')) {
-                    if (confirm('Deletar este anime e todos os seus episódios?')) { if ((await apiCall(`animes/${id}`, { method: 'DELETE' })).success) { showToast('Anime deletado!', 'success'); loadAnimes(); }}
-                } else if (button.classList.contains('btn-episodes')) {
-                    const { data } = await apiCall(`animes/${id}`);
-                    if (data) { state.currentManagedAnime = data; views.episodes.querySelector('.form-title-episodes').textContent = `Episódios de: ${data.titulo}`; views.episodes.querySelector('[name="animeId"]').value = data.id; updateEpisodeUI(data.episodios); showView('episodes'); }
-                } else if (button.classList.contains('ep-delete-btn')) {
-                    if (confirm('Deletar este episódio?')) { 
-                        const result = await apiCall(`episodios/${id}`, { method: 'DELETE' });
-                        if(result.success){
-                            showToast('Episódio deletado.', 'success'); 
-                            state.currentManagedAnime.episodios = state.currentManagedAnime.episodios.filter(ep => ep.id != id); 
-                            updateEpisodeUI(state.currentManagedAnime.episodios, views.episodes.querySelector('#season-selector').value);
-                        }
-                    }
-                }
-            });
+            const updateEpisodeUI = (episodes = [], selectedSeason = null) => { const s = views.episodes.querySelector('#season-selector'); const eL = views.episodes.querySelector('.episode-manage-list'); const seasons = [...new Set(episodes.map(e => e.temporada))].sort((a, b) => a - b); if (seasons.length === 0) seasons.push(1); s.innerHTML = seasons.map(s => `<option value="${s}">Temporada ${s}</option>`).join(''); s.value = selectedSeason || seasons[seasons.length - 1] || 1; eL.innerHTML = ''; episodes.filter(e => e.temporada == s.value).sort((a, b) => a.numero - b.numero).forEach(ep => { eL.innerHTML += `<li data-id="${ep.id}"><div class="ep-info"><span class="ep-number">${ep.numero}</span><span class="ep-title">${ep.titulo || `Episódio ${ep.numero}`}</span></div><button class="ep-delete-btn" title="Deletar"><i class="fas fa-trash"></i></button></li>`; }); if (eL.innerHTML === '') eL.innerHTML = `<li class="no-content-message">Nenhum episódio para esta temporada.</li>`; };
+            forms.anime.addEventListener('submit', async e => { e.preventDefault(); const b = e.target.querySelector('button[type="submit"]'); b.disabled = true; b.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...'; const body = Object.fromEntries(new FormData(forms.anime).entries()); const f = body.imagemCapaFile; delete body.imagemCapaFile; if (f && f.size > 0) { try { const u = await uploadFile('capa', f, forms.anime); if (u.success) body.imagemCapa = u.filePath; else throw new Error(u.error); } catch (err) { showToast(err.message, 'error'); b.disabled = false; b.innerHTML = '<i class="fas fa-save"></i> Salvar'; return; } } body.generos = body.generos.split(',').map(g => g.trim()); const r = await apiCall(isEditing ? `animes/${editingSlug}` : 'animes', { method: isEditing ? 'PUT' : 'POST', body }); if (r.success) { showToast(`Anime ${isEditing ? 'atualizado' : 'criado'}!`, 'success'); showView('grid'); loadAnimes(); } b.disabled = false; b.innerHTML = '<i class="fas fa-save"></i> Salvar'; });
+            forms.episode.addEventListener('submit', async e => { e.preventDefault(); const b = e.target.querySelector('button[type="submit"]'); b.disabled = true; b.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adicionando...'; const body = Object.fromEntries(new FormData(forms.episode).entries()); const vf = body.videoFile; delete body.videoFile; if (body.tipoVideo === 'upload' && vf && vf.size > 0) { try { const u = await uploadFile('video', vf, forms.episode); if(u.success) body.urlVideo = u.filePath; else throw new Error(u.error); } catch(err) { showToast(err.message, 'error'); b.disabled = false; b.innerHTML = '<i class="fas fa-plus"></i> Adicionar Episódio'; return; } } else if (!body.urlVideo && episodeTypes[body.tipoVideo]?.needsUrl) { showToast('URL do vídeo é obrigatória.', 'error'); b.disabled = false; b.innerHTML = '<i class="fas fa-plus"></i> Adicionar Episódio'; return; } const r = await apiCall('episodios', { method: 'POST', body }); if (r.success) { showToast('Episódio adicionado!', 'success'); e.target.reset(); epTypeSelector.dispatchEvent(new Event('change')); forms.episode.querySelector('[name="temporada"]').value = body.temporada; const { data: uA } = await apiCall(`animes/${state.currentManagedAnime.slug}`); if (uA) { state.currentManagedAnime = uA; updateEpisodeUI(uA.episodios, body.temporada); } } b.disabled = false; b.innerHTML = '<i class="fas fa-plus"></i> Adicionar Episódio'; });
+            panel.addEventListener('click', async e => { const btn = e.target.closest('button'); if (!btn) return; if (btn.classList.contains('btn-show-form')) { isEditing = false; editingSlug = null; forms.anime.reset(); panel.querySelector('.form-title').textContent = 'Adicionar Novo Anime'; showView('form'); return; } if (btn.classList.contains('btn-cancel')) { showView('grid'); return; } const card = btn.closest('.item-card, li'); if (!card) return; const slug = card.dataset.slug; const id = card.dataset.id; if (btn.classList.contains('btn-edit')) { const { data } = await apiCall(`animes/${slug}`); if(data){ isEditing = true; editingSlug = slug; panel.querySelector('.form-title').textContent = 'Editar Anime'; Object.entries(data).forEach(([k,v]) => { const i = forms.anime.querySelector(`[name="${k}"]`); if(i) i.value = Array.isArray(v) ? v.join(', ') : v; }); showView('form'); } } else if (btn.classList.contains('btn-delete')) { if(confirm('Deletar este anime?')){ if((await apiCall(`animes/${slug}`, {method:'DELETE'})).success){ showToast('Anime deletado!'); loadAnimes(); } } } else if (btn.classList.contains('btn-episodes')) { const { data } = await apiCall(`animes/${slug}`); if(data){ state.currentManagedAnime = data; views.episodes.querySelector('.form-title-episodes').textContent = `Episódios de: ${data.titulo}`; views.episodes.querySelector('[name="animeId"]').value = data.id; updateEpisodeUI(data.episodios); showView('episodes'); } } else if (btn.classList.contains('ep-delete-btn')) { if(confirm('Deletar este episódio?')){ const r = await apiCall(`episodios/${id}`, {method:'DELETE'}); if(r.success){ showToast('Episódio deletado.'); state.currentManagedAnime.episodios=state.currentManagedAnime.episodios.filter(ep=>ep.id!=id); updateEpisodeUI(state.currentManagedAnime.episodios, views.episodes.querySelector('#season-selector').value); } } } });
             loadAnimes();
         }
 
-        // ==========================================================================
-        // MÓDULO 6: LÓGICA DO PAINEL DE POSTS
-        // ==========================================================================
         function initPostsPanel() {
             const panel = document.getElementById('panel-posts');
+            const views = { grid: panel.querySelector('.grid-view'), form: panel.querySelector('.form-view') };
             const form = panel.querySelector('.main-form');
-            const grid = panel.querySelector('.items-grid');
             let isEditing = false, editingId = null;
-
-            const showView = (isFormVisible) => {
-                panel.querySelector('.form-view').style.display = isFormVisible ? 'block' : 'none';
-                panel.querySelector('.grid-view').style.display = isFormVisible ? 'none' : 'block';
-                panel.querySelector('.view-header').style.display = isFormVisible ? 'none' : 'block';
-            };
-
-            const loadPosts = async () => {
-                panel.querySelector('.grid-view').classList.add('panel-loading');
-                const { data } = await apiCall('posts');
-                panel.querySelector('.grid-view').classList.remove('panel-loading');
-                grid.innerHTML = '';
-                if (!data || data.length === 0) { grid.innerHTML = '<p class="no-content-message">Nenhuma notícia postada.</p>'; return; }
-                data.sort((a,b) => b.id - a.id).forEach(post => {
-                    grid.innerHTML += `<div class="item-card" data-id="${post.id}"><img src="${post.imagemDestaque || '/images/placeholder_news.png'}" class="item-card__image" onerror="this.onerror=null;this.src='/images/placeholder_news.png';"><div class="item-card__content"><h3 class="item-card__title">${post.titulo}</h3></div><div class="item-card__actions"><button class="btn btn--small btn-edit" title="Editar Notícia"><i class="fas fa-edit"></i></button><button class="btn btn--small btn-delete" title="Deletar Notícia"><i class="fas fa-trash"></i></button></div></div>`;
-                });
-            };
-
-            panel.addEventListener('click', async (e) => {
-                const button = e.target.closest('button');
-                if (!button) return;
-                if (button.classList.contains('btn-show-form')) { isEditing = false; form.reset(); panel.querySelector('.form-title').textContent = 'Adicionar Notícia'; showView(true); }
-                else if (button.classList.contains('btn-cancel')) { showView(false); }
-                else {
-                    const card = button.closest('.item-card');
-                    if (!card) return;
-                    const id = card.dataset.id;
-                    if (button.classList.contains('btn-edit')) {
-                        const { data } = await apiCall(`posts/${id}`);
-                        if(data) { isEditing = true; editingId = id; panel.querySelector('.form-title').textContent = 'Editar Notícia'; Object.entries(data).forEach(([k,v]) => { const i = form.querySelector(`[name="${k}"]`); if(i) i.value = v; }); showView(true); }
-                    } else if (button.classList.contains('btn-delete')) {
-                        if (confirm('Deletar esta notícia?')) { if ((await apiCall(`posts/${id}`, { method: 'DELETE' })).success) { showToast('Notícia deletada!', 'success'); loadPosts(); }}
-                    }
-                }
-            });
-
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const body = Object.fromEntries(new FormData(form).entries());
-                body.emDestaque = !!body.emDestaque;
-                const result = await apiCall(isEditing ? `posts/${editingId}` : 'posts', { method: isEditing ? 'PUT' : 'POST', body });
-                if (result.success) { showToast(`Notícia ${isEditing ? 'atualizada' : 'publicada'}!`, 'success'); showView(false); loadPosts(); }
-            });
-
+            const showView = (view) => { Object.values(views).forEach(el => el.style.display = 'none'); if (views[view]) views[view].style.display = 'block'; const vh = panel.querySelector('.view-header'); if(vh) vh.style.display = view === 'grid' ? 'block' : 'none'; };
+            const loadPosts = async () => { views.grid.classList.add('panel-loading'); const { data } = await apiCall('posts'); views.grid.classList.remove('panel-loading'); const grid = views.grid.querySelector('.items-grid'); grid.innerHTML = ''; if (!data || data.length === 0) { grid.innerHTML = '<p class="no-content-message">Nenhuma notícia postada.</p>'; return; } data.sort((a,b) => b.id - a.id).forEach(post => { grid.innerHTML += `<div class="item-card" data-id="${post.id}" data-slug="${post.slug}"><a href="/noticias/${post.slug}" target="_blank"><img src="${post.imagemDestaque || '/images/placeholder_news.png'}" class="item-card__image"></a><div class="item-card__content"><h3 class="item-card__title">${post.titulo}</h3></div><div class="item-card__actions"><button class="btn btn--small btn-edit" title="Editar"><i class="fas fa-edit"></i></button><button class="btn btn--small btn-delete" title="Deletar"><i class="fas fa-trash"></i></button></div></div>`; }); };
+            form.addEventListener('submit', async e => { e.preventDefault(); const body = Object.fromEntries(new FormData(form).entries()); body.emDestaque = !!body.emDestaque; const result = await apiCall(isEditing ? `posts/${editingId}` : 'posts', { method: isEditing ? 'PUT' : 'POST', body }); if (result.success) { showToast(`Notícia ${isEditing ? 'atualizada' : 'publicada'}!`); showView('grid'); loadPosts(); } });
+            panel.addEventListener('click', async e => { const btn = e.target.closest('button'); if (!btn) return; if (btn.classList.contains('btn-show-form')) { isEditing = false; editingId = null; form.reset(); panel.querySelector('.form-title').textContent = 'Adicionar Notícia'; showView('form'); return; } if (btn.classList.contains('btn-cancel')) { showView('grid'); return; } const card = btn.closest('.item-card'); if (!card) return; const id = card.dataset.id; const slug = card.dataset.slug; if (btn.classList.contains('btn-edit')) { const { data } = await apiCall(`posts/${slug}`); if(data){ isEditing = true; editingId = id; panel.querySelector('.form-title').textContent = 'Editar Notícia'; Object.entries(data).forEach(([k,v])=>{const i=form.querySelector(`[name="${k}"]`);if(i){if(i.type==='checkbox')i.checked=v;else if(Array.isArray(v))i.value=v.join(', ');else i.value=v;}}); showView('form'); } } else if (btn.classList.contains('btn-delete')) { if(confirm('Deletar esta notícia?')){ if((await apiCall(`posts/${id}`,{method:'DELETE'})).success){ showToast('Notícia deletada!'); loadPosts(); }} } });
             loadPosts();
         }
 
-        // ==========================================================================
-        // MÓDULO 7: LÓGICA DO PAINEL DE USUÁRIOS
-        // ==========================================================================
         function initUsersPanel() {
             const panel = document.getElementById('panel-users');
             const tableBody = panel.querySelector('tbody');
-
-            const loadUsers = async () => {
-                panel.querySelector('.table-container').classList.add('panel-loading');
-                const { data } = await apiCall('users');
-                panel.querySelector('.table-container').classList.remove('panel-loading');
-                tableBody.innerHTML = '';
-                if (!data || data.length === 0) { tableBody.innerHTML = '<tr><td colspan="6" class="no-content-message">Nenhum usuário encontrado.</td></tr>'; return; }
-                data.forEach(user => {
-                    tableBody.innerHTML += `<tr data-id="${user.id}"><td><img src="${user.avatar || '/images/default-avatar.png'}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"></td><td>${user.nome}</td><td>${user.email}</td><td>${user.role}</td><td>${new Date(user.createdAt).toLocaleDateString('pt-BR')}</td><td><button class="btn btn--small btn-delete" ${user.id == state.currentUserId ? 'disabled' : ''}><i class="fas fa-trash"></i></button></td></tr>`;
-                });
-            };
-
-            tableBody.addEventListener('click', async (e) => {
-                const button = e.target.closest('.btn-delete');
-                if(button && !button.disabled) {
-                    const id = button.closest('tr').dataset.id;
-                    if(confirm('Deletar este usuário?')) { if((await apiCall(`users/${id}`, { method: 'DELETE' })).success) { showToast('Usuário deletado!', 'success'); loadUsers(); }}
-                }
-            });
+            const loadUsers = async () => { panel.querySelector('.table-container').classList.add('panel-loading'); const { data } = await apiCall('users'); panel.querySelector('.table-container').classList.remove('panel-loading'); tableBody.innerHTML = ''; if (!data || data.length === 0) { tableBody.innerHTML = '<tr><td colspan="6" class="no-content-message">Nenhum usuário encontrado.</td></tr>'; return; } data.forEach(user => { tableBody.innerHTML += `<tr data-id="${user.id}"><td><img src="${user.avatar || '/images/default-avatar.png'}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"></td><td>${user.nome}</td><td>${user.email}</td><td>${user.role}</td><td>${new Date(user.createdAt).toLocaleDateString('pt-BR')}</td><td><button class="btn btn--small btn-delete" ${user.id == state.currentUserId ? 'disabled' : ''}><i class="fas fa-trash"></i></button></td></tr>`; }); };
+            tableBody.addEventListener('click', async e => { const btn = e.target.closest('.btn-delete'); if(btn && !btn.disabled) { const id = btn.closest('tr').dataset.id; if(confirm('Deletar este usuário?')) { if((await apiCall(`users/${id}`, { method: 'DELETE' })).success) { showToast('Usuário deletado!'); loadUsers(); }} } });
             loadUsers();
         }
         
+        initAnimesPanel();
     });
-</script>
+   </script>
 </body>
 </html>

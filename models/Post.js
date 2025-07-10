@@ -1,3 +1,7 @@
+// ====================================================================================
+//              DenyAnimeHub - Modelo de Dados: Post (Notícia)
+// ====================================================================================
+
 'use strict';
 const { Model } = require('sequelize');
 
@@ -9,13 +13,22 @@ module.exports = (sequelize, DataTypes) => {
   }
   Post.init({
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    slug: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: {
+        name: 'posts_slug_key',
+        msg: 'Este slug já está em uso. O título da notícia provavelmente já existe.'
+      }
+    },
     titulo: { type: DataTypes.STRING, allowNull: false },
     conteudo: { type: DataTypes.TEXT('long'), allowNull: false },
-    imagemDestaque: DataTypes.STRING,
-    autorNome: DataTypes.STRING,
+    imagemDestaque: { type: DataTypes.STRING, allowNull: true },
+    autorId: { type: DataTypes.INTEGER, allowNull: true }, // Permitir nulo caso o autor seja deletado
+    autorNome: { type: DataTypes.STRING, allowNull: true }, // Nome do autor na época da postagem
     tags: {
       type: DataTypes.TEXT,
-      get() { const v = this.getDataValue('tags'); return v ? JSON.parse(v) : []; },
+      get() { const v = this.getDataValue('tags'); try { return v ? JSON.parse(v) : []; } catch (e) { return []; } },
       set(v) { const t = Array.isArray(v) ? v : (v ? v.split(',').map(t => t.trim()) : []); this.setDataValue('tags', JSON.stringify(t)); }
     },
     categoria: { type: DataTypes.STRING, defaultValue: "Notícia" },

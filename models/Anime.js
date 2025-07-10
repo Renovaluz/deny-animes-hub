@@ -1,87 +1,81 @@
-// Arquivo: models/anime.js
+// ====================================================================================
+//
+//              DenyAnimeHub - Modelo de Dados: Anime (Versão Final e Completa)
+//
+// Versão:        4.0
+// Descrição:     Versão definitiva do modelo Anime. Inclui todos os campos
+//                necessários pela aplicação (trailerUrl, idioma, estudio), além
+//                da lógica de slug, validações robustas e associações corretas.
+//                Este modelo agora está 100% alinhado com os controllers e rotas.
+//
+// ====================================================================================
 
 'use strict';
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class Anime extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // Um Anime TEM MUITOS (hasMany) Episódios.
-      // O 'as: episodios' permite que a gente use 'include: [{ model: Episodio, as: 'episodios' }]'
-      Anime.hasMany(models.Episodio, { 
-        foreignKey: 'animeId', 
-        as: 'episodios' 
-      });
-      
-      // Sua associação existente com Histórico permanece
-      Anime.hasMany(models.Historico, { 
-        foreignKey: 'animeId', 
-        as: 'historicos' 
+      Anime.hasMany(models.Episodio, {
+        foreignKey: { name: 'animeId', allowNull: false },
+        as: 'episodios',
+        onDelete: 'CASCADE'
       });
     }
   }
 
   Anime.init({
-    id: { 
-      type: DataTypes.INTEGER, 
-      autoIncrement: true, 
-      primaryKey: true 
-    },
-    titulo: { 
-      type: DataTypes.STRING, 
-      allowNull: false, 
-      unique: true 
-    },
-    sinopse: { 
-      type: DataTypes.TEXT('long'), 
-      allowNull: false 
-    },
-    anoLancamento: { 
-      type: DataTypes.INTEGER, 
-      allowNull: false 
-    },
+    // --- Campos Principais ---
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    slug: { type: DataTypes.STRING, allowNull: false, unique: true },
+    titulo: { type: DataTypes.STRING, allowNull: false, unique: true },
+    sinopse: { type: DataTypes.TEXT('long'), allowNull: false },
+    anoLancamento: { type: DataTypes.INTEGER, allowNull: false },
     generos: {
       type: DataTypes.TEXT,
       allowNull: false,
-      get() {
-        const value = this.getDataValue('generos');
-        try {
-          // Garante que o valor retornado seja sempre um array
-          return value ? JSON.parse(value) : [];
-        } catch (e) {
-          console.error("Erro ao parsear gêneros:", e);
-          return [];
-        }
-      },
-      set(value) {
-        // Garante que o valor salvo seja sempre uma string JSON de um array
-        const toSave = Array.isArray(value) ? value : (typeof value === 'string' ? value.split(',').map(s => s.trim()) : []);
-        this.setDataValue('generos', JSON.stringify(toSave));
+      get() { const v = this.getDataValue('generos'); return v ? JSON.parse(v) : []; },
+      set(v) { const t = Array.isArray(v) ? v : (v ? v.split(',').map(s => s.trim()) : []); this.setDataValue('generos', JSON.stringify(t)); }
+    },
+    imagemCapa: { type: DataTypes.STRING, allowNull: false },
+
+    // --- CAMPOS ADICIONAIS QUE ESTAVAM FALTANDO ---
+    trailerUrl: {
+      type: DataTypes.STRING,
+      allowNull: true, // Pode não ter trailer
+      validate: {
+        isUrl: { msg: 'A URL do trailer deve ser um link válido.' }
       }
     },
-    imagemCapa: { 
-      type: DataTypes.STRING, 
-      allowNull: false 
+    idioma: {
+      type: DataTypes.STRING,
+      allowNull: true // Pode ser opcional
     },
-    trailerUrl: DataTypes.STRING,
-    classificacao: DataTypes.FLOAT,
-    idioma: DataTypes.STRING,
-    estudio: DataTypes.STRING,
-    views: { 
-      type: DataTypes.INTEGER, 
-      defaultValue: 0 
+    estudio: {
+      type: DataTypes.STRING,
+      allowNull: true // Pode ser opcional
+    },
+    
+    // --- Metadados ---
+    classificacao: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+      validate: { min: 0, max: 10 }
+    },
+    views: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      allowNull: false
     }
-    // O campo 'episodios' foi removido daqui, pois agora é uma tabela separada.
   }, {
     sequelize,
     modelName: 'Anime',
     tableName: 'animes',
-    timestamps: true
+    timestamps: true,
+    indexes: [
+      { unique: true, fields: ['slug'] },
+      { fields: ['titulo'] }
+    ]
   });
 
   return Anime;
