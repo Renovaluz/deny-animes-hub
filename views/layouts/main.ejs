@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= locals.titulo || 'DenyAnimeHub' %> | O seu universo Otaku</title>
+
+    <!-- Fontes e Ícones -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- CSS e Favicon -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="/images/1.ico" type="image/ico">
+</head>
+<body data-theme="dark" class="page-<%= locals.page_name || 'default' %>">
+
+    <!-- A Navbar é incluída AQUI, e em nenhum outro lugar -->
+    <%- include('../partials/navbar') %>
+
+    <!-- O CONTEÚDO DA PÁGINA ESPECÍFICA SERÁ INJETADO AQUI -->
+    <main class="main-content-wrapper">
+        <%- body %>
+    </main>
+
+    <!-- O Rodapé é incluído AQUI, e em nenhum outro lugar -->
+    <%- include('../partials/footer') %>
+
+    <!-- Scripts Globais -->
+    <script src="/js/script.js" defer></script>
+</body>
+</html>

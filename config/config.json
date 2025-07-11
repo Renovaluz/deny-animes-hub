@@ -1,17 +1,10 @@
 {
   "development": {
-    "username": "root",
-    "password": "",
-    "database": "denyanimeshub",
+    "username": "seu_usuario_local",
+    "password": "sua_senha_local",
+    "database": "denyanimehub_dev",
     "host": "127.0.0.1",
-    "dialect": "mysql"
-  },
-  "test": {
-    "username": "root",
-    "password": "",
-    "database": "denyanimeshub_test",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "postgres"
   },
   "production": {
     "username": "denyanimeshub_user",

@@ -1,228 +1,200 @@
-<%- include('partials/header', { titulo: initialAnime ? `Assistindo ${initialAnime.titulo}` : 'Assistir' }) %>
-<script src="/js/protect.js" defer></script>
+<%
+    // ==========================================================================
+    //          LÓGICA DE PREPARAÇÃO (VERSÃO RIKUDŌ SENNIN - AUTOCONTIDA)
+    // ==========================================================================
+    // Toda a inteligência de conversão está aqui, garantindo que o arquivo sempre funcione.
+
+    let urlPlayer = initialEpisode.urlVideo;
+    let linksParaDownload = [];
+    let podeBaixar = false;
+
+    // Apenas episódios com uma URL válida podem ter opções de player ou download.
+    if (initialEpisode.urlVideo) {
+        
+        // --- LÓGICA PARA UPLOADS LOCAIS ---
+        if (initialEpisode.tipoVideo === 'upload') {
+            podeBaixar = true;
+            try {
+                // Tenta interpretar a urlVideo como um JSON de múltiplas qualidades.
+                const parsedQualities = JSON.parse(initialEpisode.urlVideo);
+                if (typeof parsedQualities === 'object' && parsedQualities !== null && Object.keys(parsedQualities).length > 0) {
+                    urlPlayer = Object.values(parsedQualities)[0]; // Player usa a primeira qualidade
+                    for (const qualidade in parsedQualities) {
+                        linksParaDownload.push({
+                            qualidade: qualidade,
+                            urlDownload: parsedQualities[qualidade]
+                        });
+                    }
+                } else { throw new Error("JSON inválido ou vazio."); }
+            } catch (e) {
+                // Se não for um JSON, é uma URL única de upload.
+                urlPlayer = initialEpisode.urlVideo;
+                linksParaDownload.push({
+                    qualidade: 'Padrão',
+                    urlDownload: initialEpisode.urlVideo
+                });
+            }
+        
+        // --- LÓGICA MESTRE PARA GOOGLE DRIVE ---
+        } else if (initialEpisode.tipoVideo === 'gdrive') {
+            try {
+                // Expressão regular para extrair o ID do arquivo de QUALQUER link do Google Drive
+                const regex = /(?:drive\.google\.com\/(?:file\/d\/|open\?id=|drive\/folders\/))([a-zA-Z0-9_-]{25,})/;
+                const match = initialEpisode.urlVideo.match(regex);
+
+                if (match && match[1]) {
+                    const fileId = match[1];
+                    podeBaixar = true;
+                    
+                    // GERA A URL PARA O PLAYER (IFRAME)
+                    urlPlayer = `https://drive.google.com/file/d/${fileId}/preview`;
+                    
+                    // GERA A URL PARA O BOTÃO DE DOWNLOAD (TELA DE CONFIRMAÇÃO)
+                    const urlDownloadFinal = `https://drive.usercontent.google.com/download?id=${fileId}&export=download&authuser=0`;
+                    
+                    linksParaDownload.push({
+                        qualidade: 'Google Drive',
+                        urlDownload: urlDownloadFinal
+                    });
+                } else {
+                    // Se o link do GDrive for inválido, não mostra nada.
+                    podeBaixar = false;
+                    urlPlayer = '';
+                    console.warn("Link do Google Drive inválido, não foi possível extrair ID:", initialEpisode.urlVideo);
+                }
+            } catch(e) {
+                console.error("Erro ao processar link do Google Drive:", e);
+                podeBaixar = false;
+                urlPlayer = '';
+            }
+
+        // --- LÓGICA PARA OUTROS SERVIÇOS ---
+        } else if (['mega', 'mediafire', 'iframe'].includes(initialEpisode.tipoVideo)) {
+            // Para estes, o link é o mesmo para player e download, e não há download direto.
+            podeBaixar = (initialEpisode.tipoVideo !== 'iframe'); // iFrames não têm botão de download
+            urlPlayer = initialEpisode.urlVideo;
+            if (podeBaixar) {
+                linksParaDownload.push({
+                    qualidade: `${initialEpisode.tipoVideo.charAt(0).toUpperCase() + initialEpisode.tipoVideo.slice(1)}`,
+                    urlDownload: initialEpisode.urlVideo
+                });
+            }
+        }
+    }
+%>
+
 <style>
-    .video-player-section { background-color: var(--bg-secondary); border-radius: var(--border-radius); border: 1px solid var(--border-color); padding: 0.75rem; display: flex; flex-direction: column; box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
-    .video-player-header { padding: 0.75rem; border-bottom: 1px solid var(--border-color); margin-bottom: 0.75rem; }
-    .video-player-header h1 { font-size: 1.8rem; margin: 0; color: var(--accent-primary); font-weight: 700; line-height: 1.3; }
-    .video-player-header h1 a { color: inherit; text-decoration: none; transition: color 0.2s ease; }
-    .video-player-header h1 a:hover { color: var(--text-primary); }
-    .video-player-header p { color: var(--text-secondary); margin: 0.25rem 0 0 0; font-size: 1.1rem; }
-    .video-player-container { position: relative; width: 100%; aspect-ratio: 16 / 9; background-color: #000; border-radius: var(--border-radius); overflow: hidden; }
-    .video-player-container iframe, .video-player-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-    .video-player-container .placeholder, .video-player-container .loader, .video-player-container .error-message { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #000; z-index: 5; text-align: center; color: var(--text-secondary); }
-    .video-player-container .loader .fa-spinner { font-size: 3rem; margin-bottom: 1rem; color: var(--accent-primary); }
-    .video-player-container .error-message i { font-size: 2.5rem; margin-bottom: 1rem; color: var(--error); }
-    .player-controls { padding: 1rem; margin-top: 0.75rem; }
-    .player-controls .actions-cell { display: flex; justify-content: space-between; gap: 0.75rem; }
+    /* ESTILOS PROFISSIONAIS E COMPLETOS PARA A PÁGINA DO PLAYER, SEM OMISSÕES */
+    :root { /* Fallbacks para variáveis CSS, caso não existam no seu layout principal */ --space-5: 1.5rem; --space-6: 2rem; --bg-secondary: #141414; --border-radius: 8px; --border-color: #303030; --space-3: 0.75rem; --accent-primary: #E50914; --text-secondary: #A0A0A0; --space-4: 1rem; --bg-tertiary: #222222; --accent-primary-rgb: 229, 9, 20; }
+    .player-main-container { padding: var(--space-5, 1.5rem) 0; }
+    .player-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-6, 2rem); }
+    @media (min-width: 1024px) { .player-grid { grid-template-columns: 1fr 350px; } }
+    .video-player-section { background-color: var(--bg-secondary, #141414); border-radius: var(--border-radius, 8px); border: 1px solid var(--border-color, #303030); padding: var(--space-3, 0.75rem); display: flex; flex-direction: column; }
+    .video-player-header { padding: var(--space-3, 0.75rem); }
+    .video-player-header h1 { font-size: 1.8rem; margin: 0; color: var(--accent-primary, #E50914); }
+    .video-player-header h1 a { color: inherit; text-decoration: none; }
+    .video-player-header h1 a:hover { text-decoration: underline; }
+    .video-player-header p { color: var(--text-secondary, #A0A0A0); margin: 0.5rem 0 0 0; }
+    .video-player-container { position: relative; width: 100%; aspect-ratio: 16 / 9; background-color: #000; border-radius: var(--border-radius, 8px); overflow: hidden; }
+    .video-player-container iframe, .video-player-container video { width: 100%; height: 100%; border: none; }
+    .player-controls { padding: var(--space-4, 1rem); border-top: 1px solid var(--border-color, #303030); margin-top: 1rem; }
+    .player-controls .actions-cell { display: flex; justify-content: space-between; gap: var(--space-3, 0.75rem); }
     .player-controls .actions-cell .btn { flex-grow: 1; }
-    .player-controls h4 { font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-secondary); font-weight: 600; }
-    .download-options { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; }
-    .download-options .btn { background-color: var(--bg-tertiary); }
-    .download-options .btn:hover { background-color: #333; }
-    .btn.is-processing { cursor: progress; background-color: var(--accent-secondary); color: white; }
-    .episode-list-sidebar { background-color: var(--bg-secondary); border-radius: var(--border-radius); border: 1px solid var(--border-color); max-height: calc(100vh - 200px); overflow-y: auto; display: flex; flex-direction: column; }
-    .episode-list-sidebar h3 { padding: 1rem; margin: 0; border-bottom: 1px solid var(--border-color); font-size: 1.2rem; position: sticky; top: 0; background-color: var(--bg-secondary); z-index: 10; flex-shrink: 0; }
-    .episode-list { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
-    .episode-list li a { display: flex; align-items: center; gap: 1rem; padding: 1rem; color: var(--text-secondary); transition: all 0.2s ease; border-bottom: 1px solid var(--border-color); text-decoration: none; }
+    .player-controls h4 { font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-secondary, #A0A0A0); }
+    .download-options { display: flex; flex-wrap: wrap; gap: var(--space-3, 0.75rem); margin-bottom: 1.5rem; }
+    .download-options .btn { background-color: var(--bg-tertiary, #222); }
+    .episode-list-sidebar { background-color: var(--bg-secondary, #141414); border-radius: var(--border-radius, 8px); border: 1px solid var(--border-color, #303030); max-height: calc(100vh - 150px); overflow-y: auto; }
+    .episode-list-sidebar h3 { padding: var(--space-4, 1rem); margin: 0; border-bottom: 1px solid var(--border-color, #303030); font-size: 1.2rem; position: sticky; top: 0; background-color: var(--bg-secondary, #141414); z-index: 10; }
+    .episode-list { list-style: none; padding: 0; margin: 0; }
+    .episode-list li a { display: flex; align-items: center; gap: 1rem; padding: 1rem; color: var(--text-secondary, #A0A0A0); transition: all 0.2s ease; border-bottom: 1px solid var(--border-color, #303030); text-decoration: none; }
     .episode-list li:last-child a { border-bottom: none; }
-    .episode-list li a:hover { background-color: rgba(var(--accent-primary-rgb), 0.1); color: var(--accent-primary); }
-    .episode-list li.active a { background-color: var(--accent-primary); color: white; font-weight: 600; }
-    .episode-list li.active a:hover { background-color: #ff1c28; }
-    .episode-number-badge { flex-shrink: 0; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background-color: var(--bg-tertiary); border-radius: 4px; font-weight: 600; font-size: 0.9em; transition: background-color 0.2s ease; }
+    .episode-list li a:hover { background-color: rgba(var(--accent-primary-rgb, 229, 9, 20), 0.1); color: var(--accent-primary, #E50914); }
+    .episode-list li.active a { background-color: var(--accent-primary, #E50914); color: white; font-weight: 600; }
+    .episode-number-badge { flex-shrink: 0; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background-color: var(--bg-tertiary, #222); border-radius: 4px; font-weight: 600; font-size: 0.9em; }
     .episode-list li.active .episode-number-badge { background-color: rgba(255, 255, 255, 0.2); }
-    .episode-list li a:hover .episode-number-badge { background-color: rgba(var(--accent-primary-rgb), 0.3); }
-    .episode-title { flex-grow: 1; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .episode-title { flex-grow: 1; line-height: 1.4; }
 </style>
 
 <div class="player-main-container container">
     <div class="player-grid">
-        <!-- Coluna Principal: Player de Vídeo e Controles -->
+        
         <main class="video-player-section">
-            <% if (initialAnime && initialEpisode) { %>
-                <div class="video-player-header">
-                    <a href="/anime/<%= initialAnime.slug %>" title="Voltar para a página do anime"><h1 tabindex="0"><%= initialAnime.titulo %></h1></a>
-                    <p>Temporada <%= initialEpisode.temporada %> • Episódio <%= initialEpisode.numero %><% if (initialEpisode.titulo) { %>: <%= initialEpisode.titulo %><% } %></p>
-                </div>
-            <% } else { %>
-                <div class="video-player-header">
-                    <h1>Anime não encontrado</h1>
-                </div>
-            <% } %>
-            
-            <div class="video-player-container">
-                <div class="loader" style="display: none;"><i class="fas fa-spinner fa-spin"></i></div>
-                <div class="placeholder" style="display: none;"></div>
-                <div class="error-message" style="display: none;">
-                    <i class="fas fa-video-slash"></i>
-                    <p id="error-msg-text">O vídeo para este episódio não está disponível no momento.</p>
-                </div>
-                <iframe id="video-player-iframe" style="display:none;" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="Player de Episódio"></iframe>
-                <video id="video-player-local" style="display:none;" controls controlsList="nodownload"></video>
+            <div class="video-player-header">
+                <!-- ATUALIZAÇÃO: Usando initialAnime e initialEpisode para consistência com o backend -->
+                <a href="/anime/<%= initialAnime.slug %>" title="Voltar para a página do anime"><h1><%= initialAnime.titulo %></h1></a>
+                <p>Episódio <%= initialEpisode.numero %><% if (initialEpisode.titulo) { %>: <%= initialEpisode.titulo %><% } %></p>
             </div>
             
-            <% if (initialEpisode) { %>
-                <div class="player-controls">
-                    <% if (initialEpisode.urlVideo) { %>
-                        <h4><i class="fas fa-download"></i> Opções de Download</h4>
-                        <div class="download-options">
-                            <button id="smart-download-btn" class="btn btn--secondary" data-url="<%= initialEpisode.urlVideo %>">
-                                <i class="fas fa-download"></i> Baixar Episódio
-                            </button>
-                        </div>
-                        <hr style="margin: 1rem 0; border-color: var(--border-color);">
+            <div class="video-player-container">
+                <% if (urlPlayer) { %>
+                    <% if (initialEpisode.tipoVideo === 'upload') { %>
+                        <video controls src="<%= urlPlayer %>" autoplay></video>
+                    <% } else { %>
+                        <iframe src="<%= urlPlayer %>" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
                     <% } %>
-                    <div class="actions-cell">
-                        <% 
-                            const episodiosOrdenados = initialAnime.episodios.slice().sort((a, b) => a.numero - b.numero);
-                            const episodioAtualIndex = episodiosOrdenados.findIndex(ep => ep.id == initialEpisode.id);
-                            const episodioAnterior = episodiosOrdenados[episodioAtualIndex - 1];
-                            const proximoEpisodio = episodiosOrdenados[episodioAtualIndex + 1];
-                        %>
-                        <% if(episodioAnterior) { %>
-                            <a href="/assistir/<%= initialAnime.slug %>/<%= episodioAnterior.id %>" class="btn btn--secondary" aria-label="Episódio anterior"><i class="fas fa-backward"></i> Anterior</a>
-                        <% } else { %>
-                            <span class="btn btn--secondary" style="opacity: 0.5; cursor: not-allowed;" aria-disabled="true"><i class="fas fa-backward"></i> Anterior</span>
-                        <% } %>
-                        <% if(proximoEpisodio) { %>
-                            <a href="/assistir/<%= initialAnime.slug %>/<%= proximoEpisodio.id %>" class="btn btn--primary" aria-label="Próximo episódio">Próximo <i class="fas fa-forward"></i></a>
-                        <% } else { %>
-                            <span class="btn btn--primary" style="opacity: 0.5; cursor: not-allowed;" aria-disabled="true">Próximo <i class="fas fa-forward"></i></span>
-                        <% } %>
+                <% } else { %>
+                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-secondary);">
+                        <p>Vídeo indisponível no momento.</p>
                     </div>
+                <% } %>
+            </div>
+            
+            <div class="player-controls">
+                <% if (podeBaixar && linksParaDownload.length > 0) { %>
+                    <h4><i class="fas fa-download"></i> Opções de Download</h4>
+                    <div class="download-options">
+                        <% linksParaDownload.forEach(dl => { %>
+                            <% if (initialEpisode.tipoVideo === 'upload') { %>
+                                <!-- Para uploads locais, força o download com o atributo 'download' -->
+                                <a href="<%= dl.urlDownload %>" class="btn btn--secondary" download>
+                                    <i class="fas fa-hdd"></i> <%= dl.qualidade %>
+                                </a>
+                            <% } else { %>
+                                <!-- Para links externos (GDrive, etc.), abre em uma nova aba para a página de download -->
+                                <a href="<%= dl.urlDownload %>" target="_blank" rel="noopener noreferrer" class="btn btn--secondary">
+                                    <i class="fas fa-cloud-download-alt"></i> <%= dl.qualidade %>
+                                </a>
+                            <% } %>
+                        <% }) %>
+                    </div>
+                    <hr style="border-color: var(--border-color, #303030); margin: 1.5rem 0;">
+                <% } %>
+                
+                <div class="actions-cell">
+                    <% 
+                        const episodioAtualIndex = todosEpisodios.findIndex(ep => ep.id == initialEpisode.id);
+                        const episodioAnterior = todosEpisodios[episodioAtualIndex - 1];
+                        const proximoEpisodio = todosEpisodios[episodioAtualIndex + 1];
+                    %>
+                    
+                    <% if(episodioAnterior) { %>
+                        <a href="/assistir/<%= initialAnime.slug %>/<%= episodioAnterior.id %>" class="btn btn--secondary"><i class="fas fa-backward"></i> Anterior</a>
+                    <% } else { %>
+                        <span class="btn btn--secondary" style="opacity: 0.5; cursor: not-allowed;"><i class="fas fa-backward"></i> Anterior</span>
+                    <% } %>
+
+                    <% if(proximoEpisodio) { %>
+                        <a href="/assistir/<%= initialAnime.slug %>/<%= proximoEpisodio.id %>" class="btn btn--primary">Próximo <i class="fas fa-forward"></i></a>
+                    <% } else { %>
+                        <span class="btn btn--primary" style="opacity: 0.5; cursor: not-allowed;">Próximo <i class="fas fa-forward"></i></span>
+                    <% } %>
                 </div>
-            <% } %>
+            </div>
         </main>
         
-        <!-- Barra Lateral: Lista de Episódios -->
-        <% if (initialAnime && initialAnime.episodios && initialAnime.episodios.length > 0) { %>
-            <aside class="episode-list-sidebar">
-                <h3><i class="fas fa-list-ol"></i> Lista de Episódios</h3>
-                <ul class="episode-list">
-                    <% initialAnime.episodios.forEach(ep => { %>
-                       <li class="<%= ep.id == initialEpisode.id ? 'active' : '' %>">
-                           <a href="/assistir/<%= initialAnime.slug %>/<%= ep.id %>" title="Assistir Episódio <%= ep.numero %>" aria-current="<%= ep.id == initialEpisode.id ? 'page' : undefined %>">
-                               <span class="episode-number-badge"><%= ep.numero %></span>
-                               <span class="episode-title"><% if (ep.titulo) { %><%= ep.titulo %><% } else { %>Episódio <%= ep.numero %><% } %></span>
-                           </a>
-                       </li>
-                   <% }) %>
-               </ul>
-            </aside>
-        <% } %>
+        <aside class="episode-list-sidebar">
+            <h3><i class="fas fa-list-ol"></i> Lista de Episódios</h3>
+            <ul class="episode-list">
+                <% todosEpisodios.forEach(ep => { %>
+                   <li class="<%= ep.id == initialEpisode.id ? 'active' : '' %>">
+                       <a href="/assistir/<%= initialAnime.slug %>/<%= ep.id %>" title="Assistir Episódio <%= ep.numero %>: <%= ep.titulo || '' %>">
+                           <span class="episode-number-badge"><%= ep.numero %></span>
+                           <span class="episode-title"><%= ep.titulo || `Episódio ${ep.numero}` %></span>
+                       </a>
+                   </li>
+               <% }) %>
+           </ul>
+        </aside>
+
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Pega os dados injetados pelo servidor no EJS
-    const initialEpisodeData = <%- JSON.stringify(initialEpisode || null) %>;
-
-    // Seleciona os elementos do player
-    const placeholder = document.querySelector('.video-player-container .placeholder');
-    const loader = document.querySelector('.video-player-container .loader');
-    const iframePlayer = document.getElementById('video-player-iframe');
-    const localPlayer = document.getElementById('video-player-local');
-    const errorMsg = document.querySelector('.video-player-container .error-message');
-    const errorMsgText = document.getElementById('error-msg-text');
-
-    // Função para mostrar erro de vídeo
-    function showError(msg) {
-        placeholder.style.display = 'none';
-        loader.style.display = 'none';
-        iframePlayer.style.display = 'none';
-        localPlayer.style.display = 'none';
-        errorMsg.style.display = 'flex';
-        errorMsgText.textContent = msg || 'O vídeo para este episódio não está disponível no momento.';
-    }
-
-    // Função para carregar o vídeo no player
-    const loadVideo = (episode) => {
-        if (!episode || !episode.urlVideo) {
-            showError('O vídeo para este episódio não está disponível.');
-            return;
-        }
-
-        // Mostra o loader e esconde os outros
-        placeholder.style.display = 'none';
-        loader.style.display = 'flex';
-        iframePlayer.style.display = 'none';
-        localPlayer.style.display = 'none';
-        errorMsg.style.display = 'none';
-        iframePlayer.src = 'about:blank'; // Limpa o iframe anterior
-        localPlayer.src = '';
-
-        // Carrega o vídeo correto após um pequeno delay
-        setTimeout(() => {
-            try {
-                if (episode.tipoVideo === 'upload') {
-                    localPlayer.src = episode.urlVideo;
-                    localPlayer.style.display = 'block';
-                    localPlayer.onerror = () => showError('Falha ao carregar o vídeo local.');
-                } else {
-                    iframePlayer.src = episode.urlVideo;
-                    iframePlayer.style.display = 'block';
-                    // Não há evento de erro confiável para iframes cross-origin, mas tentamos
-                }
-                loader.style.display = 'none';
-            } catch (e) {
-                showError('Erro ao tentar carregar o vídeo.');
-            }
-        }, 300);
-    };
-
-    // Lógica de inicialização da página
-    if (initialEpisodeData) {
-        loadVideo(initialEpisodeData);
-    } else {
-        showError('Episódio não encontrado.');
-    }
-
-    // Lógica do botão de download
-    const downloadButton = document.getElementById('smart-download-btn');
-    if (downloadButton) {
-        downloadButton.addEventListener('click', (event) => {
-            event.preventDefault();
-            const originalUrl = downloadButton.dataset.url;
-            if (!originalUrl) return;
-
-            const originalText = downloadButton.innerHTML;
-            downloadButton.innerHTML = '<i class="fas fa-cog fa-spin"></i> Processando...';
-            downloadButton.classList.add('is-processing');
-            downloadButton.disabled = true;
-
-            // Lógica para obter o link de download direto
-            const getDownloadableLink = (url) => {
-                let dl = { url, isDirect: false };
-                if (url.includes('drive.google.com')) {
-                    const m = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([a-zA-Z0-9_-]+)/);
-                    if (m && m[1]) {
-                        dl.url = `https://drive.google.com/uc?export=download&id=${m[1]}`;
-                    }
-                    return dl;
-                }
-                if (url.includes('mediafire.com') || url.includes('mega.nz')) return dl;
-                dl.isDirect = true;
-                return dl;
-            };
-            const linkInfo = getDownloadableLink(originalUrl);
-            setTimeout(() => {
-                const tempLink = document.createElement('a');
-                tempLink.href = linkInfo.url;
-                tempLink.target = '_blank'; 
-                if (linkInfo.isDirect) {
-                    const fileName = originalUrl.substring(originalUrl.lastIndexOf('/') + 1) || `video.mp4`;
-                    tempLink.setAttribute('download', fileName);
-                }
-                document.body.appendChild(tempLink);
-                tempLink.click();
-                document.body.removeChild(tempLink);
-                downloadButton.innerHTML = originalText;
-                downloadButton.classList.remove('is-processing');
-                downloadButton.disabled = false;
-            }, 500);
-        });
-    }
-});
-</script>
-
-<%- include('partials/footer') %>

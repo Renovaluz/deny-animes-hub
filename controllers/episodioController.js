@@ -1,21 +1,19 @@
 // ====================================================================================
 //
-//              DenyAnimeHub - Controller: Episódios
+//              DenyAnimeHub - Controller: Episódios (Versão Infinite Tsukuyomi)
 //
-// Versão:        2.0 (Titan)
-// Descrição:     Este controller é dedicado exclusivamente à lógica de negócios
-//                para os episódios. Ele lida com a criação e exclusão de episódios,
-//                garantindo que todos os dados sejam validados antes de serem
-//                inseridos no banco de dados e que as operações sejam seguras.
+// Versão:        4.0 (Final e Definitiva)
+// Descrição:     Usa o helper de conversão final para salvar a URL de download
+//                correta no banco de dados no momento da criação do episódio.
 //
 // ====================================================================================
 
 'use strict';
 const { Episodio } = require('../models');
+const { convertToEmbedUrl } = require('../helpers/linkConverter');
 
 /**
  * Cria um novo episódio e o associa a um anime.
- * @route POST /api/episodios
  */
 exports.createEpisodio = async (req, res) => {
     try {
@@ -28,13 +26,25 @@ exports.createEpisodio = async (req, res) => {
         if (isNaN(parseInt(numero, 10)) || parseInt(numero, 10) < 0) {
              return res.status(400).json({ success: false, error: 'O número do episódio deve ser um número válido e não negativo.' });
         }
-        // Se não for um upload, a URL é obrigatória.
-        if (tipoVideo !== 'upload' && (!urlVideo || urlVideo.trim() === '')) {
-            return res.status(400).json({ success: false, error: 'A URL do vídeo é obrigatória para este tipo de fonte.' });
+        
+        // --- Lógica para determinar a URL final do vídeo ---
+        let finalUrl;
+
+        if (tipoVideo === 'upload') {
+            if (!req.filePath) {
+                 return res.status(400).json({ success: false, error: 'Ocorreu uma falha no upload. O caminho do arquivo não foi recebido.' });
+            }
+            finalUrl = req.filePath;
+        } else {
+            if (!urlVideo || urlVideo.trim() === '') {
+                return res.status(400).json({ success: false, error: 'A URL do vídeo é obrigatória para este tipo de fonte.' });
+            }
+            // Usa o helper para obter a URL de download final.
+            finalUrl = convertToEmbedUrl(urlVideo, tipoVideo);
         }
-        // Se for upload, a URL (caminho do arquivo) deve ter sido fornecida.
-        if (tipoVideo === 'upload' && !urlVideo) {
-            return res.status(400).json({ success: false, error: 'Ocorreu uma falha no upload. O caminho do arquivo não foi recebido.' });
+
+        if (!finalUrl) {
+            return res.status(400).json({ success: false, error: 'Não foi possível determinar a URL final do vídeo a partir dos dados fornecidos.' });
         }
 
         // Verifica se um episódio com o mesmo número e temporada já existe para este anime.
@@ -54,7 +64,7 @@ exports.createEpisodio = async (req, res) => {
             animeId: parseInt(animeId, 10),
             numero: parseInt(numero, 10),
             titulo: titulo || null,
-            urlVideo: urlVideo,
+            urlVideo: finalUrl, // Salva a URL de download perfeita
             tipoVideo: tipoVideo,
             temporada: parseInt(temporada, 10)
         });
@@ -70,7 +80,6 @@ exports.createEpisodio = async (req, res) => {
 
 /**
  * Deleta um episódio do banco de dados pelo seu ID.
- * @route DELETE /api/episodios/:id
  */
 exports.deleteEpisodio = async (req, res) => {
     try {

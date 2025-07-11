@@ -1,48 +1,38 @@
+// ARQUIVO: seeder.js (VERSÃO FINAL)
 require('dotenv').config();
-const db = require('./models'); // Importa o index.js da pasta models
-const animesData = require('./data/animes');
-const postsData = require('./data/posts');
+const db = require('./models');
 
-// Função para sincronizar o banco de dados (cria as tabelas) e popular com dados
-const setupDatabase = async () => {
+const seedDatabase = async () => {
     try {
-        console.log('Iniciando sincronização com o banco de dados...');
-        // O { force: true } apaga as tabelas existentes e as recria.
-        // CUIDADO: Use isso apenas em desenvolvimento para resetar o banco.
+        console.log('Iniciando a sincronização forçada do banco de dados...');
+        // ATENÇÃO: { force: true } apaga TODAS as tabelas e as recria.
         await db.sequelize.sync({ force: true });
-        console.log('✅ Tabelas sincronizadas com sucesso.');
+        console.log('✅ Banco de dados sincronizado com sucesso.');
 
-        console.log('Criando usuário admin padrão...');
-        const adminUser = await db.User.create({
-            nome: 'Admin DenyAnimeHub',
+        console.log('Criando usuário administrador padrão...');
+        const adminPassword = process.env.ADMIN_DEFAULT_PASSWORD;
+        if (!adminPassword) {
+            throw new Error('A senha do administrador padrão (ADMIN_DEFAULT_PASSWORD) não está definida no arquivo .env');
+        }
+
+        await db.User.create({
+            nome: 'Admin',
             email: 'admin@denyanimehub.com',
-            senha: 'password123', // a senha será hasheada pelo hook do model
+            senha: adminPassword, // A senha será hasheada pelo hook do model
             role: 'admin'
         });
-        console.log(`✅ Usuário admin criado com ID: ${adminUser.id}`);
-
-        console.log('Importando dados de animes...');
-        await db.Anime.bulkCreate(animesData);
-        console.log('✅ Animes importados com sucesso.');
-
-        console.log('Importando dados de notícias...');
-        const postsComAutor = postsData.map(post => ({
-            ...post,
-            autorId: adminUser.id, // Associa cada post ao admin criado
-            autorNome: adminUser.nome
-        }));
-        await db.Post.bulkCreate(postsComAutor);
-        console.log('✅ Notícias importadas com sucesso.');
-
+        console.log('✅ Usuário admin criado. Email: admin@denyanimehub.com');
+        
         console.log('\n=====================================');
         console.log('🚀 Configuração do banco de dados concluída!');
         console.log('=====================================');
-
+        
     } catch (error) {
-        console.error('❌ Erro durante a configuração do banco de dados:', error);
+        console.error('❌ Erro durante o processo de configuração:', error);
+        process.exit(1);
     } finally {
         await db.sequelize.close();
     }
 };
 
-setupDatabase();
+seedDatabase();

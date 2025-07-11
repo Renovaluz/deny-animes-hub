@@ -1,57 +1,80 @@
+// ====================================================================================
+//
+//              DenyAnimeHub - Roteador da API Principal (Versão Definitiva)
+//
+// Descrição:     Reflete EXATAMENTE a lógica do app.js original, mas em um arquivo
+//                separado e organizado. Inclui a rota de upload de capa que estava
+//                faltando e causava o erro 404.
+//
+// ====================================================================================
+
 const express = require('express');
 const router = express.Router();
-const { admin } = require('../middleware/adminMiddleware');
-const { proteger } = require('../middleware/authMiddleware');
 
-// Importando os controllers
-const animeApiController = require('../controllers/animeController');
+// --- MÓDULO 1: IMPORTAÇÕES ---
+
+// Middlewares
+const { proteger, admin } = require('../middleware/authMiddleware');
+const { 
+    processForm,
+    uploadAvatar, 
+    uploadCapa, 
+    uploadVideo 
+} = require('../middleware/uploadMiddleware');
+
+// Controllers
 const postApiController = require('../controllers/postController');
 const userApiController = require('../controllers/userController');
+const animeApiController = require('../controllers/animeController');
+const episodioApiController = require('../controllers/episodioController');
 
-// Importando as funções de upload específicas e nomeadas do nosso middleware especialista
-const { uploadAvatar, uploadCapa, uploadImagemPost } = require('../middleware/uploadMiddleware');
+// --- MÓDULO 2: APLICAÇÃO DE MIDDLEWARES ---
 
-// Todas as rotas definidas neste arquivo serão prefixadas com /api e são protegidas
+// Aplicando middleware de proteção a TODAS as rotas da API
 router.use(proteger);
 
-// --- Rotas de Animes (Admin) ---
-router.get('/animes', admin, animeApiController.getAllAnimes);
-router.post('/animes', admin, animeApiController.createAnime);
-router.get('/animes/:id', admin, animeApiController.getAnimeById);
-router.put('/animes/:id', admin, animeApiController.updateAnime);
-router.delete('/animes/:id', admin, animeApiController.deleteAnime);
+// --- MÓDULO 3: ROTAS DE PERFIL DE USUÁRIO (NÃO-ADMIN) ---
+router.put('/user/profile', userApiController.updateUserProfile);
+router.post('/user/profile/avatar', uploadAvatar, userApiController.updateUserAvatar);
+router.post('/user/profile/capa', uploadCapa, userApiController.updateUserCapa);
 
-// --- Rotas de Episódios (Admin) ---
-router.post('/animes/:id/episodes', admin, animeApiController.addEpisode);
-router.delete('/animes/:id/episodes/:epNum', admin, animeApiController.deleteEpisode);
+// --- MÓDULO 4: ROTAS DE ADMINISTRAÇÃO ---
 
-// --- Rotas de Notícias (Admin) ---
-router.get('/posts', admin, postApiController.getAllPosts);
-router.post('/posts', admin, postApiController.createPost);
-router.get('/posts/:id', admin, postApiController.getPostById);
-router.put('/posts/:id', admin, postApiController.updatePost);
-router.delete('/posts/:id', admin, postApiController.deletePost);
+// Aplicando middleware de 'admin' para todas as rotas de gerenciamento abaixo
+router.use(admin);
 
-// --- Rotas de Usuários (Admin) ---
-router.get('/users', admin, userApiController.getAllUsers);
-router.delete('/users/:id', admin, userApiController.deleteUserByAdmin);
-// Se você tiver uma rota para admin atualizar um usuário, ela iria aqui:
-// router.put('/users/:id', admin, userApiController.updateUserByAdmin);
-
-// --- Rota de Upload para Posts de Animes/Notícias (Admin) ---
-// Usa o 'uploadImagemPost' que salva na pasta /images
-router.post('/upload/image', admin, uploadImagemPost.single('imagem'), (req, res) => {
-    if (req.file) {
-        // Retorna o caminho público completo e correto para a imagem
-        res.json({ success: true, filePath: `/uploads/images/${req.file.filename}` });
-    } else {
-        res.status(400).json({ success: false, error: 'Falha no upload do arquivo.' });
+// >>>>> ROTA CRÍTICA QUE ESTAVA FALTANDO NO SEU APP.JS <<<<<
+// Esta rota é chamada pelo seu painel para fazer o upload da imagem ANTES de salvar o anime.
+router.post('/upload/capa', uploadCapa, (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ success: false, error: 'Nenhum arquivo de capa recebido.' });
     }
+    // Retorna o caminho do arquivo para o frontend usar.
+    res.json({ success: true, filePath: `/uploads/capas/${req.file.filename}` });
 });
 
-// --- Rotas de Upload para Perfil de Usuário ---
-// Cada rota usa seu próprio especialista de upload
-router.post('/user/profile/avatar', uploadAvatar.single('avatar'), userApiController.updateUserAvatar);
-router.post('/user/profile/capa', uploadCapa.single('capa'), userApiController.updateUserCapa);
+// Rotas de CRUD para Animes
+router.get('/animes', animeApiController.getAllAnimes);
+router.get('/animes/:slug', animeApiController.getAnimeBySlug);
+router.post('/animes', processForm, animeApiController.createAnime);
+router.put('/animes/:slug', processForm, animeApiController.updateAnime);
+router.delete('/animes/:slug', animeApiController.deleteAnime);
 
+// Rotas de CRUD para Episódios
+router.post('/episodios', processForm, episodioApiController.createEpisodio);
+router.delete('/episodios/:id', episodioApiController.deleteEpisodio);
+
+// Rotas de CRUD para Notícias/Posts
+router.get('/posts', postApiController.getAllPosts);
+router.get('/posts/slug/:slug', postApiController.getPostBySlug);
+router.post('/posts', processForm, postApiController.createPost);
+router.put('/posts/:id', processForm, postApiController.updatePost);
+router.delete('/posts/:id', postApiController.deletePost);
+
+// Rotas de CRUD para Usuários
+router.get('/users', userApiController.getAllUsers);
+router.delete('/users/:id', userApiController.deleteUserByAdmin);
+
+
+// --- MÓDULO 5: EXPORTAÇÃO ---
 module.exports = router;

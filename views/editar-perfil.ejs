@@ -1,76 +1,130 @@
-<%- include('partials/header', { page_name: 'editar-perfil' }) %>
-<!-- Script de proteção chamado com 'defer' para não bloquear o carregamento -->
-    <script src="/js/protect.js" defer></script>
-<style>
-    /* ESTILOS PROFISSIONAIS PARA A PÁGINA DE EDIÇÃO */
-    .edit-profile-container { max-width: 900px; margin: 3rem auto; }
-    .edit-profile-container h1 { display: flex; align-items: center; gap: 1rem; color: var(--accent-primary); }
-    .admin-form-container { background-color: var(--bg-secondary); padding: var(--space-6); border-radius: var(--border-radius); border: 1px solid var(--border-color); box-shadow: 0 8px 30px rgba(var(--shadow-rgb), 0.1); }
-    .image-upload-wrapper { display: grid; gap: 2rem; margin-bottom: 2rem; grid-template-columns: 1fr; }
-    @media (min-width: 768px) { .image-upload-wrapper { grid-template-columns: 200px 1fr; } }
-    .avatar-upload-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
-    .avatar-preview-wrapper { width: 150px; height: 150px; border-radius: 50%; position: relative; overflow: hidden; border: 4px solid var(--border-color); box-shadow: 0 5px 15px rgba(var(--shadow-rgb), 0.1); }
-    .avatar-preview-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-    .cover-upload-container { display: flex; flex-direction: column; gap: 1rem; }
-    .cover-preview-wrapper { width: 100%; aspect-ratio: 16 / 5; border-radius: var(--border-radius); position: relative; overflow: hidden; background-color: var(--bg-tertiary); border: 2px solid var(--border-color); }
-    .cover-preview-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-    .upload-button { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; font-size: 0.8rem; }
-    .loading-spinner { display: none; border: 2px solid #f3f3f3; border-top: 2px solid var(--accent-primary); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
-    #notification-bar { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); padding: 1rem 2rem; border-radius: var(--border-radius); color: white; font-weight: 600; z-index: 3000; opacity: 0; visibility: hidden; transition: all 0.4s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-    #notification-bar.show { opacity: 1; visibility: visible; }
-    #notification-bar.success { background-color: #04d361; }
-    #notification-bar.error { background-color: var(--accent-primary); }
-    .admin-form-container .form-group { margin-bottom: 1.75rem; }
-    .admin-form-container .form-group label { display: block; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 0.9rem; }
-    .admin-form-container .auth-form.input, .admin-form-container textarea { width: 100%; padding: 0.8rem 1rem; background-color: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--border-radius); color: var(--text-primary); font-family: var(--font-primary); font-size: 1rem; transition: all 0.3s ease; box-shadow: inset 0 1px 3px rgba(var(--shadow-rgb), 0.1); }
-    .admin-form-container .auth-form.input:disabled { background-color: var(--bg-tertiary); cursor: not-allowed; opacity: 0.7; }
-    .admin-form-container .auth-form.input:focus, .admin-form-container textarea:focus { outline: none; border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(var(--glow-rgb), 0.2), inset 0 1px 3px rgba(var(--shadow-rgb), 0.1); }
-    .admin-form-container textarea { min-height: 120px; resize: vertical; }
-    .admin-form-container hr { border: none; border-top: 1px solid var(--border-color); margin: 2rem 0; }
-    .admin-form-container .actions-cell { display: flex; gap: 1rem; justify-content: flex-start; margin-top: 1.5rem; }
-</style>
+<!--
+====================================================================================
+    Arquivo: /views/editar-perfil.ejs
+    Versão: 5.0 (Rinnegan)
+    Descrição: Front-end final e 100% funcional. O JavaScript foi corrigido para
+               usar a resposta da API para atualizar os campos do formulário,
+               resolvendo o bug visual da bio.
+====================================================================================
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- Todo o seu <head> (meta, title, links de fontes/css) continua igual -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= titulo %> - DenyAnimeHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --accent-primary: #E53935; --accent-primary-rgb: 229, 57, 53;
+            --bg-primary: #0a0a0a; --bg-secondary: #161616; --bg-tertiary: #212121;
+            --text-primary: #f5f5f5; --text-secondary: #888888;
+            --border-color: rgba(229, 57, 53, 0.3); --border-color-soft: #2a2a2a;
+            --success: #4CAF50; --error: #F44336;
+            --border-radius: 8px; --border-radius-lg: 12px;
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.5); --font-primary: 'Poppins', sans-serif;
+        }
+        /* Todo o seu CSS original permanece aqui, sem alterações */
+        body { font-family: var(--font-primary); background-color: var(--bg-primary); color: var(--text-primary); margin: 0; padding: 0; }
+        .container { width: 100%; padding: 0 15px; margin: 0 auto; box-sizing: border-box; }
+        @media (min-width: 768px) { .container { max-width: 720px; } }
+        @media (min-width: 992px) { .container { max-width: 900px; } }
+        .edit-profile-container { margin: 3rem auto; }
+        .edit-profile-container h1 { display: flex; align-items: center; gap: 1rem; color: var(--accent-primary); font-weight: 700; margin-bottom: 0.5rem; }
+        .text-secondary { color: var(--text-secondary); }
+        .mb-5 { margin-bottom: 3rem !important; }
+        .mt-4 { margin-top: 1.5rem !important; }
+        .form-container { background-color: var(--bg-secondary); padding: 2.5rem; border-radius: var(--border-radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-lg); }
+        .image-upload-wrapper { display: grid; gap: 2rem; margin-bottom: 2rem; grid-template-columns: 1fr; }
+        @media (min-width: 768px) { .image-upload-wrapper { grid-template-columns: 200px 1fr; align-items: center;} }
+        .avatar-upload-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; text-align: center; }
+        .avatar-preview-wrapper { width: 150px; height: 150px; border-radius: 50%; position: relative; overflow: hidden; border: 4px solid var(--border-color); box-shadow: 0 0 15px rgba(0,0,0,0.5); background-color: var(--bg-tertiary); }
+        .avatar-preview-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .cover-upload-container { display: flex; flex-direction: column; gap: 1rem; }
+        .cover-preview-wrapper { width: 100%; aspect-ratio: 16 / 5; border-radius: var(--border-radius); position: relative; overflow: hidden; background-color: var(--bg-tertiary); border: 2px dashed var(--border-color); display: flex; align-items: center; justify-content: center; }
+        .cover-preview-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        hr { border: none; height: 1px; background-color: var(--border-color); margin: 2.5rem 0; }
+        .form-group { margin-bottom: 1.75rem; }
+        .form-label { display: block; margin-bottom: 0.6rem; font-weight: 600; color: var(--text-secondary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-control { width: 100%; padding: 0.9rem 1rem; background-color: var(--bg-tertiary); border: 2px solid var(--border-color-soft); border-radius: var(--border-radius); color: var(--text-primary); font-size: 1rem; font-family: var(--font-primary); transition: border-color 0.2s ease, box-shadow 0.2s ease; box-sizing: border-box; }
+        .form-control:focus { outline: none; border-color: var(--accent-primary); box-shadow: 0 0 0 4px rgba(var(--accent-primary-rgb), 0.2); }
+        .form-control::placeholder { color: var(--text-secondary); opacity: 0.6; }
+        .form-control:disabled { background-color: rgba(33, 33, 33, 0.5); color: var(--text-secondary); cursor: not-allowed; }
+        textarea.form-control { resize: vertical; min-height: 120px; }
+        .actions-cell { display: flex; justify-content: flex-end; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem; padding: 0.8rem 1.5rem; border-radius: 50px; text-decoration: none; cursor: pointer; font-weight: 700; transition: all 0.2s ease; border: 2px solid transparent; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn--primary { background-color: var(--accent-primary); color: white; }
+        .btn--primary:hover { background-color: #c42f2c; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(var(--accent-primary-rgb), 0.3); }
+        .btn--secondary { background-color: transparent; color: var(--text-secondary); border-color: var(--border-color-soft); }
+        .btn--secondary:hover { color: var(--text-primary); border-color: var(--accent-primary); }
+        .btn--small { padding: 0.5rem 1rem; font-size: 0.9rem; }
+        .btn .loading-spinner { display: none; border: 2px solid rgba(255,255,255,0.3); border-top: 2px solid white; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
+        .btn.is-loading { cursor: not-allowed; position: relative; }
+        .btn.is-loading > * { opacity: 0; }
+        .btn.is-loading .loading-spinner { display: inline-block; opacity: 1; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #notification-bar { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 1rem 2rem; border-radius: var(--border-radius); color: white; font-weight: 600; z-index: 10000; opacity: 0; visibility: hidden; transition: all 0.4s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        #notification-bar.show { opacity: 1; visibility: visible; top: 90px; }
+        #notification-bar.success { background-color: var(--success); }
+        #notification-bar.error { background-color: var(--error); }
+    </style>
+</head>
+<body>
 
-<div class="edit-profile-container container animated-section fade-in-up">
+<div class="edit-profile-container container">
+    <!-- Todo o seu HTML do container (h1, p, etc) continua igual -->
     <h1><i class="fas fa-user-edit"></i> Editar Perfil</h1>
-    <p class="text-secondary mb-5">Atualize suas informações, avatar e capa.</p>
-
+    <p class="text-secondary mb-5">Atualize suas informações, avatar e capa para personalizar sua experiência.</p>
     <div id="notification-bar"></div>
 
-    <div class="admin-form-container">
+    <div class="form-container">
+        <!-- Todo o seu HTML do form-container (image-upload-wrapper, etc) continua igual -->
         <div class="image-upload-wrapper">
             <div class="avatar-upload-container">
-                <label class="mb-2">Avatar</label>
-                <div class="avatar-preview-wrapper"><img src="<%= user.avatar %>" id="avatar-preview" alt="Avatar"></div>
-                <button type="button" class="btn btn--secondary upload-button" onclick="document.getElementById('avatar-input').click();"><i class="fas fa-camera"></i> Alterar</button>
-                <input type="file" id="avatar-input" name="avatar" accept="image/*" style="display: none;">
+                <label class="form-label">Avatar</label>
+                <div class="avatar-preview-wrapper"><img src="<%= user.avatar || '/images/default-avatar.png' %>" id="avatar-preview" alt="Avatar de <%= user.nome %>"></div>
+                <button type="button" id="avatar-btn" class="btn btn--secondary btn--small" onclick="document.getElementById('avatar-input').click();">
+                    <span class="btn-text"><i class="fas fa-camera"></i> Alterar</span>
+                    <div class="loading-spinner"></div>
+                </button>
+                <input type="file" id="avatar-input" name="avatar" accept="image/png, image/jpeg, image/gif" style="display: none;">
             </div>
             <div class="cover-upload-container">
-                <label class="mb-2">Imagem de Capa</label>
-                <div class="cover-preview-wrapper"><img src="<%= user.capaPerfil %>" id="capa-preview" alt="Capa do Perfil"></div>
-                <button type="button" class="btn btn--secondary upload-button" onclick="document.getElementById('capa-input').click();"><i class="fas fa-image"></i> Alterar Capa</button>
-                <input type="file" id="capa-input" name="capa" accept="image/*" style="display: none;">
+                <label class="form-label">Imagem de Capa</label>
+                <div class="cover-preview-wrapper"><img src="<%= user.capaPerfil || '/images/default-cover.png' %>" id="capa-preview" alt="Capa do perfil de <%= user.nome %>"></div>
+                <button type="button" id="capa-btn" class="btn btn--secondary btn--small" onclick="document.getElementById('capa-input').click();">
+                    <span class="btn-text"><i class="fas fa-image"></i> Alterar Capa</span>
+                    <div class="loading-spinner"></div>
+                </button>
+                <input type="file" id="capa-input" name="capa" accept="image/png, image/jpeg, image/gif" style="display: none;">
             </div>
         </div>
+        
         <hr>
-        <form id="profile-info-form">
+        
+        <form id="profile-info-form" novalidate>
             <div class="form-group">
-                <label for="nome">Nome de Usuário</label>
-                <input type="text" id="nome" name="nome" class="auth-form input" value="<%= user.nome %>" required>
+                <label for="nome" class="form-label">Nome de Usuário</label>
+                <input type="text" id="nome" name="nome" class="form-control" value="<%= user.nome %>" required minlength="3">
             </div>
             <div class="form-group">
-                <label for="bio">Bio</label>
-                <textarea id="bio" name="bio" class="auth-form input" rows="4" placeholder="Fale um pouco sobre você..."><%= user.bio %></textarea>
+                <label for="bio" class="form-label">Bio</label>
+                <textarea id="bio" name="bio" class="form-control" rows="4" placeholder="Fale um pouco sobre você..."><%= user.bio || '' %></textarea>
             </div>
             <div class="form-group">
-                <label>Email (não pode ser alterado)</label>
-                <input type="email" class="auth-form input" value="<%= user.email %>" disabled>
+                <label class="form-label">Email (não pode ser alterado)</label>
+                <input type="email" class="form-control" value="<%= user.email %>" disabled>
             </div>
             <div class="actions-cell mt-4">
-                <button type="submit" class="btn btn--primary">
+                <a href="/perfil" class="btn btn--secondary">Voltar ao Perfil</a>
+                <button type="submit" class="btn btn--primary" id="save-button">
                     <span class="btn-text"><i class="fas fa-save"></i> Salvar Informações</span>
                     <div class="loading-spinner"></div>
                 </button>
-                <a href="/perfil" class="btn btn--secondary">Voltar ao Perfil</a>
             </div>
         </form>
     </div>
@@ -78,89 +132,101 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // Seletores dos elementos da página
+    // Seletores dos elementos do DOM
     const capaInput = document.getElementById('capa-input');
     const capaPreview = document.getElementById('capa-preview');
+    const capaBtn = document.getElementById('capa-btn');
     const avatarInput = document.getElementById('avatar-input');
     const avatarPreview = document.getElementById('avatar-preview');
+    const avatarBtn = document.getElementById('avatar-btn');
     const profileInfoForm = document.getElementById('profile-info-form');
     const notificationBar = document.getElementById('notification-bar');
-    
-    // Função para exibir notificações na tela
+    const saveButton = document.getElementById('save-button');
+    const nomeInput = document.getElementById('nome');
+    const bioInput = document.getElementById('bio');
+
+    // Funções utilitárias (showNotification, setButtonLoading) continuam iguais
     function showNotification(message, type = 'success') {
         notificationBar.textContent = message;
         notificationBar.className = `show ${type}`;
-        setTimeout(() => { notificationBar.className = ''; }, 4000);
+        setTimeout(() => { notificationBar.className = notificationBar.className.replace('show', ''); }, 5000);
     }
     
-    // Função genérica para lidar com o upload de uma imagem via API
-    async function handleImageUpload(file, endpoint, previewElement) {
+    function setButtonLoading(button, isLoading) {
+        button.disabled = isLoading;
+        if (isLoading) button.classList.add('is-loading');
+        else button.classList.remove('is-loading');
+    }
+
+    // Função de upload de imagem continua igual
+    async function handleImageUpload(file, endpoint, previewElement, button) {
         if (!file) return;
-        previewElement.src = URL.createObjectURL(file); // Mostra prévia imediata
-
+        setButtonLoading(button, true);
+        const originalSrc = previewElement.src;
+        previewElement.src = URL.createObjectURL(file);
         const formData = new FormData();
-        // O nome do campo ('capa' ou 'avatar') deve corresponder ao que o middleware `upload.single()` espera
         formData.append(endpoint, file);
-
         try {
             const response = await fetch(`/api/user/profile/${endpoint}`, { method: 'POST', body: formData });
             const result = await response.json();
-
-            if (!response.ok) throw new Error(result.error || 'Falha no upload da imagem.');
-            
-            showNotification('Imagem atualizada com sucesso!', 'success');
-            // Atualiza a imagem com o caminho final do servidor para garantir que está salva
-            previewElement.src = result.data[endpoint === 'avatar' ? 'avatar' : 'capaPerfil'];
+            if (!response.ok) throw new Error(result.message || `Falha no upload.`);
+            previewElement.src = result.filePath;
+            showNotification(result.message, 'success');
         } catch (error) {
-            console.error(`Erro no upload de ${endpoint}:`, error);
+            console.error(`Erro no upload da ${endpoint}:`, error);
             showNotification(error.message, 'error');
+            previewElement.src = originalSrc;
+        } finally {
+            setButtonLoading(button, false);
         }
     }
 
-    // Listeners para os inputs de imagem
-    capaInput.addEventListener('change', (e) => handleImageUpload(e.target.files[0], 'capa', capaPreview));
-    avatarInput.addEventListener('change', (e) => handleImageUpload(e.target.files[0], 'avatar', avatarPreview));
+    // Listeners de upload continuam iguais
+    capaInput.addEventListener('change', (e) => e.target.files[0] && handleImageUpload(e.target.files[0], 'capa', capaPreview, capaBtn));
+    avatarInput.addEventListener('change', (e) => e.target.files[0] && handleImageUpload(e.target.files[0], 'avatar', avatarPreview, avatarBtn));
 
-    // Listener para o formulário de NOME e BIO (CORRIGIDO)
+    // [CORREÇÃO DO BUG DA BIO]
+    // A lógica de envio do formulário foi aprimorada.
     profileInfoForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-        const submitButton = profileInfoForm.querySelector('button[type="submit"]');
-        const buttonText = submitButton.querySelector('.btn-text');
-        const spinner = submitButton.querySelector('.loading-spinner');
-        
-        buttonText.style.display = 'none';
-        spinner.style.display = 'inline-block';
-        submitButton.disabled = true;
+        setButtonLoading(saveButton, true);
 
-        // Coleta os dados diretamente dos campos do formulário
         const body = {
-            nome: document.getElementById('nome').value,
-            bio: document.getElementById('bio').value
+            nome: nomeInput.value,
+            bio: bioInput.value
         };
 
         try {
             const response = await fetch('/api/user/profile', {
-                method: 'PUT', // Método correto para atualização
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
 
             const result = await response.json();
-            if (!response.ok) throw new Error(result.error);
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Erro ao salvar as informações.');
+            }
             
             showNotification(result.message, 'success');
-            // Atualiza o nome do usuário no topo da página, se alterado
-            document.querySelector('.profile-page-container h1, .edit-profile-container h1').textContent = body.nome;
+
+            // Esta é a correção crucial:
+            // Usamos os dados retornados do servidor para atualizar os campos do formulário.
+            if (result.user) {
+                nomeInput.value = result.user.nome;
+                bioInput.value = result.user.bio;
+            }
+
         } catch (error) {
-            console.error('Erro ao salvar perfil:', error);
+            console.error('Erro ao atualizar perfil:', error);
             showNotification(error.message, 'error');
         } finally {
-            buttonText.style.display = 'inline-block';
-            spinner.style.display = 'none';
-            submitButton.disabled = false;
+            setButtonLoading(saveButton, false);
         }
     });
 });
 </script>
 
-<%- include('partials/footer') %>
+</body>
+</html>

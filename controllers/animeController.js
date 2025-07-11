@@ -1,38 +1,31 @@
 // ====================================================================================
-//
 //              DenyAnimeHub - Controller: Animes (Versão Final com Slugs)
-//
 // ====================================================================================
 
 'use strict';
 const { Anime, Episodio, sequelize } = require('../models');
-const slugify = require('../utils/slugify'); // Garanta que você tem o arquivo utils/slugify.js
+const slugify = require('../utils/slugify');
 
-/**
- * @desc    Cria um novo anime, incluindo a geração de um slug único.
- * @route   POST /api/animes
- */
 exports.createAnime = async (req, res) => {
     const transaction = await sequelize.transaction();
     try {
         const { titulo, sinopse, anoLancamento, generos, classificacao, imagemCapa } = req.body;
 
-        if (!titulo || !sinopse || !anoLancamento || !generos || !imagemCapa) {
+        if (!titulo || !sinopse || !anoLancamento || !generos) {
              await transaction.rollback();
-             return res.status(400).json({ success: false, error: 'Todos os campos, incluindo a capa, são obrigatórios.' });
+             return res.status(400).json({ success: false, error: 'Campos como título, sinopse, ano e gêneros são obrigatórios.' });
         }
 
-        // **CORREÇÃO CRUCIAL: Geração do slug a partir do título**
         const slug = slugify(titulo);
 
         const novoAnime = await Anime.create({
             titulo,
-            slug, // Salva o slug no banco de dados
+            slug,
             sinopse,
             anoLancamento,
             generos,
             classificacao: classificacao || null,
-            imagemCapa
+            imagemCapa: imagemCapa || '/images/placeholder_poster.png'
         }, { transaction });
         
         await transaction.commit();
@@ -40,17 +33,13 @@ exports.createAnime = async (req, res) => {
     } catch (error) {
         await transaction.rollback();
         if (error.name === 'SequelizeUniqueConstraintError') {
-            return res.status(409).json({ success: false, error: 'Um anime com este título já existe.' });
+            return res.status(409).json({ success: false, error: 'Um anime com este título (e slug) já existe.' });
         }
         console.error("Erro ao criar anime:", error);
-        res.status(500).json({ success: false, error: 'Erro interno ao criar anime.' });
+        res.status(500).json({ success: false, error: 'Erro interno ao criar o anime.' });
     }
 };
 
-/**
- * @desc    Busca todos os animes.
- * @route   GET /api/animes
- */
 exports.getAllAnimes = async (req, res) => {
     try {
         const animes = await Anime.findAll({
@@ -63,10 +52,6 @@ exports.getAllAnimes = async (req, res) => {
     }
 };
 
-/**
- * @desc    Busca um anime pelo seu slug.
- * @route   GET /api/animes/:slug
- */
 exports.getAnimeBySlug = async (req, res) => {
     try {
         const { slug } = req.params;
@@ -77,36 +62,37 @@ exports.getAnimeBySlug = async (req, res) => {
         if (!anime) return res.status(404).json({ success: false, error: 'Anime não encontrado.' });
         res.status(200).json({ success: true, data: anime });
     } catch (error) {
-        res.status(500).json({ success: false, error: 'Erro de servidor ao buscar detalhes.' });
+        res.status(500).json({ success: false, error: 'Erro de servidor ao buscar detalhes do anime.' });
     }
 };
 
-/**
- * @desc    Atualiza um anime pelo seu slug.
- * @route   PUT /api/animes/:slug
- */
 exports.updateAnime = async (req, res) => {
     const { slug } = req.params;
+    const transaction = await sequelize.transaction();
     try {
-        const anime = await Anime.findOne({ where: { slug } });
-        if (!anime) return res.status(404).json({ success: false, error: 'Anime não encontrado.' });
+        const anime = await Anime.findOne({ where: { slug }, transaction });
+        if (!anime) {
+            await transaction.rollback();
+            return res.status(404).json({ success: false, error: 'Anime não encontrado.' });
+        }
         
-        // Se o título for alterado, gera um novo slug
-        if (req.body.titulo && req.body.titulo !== anime.titulo) {
-            req.body.slug = slugify(req.body.titulo);
+        const updateData = { ...req.body };
+        if (updateData.titulo && updateData.titulo !== anime.titulo) {
+            updateData.slug = slugify(updateData.titulo);
         }
 
-        await anime.update(req.body);
+        await anime.update(updateData, { transaction });
+        await transaction.commit();
         res.status(200).json({ success: true, data: anime });
     } catch (error) {
+        await transaction.rollback();
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            return res.status(409).json({ success: false, error: 'Um anime com o novo título já existe.' });
+        }
         res.status(500).json({ success: false, error: 'Erro ao atualizar o anime.' });
     }
 };
 
-/**
- * @desc    Deleta um anime pelo seu slug.
- * @route   DELETE /api/animes/:slug
- */
 exports.deleteAnime = async (req, res) => {
     const { slug } = req.params;
     try {
@@ -114,6 +100,6 @@ exports.deleteAnime = async (req, res) => {
         if (deletedRows === 0) return res.status(404).json({ success: false, error: 'Anime não encontrado.' });
         res.status(200).json({ success: true, message: 'Anime deletado com sucesso.' });
     } catch (error) {
-        res.status(500).json({ success: false, error: 'Erro de servidor ao deletar.' });
+        res.status(500).json({ success: false, error: 'Erro de servidor ao deletar o anime.' });
     }
 };

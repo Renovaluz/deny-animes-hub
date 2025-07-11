@@ -21,15 +21,15 @@ module.exports = (sequelize, DataTypes) => {
         msg: 'Este slug já está em uso. O título da notícia provavelmente já existe.'
       }
     },
-    titulo: { type: DataTypes.STRING, allowNull: false },
+    titulo: { type: DataTypes.STRING, allowNull: false, unique: true },
     conteudo: { type: DataTypes.TEXT('long'), allowNull: false },
     imagemDestaque: { type: DataTypes.STRING, allowNull: true },
-    autorId: { type: DataTypes.INTEGER, allowNull: true }, // Permitir nulo caso o autor seja deletado
-    autorNome: { type: DataTypes.STRING, allowNull: true }, // Nome do autor na época da postagem
+    autorId: { type: DataTypes.INTEGER, allowNull: true },
+    autorNome: { type: DataTypes.STRING, allowNull: true },
     tags: {
       type: DataTypes.TEXT,
       get() { const v = this.getDataValue('tags'); try { return v ? JSON.parse(v) : []; } catch (e) { return []; } },
-      set(v) { const t = Array.isArray(v) ? v : (v ? v.split(',').map(t => t.trim()) : []); this.setDataValue('tags', JSON.stringify(t)); }
+      set(v) { const t = Array.isArray(v) ? v : (v ? v.split(',').map(s => s.trim()) : []); this.setDataValue('tags', JSON.stringify(t)); }
     },
     categoria: { type: DataTypes.STRING, defaultValue: "Notícia" },
     emDestaque: { type: DataTypes.BOOLEAN, defaultValue: false },
@@ -38,7 +38,11 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Post',
     tableName: 'posts',
-    timestamps: true
+    timestamps: true,
+    indexes: [
+      { unique: true, fields: ['slug'] },
+      { fields: ['titulo'] }
+    ]
   });
   return Post;
 };
