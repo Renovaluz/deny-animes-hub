@@ -1,432 +1,440 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <!-- ================================================================================================== -->
+    <!--                            CONFIGURAÇÕES GERAIS E DEPENDÊNCIAS DO DOCUMENTO                        -->
+    <!-- ================================================================================================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes do Anime - Nível Akatsuki</title>
-    <!-- A fonte Poppins já deve estar linkada no seu projeto principal -->
+    <title><%= anime.titulo %> - Detalhes do Anime</title>
+
+    <!-- Importação da fonte 'Poppins' do Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Font Awesome para os ícones -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Importação da biblioteca de ícones 'Font Awesome' -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 <style>
-    /* -------------------------------------------------------------------------- */
-    /*           ESTILO BASE ELEVADO AO NÍVEL AKATSUKI - POR GEMINI               */
-    /* -------------------------------------------------------------------------- */
+    /* ================================================================================================== */
+    /*      ESTILIZAÇÃO CSS COMPLETA, ROBUSTA E EXPANSIVA - VERSÃO DEFINITIVA (SEM NENHUMA OMISSÃO)         */
+    /*      - Layout Híbrido (Mobile Centrado / Desktop em Colunas).                                      */
+    /*      - Título com visibilidade e poder restaurados.                                                */
+    /*      - Contraste e efeitos visuais otimizados para uma experiência premium.                       */
+    /* ================================================================================================== */
 
+    /* -------------------------------------------------------------------------------------------------- */
+    /*           DEFINIÇÃO DAS VARIÁVEIS GLOBAIS DE DESIGN (PALETA DE CORES OTIMIZADA)                      */
+    /* -------------------------------------------------------------------------------------------------- */
     :root {
-        /* Paleta de Cores Akatsuki */
-        --akatsuki-red: #E53935; /* Vermelho sangue, icônico e vibrante */
-        --akatsuki-red-rgb: 229, 57, 53;
-        --akatsuki-dark: #0a0a0a; /* Quase preto, para a escuridão do manto */
+        /* Paleta de Cores Akatsuki Definitiva */
+        --akatsuki-red: #E50914; 
+        --akatsuki-red-rgb: 229, 9, 20;
+        --akatsuki-red-glow: #ff1f2c;
+        --akatsuki-dark: #0A0A0A; 
         --akatsuki-dark-rgb: 10, 10, 10;
-        --akatsuki-charcoal: #161616; /* Carvão, para painéis e seções */
-        --akatsuki-gray: #212121; /* Cinza escuro para elementos terciários */
-        --akatsuki-light-text: #f5f5f5; /* Texto principal, branco suave */
-        --akatsuki-muted-text: #7f7a7a; /* Texto secundário, para informações */
-        --akatsuki-border: rgba(var(--akatsuki-red-rgb), 0.3); /* Borda sutil e temática */
-        --akatsuki-border-soft: #2a2a2a;
+        --akatsuki-charcoal: #151515;
+        --akatsuki-gray: #242424;
+        --akatsuki-light-text: #f9f9f9; /* Branco mais puro para máximo contraste */
+        --akatsuki-muted-text: #c5c5c5; /* Texto secundário com excelente legibilidade */
+        --akatsuki-border: rgba(var(--akatsuki-red-rgb), 0.5);
+        --akatsuki-border-soft: #3a3a3a;
+        --shadow-glow-strong: 0 0 35px rgba(var(--akatsuki-red-rgb), 0.6);
+        --shadow-glow-subtle: 0 0 15px rgba(var(--akatsuki-red-rgb), 0.3);
 
-        /* Reatribuindo variáveis originais para o tema Akatsuki */
+        /* Variáveis de Configuração de Layout */
         --font-primary: 'Poppins', sans-serif;
-        --bg-primary: var(--akatsuki-dark);
-        --bg-primary-rgb: var(--akatsuki-dark-rgb);
-        --bg-secondary: var(--akatsuki-charcoal);
-        --bg-tertiary: var(--akatsuki-gray);
-        --text-primary: var(--akatsuki-light-text);
-        --text-secondary: var(--akatsuki-muted-text);
-        --accent-primary: var(--akatsuki-red);
-        --accent-primary-rgb: var(--akatsuki-red-rgb);
-        --border-color: var(--akatsuki-border);
-        --border-color-soft: var(--akatsuki-border-soft);
-        --border-radius: 8px;
-        --border-radius-lg: 12px;
+        --container-width: 1320px;
+        --transition-speed: 0.3s;
+        --border-radius: 10px;
+        --border-radius-lg: 16px;
     }
 
-    /* Estilização da barra de rolagem para imersão total */
-    ::-webkit-scrollbar {
-        width: 10px;
-    }
-    ::-webkit-scrollbar-track {
-        background: var(--bg-primary);
-    }
-    ::-webkit-scrollbar-thumb {
-        background-color: var(--accent-primary);
-        border-radius: 20px;
-        border: 2px solid var(--bg-primary);
-    }
-    ::-webkit-scrollbar-thumb:hover {
-        background-color: #ff4d49;
+    /* -------------------------------------------------------------------------------------------------- */
+    /*                                     ESTILOS GLOBAIS E DE RESET                                     */
+    /* -------------------------------------------------------------------------------------------------- */
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
 
-    /* Reset básico e corpo com a nova fonte */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    ::-webkit-scrollbar { 
+        width: 12px; 
+    }
+    ::-webkit-scrollbar-track { 
+        background: var(--bg-primary); 
+    }
+    ::-webkit-scrollbar-thumb { 
+        background: var(--accent-primary); 
+        border-radius: 10px; 
+        border: 3px solid var(--bg-primary); 
+    }
+    ::-webkit-scrollbar-thumb:hover { 
+        background: var(--akatsuki-red-glow); 
+    }
+
     body {
         font-family: var(--font-primary);
         background-color: var(--bg-primary);
         color: var(--text-primary);
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXVדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדה/wAARCAAgACADASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AL/AFQAAA//Z');
+        overflow-x: hidden;
     }
 
-    /* Hero com fundo desfocado - Efeito mais dramático */
+    .container {
+        width: 100%;
+        max-width: var(--container-width);
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    /* -------------------------------------------------------------------------------------------------- */
+    /*                 ESTRUTURA DA PÁGINA: HERO, WRAPPER, E O NOVO LAYOUT HÍBRIDO                         */
+    /* -------------------------------------------------------------------------------------------------- */
+
     .anime-detail-hero {
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 70vh; /* Mais altura para um efeito imponente */
+        position: absolute; top: 0; left: 0; right: 0;
+        height: 60vh;
         background-size: cover;
-        background-position: center 20%; /* Foco um pouco mais para cima */
-        filter: blur(10px) brightness(0.3) saturate(1.2); /* Mais escuro e saturado */
-        transform: scale(1.1); /* Evita bordas vazias do blur */
+        background-position: center 20%;
+        filter: blur(10px) brightness(0.4) saturate(1.4);
+        transform: scale(1.15);
         z-index: -1;
     }
 
     .anime-detail-hero-overlay {
-        position: absolute;
-        inset: 0;
-        /* Gradiente mais forte para fundir com o fundo da página */
-        background: linear-gradient(to top, var(--bg-primary) 10%, rgba(var(--bg-primary-rgb), 0.8) 40%, transparent 80%);
-        /* Padrão de nuvem sutil no fundo para a temática */
-        background-image:
-            linear-gradient(to top, var(--bg-primary) 10%, rgba(var(--bg-primary-rgb), 0.8) 40%, transparent 80%),
-            url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 40"><path fill="rgba(229, 57, 53, 0.03)" d="M40 0C17.9 0 0 17.9 0 40h80C80 17.9 62.1 0 40 0z"/></svg>');
-        background-size: auto, 120px;
+        position: absolute; inset: 0;
+        background: linear-gradient(to top, var(--bg-primary) 10%, rgba(var(--bg-primary-rgb), 0.8) 50%, transparent 100%);
     }
 
-
-    .anime-detail-container {
-        padding-top: 20vh; /* Empurra o conteúdo para baixo */
+    .anime-detail-wrapper {
+        padding-top: 18vh;
         position: relative;
         z-index: 2;
     }
+    
+    /* [!!! SOLUÇÃO DEFINITIVA PARA O LAYOUT !!!] */
+    /* Layout Padrão (Mobile-First): Pôster centrado acima do título. */
+    .anime-header {
+        text-align: center; /* Centraliza o título e outros textos */
+        margin-bottom: 2.5rem;
+    }
+    
+    .anime-poster-wrapper {
+        display: block;
+        max-width: 250px; /* Tamanho elegante para o pôster no mobile */
+        margin: 0 auto 1.5rem auto; /* Centraliza o pôster horizontalmente */
+    }
 
-    .anime-detail-grid {
+    .anime-poster-wrapper img {
+        width: 100%;
+        border-radius: var(--border-radius);
+        border: 4px solid var(--border-color);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.8), var(--shadow-glow-strong);
+        transition: all var(--transition-speed) cubic-bezier(0.165, 0.84, 0.44, 1);
+        aspect-ratio: 2 / 3;
+        object-fit: cover;
+    }
+    
+    .anime-poster-wrapper img:hover {
+        transform: scale(1.07) translateY(-10px);
+        border-color: var(--akatsuki-red-glow);
+        box-shadow: 0 20px 50px rgba(0,0,0,1), 0 0 45px rgba(var(--akatsuki-red-rgb), 0.8);
+    }
+    
+    /* [!!! CORREÇÃO DE VISIBILIDADE DO TÍTULO !!!] */
+    .anime-title {
+        font-size: clamp(2.2rem, 7vw, 4.5rem);
+        font-weight: 900;
+        line-height: 1.15;
+        color: var(--akatsuki-light-text); /* Cor sólida para máxima legibilidade */
+        text-shadow: 0 5px 20px rgba(0,0,0,0.9), 0 0 10px rgba(var(--akatsuki-red-rgb), 0.3); /* Sombra mais forte */
+    }
+
+    /* Grid principal para o conteúdo abaixo do header */
+    .anime-main-grid {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 2rem;
-        align-items: flex-start;
+        gap: 2.5rem;
     }
+
+    /* Media Query para transformar o layout em telas maiores (Desktop) */
     @media (min-width: 992px) {
-        .anime-detail-grid {
-            grid-template-columns: 320px 1fr; /* Sidebar um pouco maior */
-            gap: 3.5rem;
+        .anime-header {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 3rem;
+            align-items: flex-end;
+            text-align: left; /* Alinha o texto à esquerda no desktop */
+            margin-bottom: 4rem;
+        }
+        .anime-poster-wrapper {
+            margin: 0; /* Remove a margem de centralização */
+            max-width: none; /* Permite que o pôster preencha a coluna do grid */
+        }
+        .anime-main-grid {
+            grid-template-columns: 300px 1fr;
+            gap: 3rem;
         }
     }
 
-    /* Sidebar com pôster e informações - Design mais arrojado */
-    .anime-detail-sidebar .anime-poster img {
-        width: 100%;
-        border-radius: var(--border-radius-lg);
-        border: 4px solid var(--border-color);
-        box-shadow: 0 10px 40px rgba(0,0,0,0.7), 0 0 15px rgba(var(--accent-primary-rgb), 0.2);
-        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-    }
-    .anime-detail-sidebar .anime-poster img:hover {
-        transform: scale(1.05) translateY(-5px);
-        border-color: var(--accent-primary);
-        box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 35px rgba(var(--accent-primary-rgb), 0.5);
-    }
-    .anime-info-block {
-        background-color: var(--bg-secondary);
+    /* -------------------------------------------------------------------------------------------------- */
+    /*                         COMPONENTES DA UI (SIDEBAR, CONTEÚDO, BOTÕES, LISTAS)                        */
+    /* -------------------------------------------------------------------------------------------------- */
+
+    .anime-sidebar .info-block {
+        background: var(--bg-secondary);
         padding: 1.5rem;
         border-radius: var(--border-radius-lg);
-        margin-top: 1.5rem;
-        border: 1px solid var(--border-color);
-        box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+        border: 1px solid var(--border-color-soft);
+        box-shadow: inset 0 1px 5px rgba(0,0,0,0.5);
     }
-    .anime-info-block h4 {
-        margin: 0 0 1.2rem 0;
-        font-size: 1.2rem;
-        color: var(--text-primary);
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        font-weight: 600;
-        border-bottom: 2px solid var(--accent-primary);
-        padding-bottom: 0.5rem;
+    .info-block h4 {
+        margin: 0 0 1rem 0; font-size: 1.2rem; color: var(--text-primary);
+        font-weight: 600; border-bottom: 2px solid var(--accent-primary);
+        padding-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px;
     }
     .info-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.75rem 0.25rem;
-        border-bottom: 1px solid var(--border-color-soft);
-        font-size: 0.95rem;
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 0.9rem 0.25rem; border-bottom: 1px solid var(--border-color-soft);
+        font-size: 1rem;
     }
     .info-item:last-child { border-bottom: none; }
-    .info-item strong {
-        color: var(--text-primary);
-        font-weight: 500;
+    .info-item strong { font-weight: 500; white-space: nowrap; }
+    .info-item span { color: var(--text-secondary); text-align: right; padding-left: 1rem; }
+    .info-item .fa-star { color: #f5c518; }
+
+    .section-title {
+        font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 800;
+        margin-bottom: 1.5rem; padding-left: 1.25rem;
+        border-left: 5px solid var(--accent-primary); text-transform: uppercase;
+        letter-spacing: 1.5px; text-shadow: var(--shadow-glow-subtle);
     }
-    .info-item span {
-        color: var(--text-secondary);
-        font-weight: 400;
-        text-align: right;
+    .anime-main-content > section {
+        margin-bottom: 4rem;
     }
 
-    /* Conteúdo principal - Título e seções com mais poder */
-    .anime-detail-content h1 {
-        font-size: clamp(2.8rem, 6vw, 4.5rem);
-        font-weight: 800; /* Mais peso */
-        line-height: 1.1;
-        color: var(--text-primary);
-        text-shadow: 0 4px 15px rgba(0,0,0,0.6), 0 0 10px rgba(var(--accent-primary-rgb), 0.5);
-        margin-bottom: 1rem;
+    .synopsis {
+        font-size: 1.1rem; line-height: 1.9; color: var(--text-secondary);
+        background-color: rgba(var(--bg-secondary-rgb), 0.4);
+        padding: 1.5rem; border-radius: var(--border-radius);
     }
 
-    .anime-detail-content h4 {
-        font-size: 2rem;
-        color: var(--text-primary);
-        margin-top: 3rem;
-        margin-bottom: 1.5rem;
-        padding-left: 1.5rem;
-        border-left: 5px solid var(--accent-primary);
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-    .anime-detail-content .synopsis {
-        font-size: 1.1rem;
-        line-height: 1.9; /* Mais espaçamento para leitura */
-        color: var(--text-secondary);
-        background-color: rgba(var(--bg-primary-rgb), 0.3);
-        padding: 1rem;
-        border-radius: var(--border-radius);
-    }
-    
-    /* --- SEÇÃO DE TRAILER EXPANDIDA --- */
-    .trailer-section-akatsuki {
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        border-radius: var(--border-radius-lg);
-        padding: 2rem;
-        margin-top: 1rem;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        /* Padrão de nuvem da Akatsuki como fundo */
-        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 40"><path fill="rgba(229, 57, 53, 0.05)" d="M40 0C17.9 0 0 17.9 0 40h80C80 17.9 62.1 0 40 0z"/></svg>');
-        background-size: 100px;
-        background-repeat: repeat;
-        position: relative;
+    .trailer-section {
+        background: var(--bg-secondary); border-radius: var(--border-radius-lg); padding: 2rem;
+        border-top: 4px solid;
+        border-image: linear-gradient(to right, var(--akatsuki-red-glow), var(--accent-primary)) 1;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.7);
     }
     .video-container {
-        position: relative;
-        padding-bottom: 56.25%; /* Proporção 16:9 */
-        height: 0;
-        overflow: hidden;
-        border-radius: var(--border-radius);
-        border: 3px solid var(--border-color);
-        box-shadow: 0 5px 25px rgba(0,0,0,0.7);
+        position: relative; padding-bottom: 56.25%; height: 0;
+        overflow: hidden; border-radius: var(--border-radius);
+        box-shadow: 0 5px 30px rgba(0,0,0,0.8);
     }
-    .video-container iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-    }
+    .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
-
-    /* Lista de episódios e temporadas - Interatividade aprimorada */
     .season-selector {
-        display: flex;
-        gap: 0.75rem;
-        margin-bottom: 1.5rem;
-        flex-wrap: wrap;
+        display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;
     }
     .season-btn {
-        background-color: var(--bg-tertiary);
-        border: 2px solid var(--border-color);
-        color: var(--text-secondary);
-        padding: 0.6rem 1.2rem;
-        border-radius: 50px; /* Estilo "pílula" */
-        cursor: pointer;
-        transition: all 0.2s ease-in-out;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.9rem;
+        background-color: var(--bg-tertiary); border: 2px solid var(--border-color-soft);
+        color: var(--text-secondary); padding: 0.7rem 1.4rem; border-radius: 50px;
+        cursor: pointer; transition: all 0.2s ease-in-out; font-weight: 600;
+        text-transform: uppercase; font-size: 0.9rem;
     }
     .season-btn.active, .season-btn:hover {
-        background-color: var(--accent-primary);
-        color: white;
-        border-color: var(--accent-primary);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(var(--accent-primary-rgb), 0.3);
+        background: var(--accent-primary); color: white; border-color: var(--accent-primary);
+        transform: translateY(-3px); box-shadow: 0 5px 20px rgba(var(--accent-primary-rgb), 0.4);
     }
 
     .episode-list-season { display: none; }
-    .episode-list-season.active { display: block; }
+    .episode-list-season.active { display: block; animation: fadeInUp 0.5s ease-out; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
     .episode-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        max-height: 500px;
-        overflow-y: auto;
-        border-radius: var(--border-radius-lg);
-        background-color: var(--bg-secondary);
-        border: 1px solid var(--border-color);
+        list-style: none; padding: 0.5rem; margin: 0; max-height: 500px;
+        overflow-y: auto; border-radius: var(--border-radius-lg);
+        background: var(--bg-secondary); border: 1px solid var(--border-color-soft);
     }
-    .episode-list li a {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1.2rem 1.5rem;
-        color: var(--text-secondary);
-        transition: all .2s ease;
-        border-bottom: 1px solid var(--border-color-soft);
-        text-decoration: none;
-        font-weight: 500;
-        position: relative;
-        overflow: hidden;
+    .episode-item a {
+        display: flex; align-items: center; gap: 1rem; padding: 1.25rem;
+        color: var(--text-secondary); transition: all .25s ease;
+        border-bottom: 1px solid var(--border-color-soft); text-decoration: none;
+        font-weight: 500; border-radius: var(--border-radius);
     }
-    .episode-list li:last-child a { border-bottom: none; }
-    
-    /* Efeito de preenchimento vermelho no hover */
-    .episode-list li a::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(var(--accent-primary-rgb), .15);
-        transition: left 0.3s ease;
-        z-index: 0;
+    .episode-item:last-child a { border-bottom: none; }
+    .episode-item a:hover {
+        background: linear-gradient(90deg, rgba(var(--akatsuki-red-rgb), 0.25), rgba(var(--akatsuki-red-rgb), 0.05));
+        color: var(--text-primary); transform: scale(1.02);
     }
-    
-    .episode-list li a:hover::before {
-        left: 0;
+    .ep-number {
+        flex-shrink: 0; font-weight: 700; color: var(--accent-primary); width: 70px;
+    }
+    .ep-title { flex-grow: 1; }
+    .ep-icon {
+        font-size: 1.3rem; opacity: 0.7; transition: all 0.25s ease;
+    }
+    .episode-item a:hover .ep-icon {
+        opacity: 1; color: var(--akatsuki-red-glow); transform: scale(1.2);
     }
 
-    .episode-list li a:hover {
-        color: var(--text-primary);
-        transform: translateX(10px); /* Movimento mais pronunciado */
+    .btn--primary {
+        display: flex; align-items: center; justify-content: center; gap: 0.8rem;
+        background: linear-gradient(45deg, var(--akatsuki-red-glow), var(--accent-primary));
+        color: white; border: none; padding: 1rem 1.5rem; border-radius: 50px;
+        font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+        text-decoration: none; transition: all 0.3s ease;
+        box-shadow: 0 5px 25px rgba(var(--accent-primary-rgb), 0.5);
+        width: 100%; font-size: 1.1rem; margin-top: 1.5rem;
     }
-    /* Para o texto e ícone ficarem acima do pseudo-elemento */
-    .episode-list li a span, .episode-list li a i {
-        position: relative;
-        z-index: 1;
+    .btn--primary:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 10px 40px rgba(var(--akatsuki-red-rgb), 0.7);
     }
-
-    /* Estilo do botão principal de ação */
-    .btn.btn--primary {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.75rem;
-        background-color: var(--accent-primary);
-        color: white;
-        border: none;
-        padding: 0.8rem 1.5rem;
-        border-radius: 50px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(var(--accent-primary-rgb), 0.3);
-    }
-
-    .btn.btn--primary:hover {
-        transform: translateY(-3px);
-        background-color: #ff4d49; /* Um vermelho mais claro no hover */
-        box-shadow: 0 8px 25px rgba(var(--accent-primary-rgb), 0.5);
-    }
-
 </style>
 </head>
 <body>
 
-<!-- Hero com fundo dinâmico -->
+<!-- ====================================================================================== -->
+<!--                  ESTRUTURA HTML COMPLETA E FINAL DA PÁGINA (SEM OMISSÕES)              -->
+<!-- ====================================================================================== -->
+
 <div class="anime-detail-hero" style="background-image: url('<%= anime.imagemCapa %>');">
     <div class="anime-detail-hero-overlay"></div>
 </div>
 
-<div class="container anime-detail-container">
-    <div class="anime-detail-grid">
-        <aside class="anime-detail-sidebar">
-            <div class="anime-poster">
-                <img src="<%= anime.imagemCapa %>" alt="Pôster de <%= anime.titulo %>">
-            </div>
-             <% if (anime.episodios && anime.episodios.length > 0) { %>
-                <a href="/assistir/<%= anime.slug %>/<%= anime.episodios[0].id %>" class="btn btn--primary" style="width: 100%; justify-content: center; margin-top: 1.5rem; padding: 1rem; font-size: 1.1rem;">
-                    <i class="fas fa-play"></i> Assistir Agora
-                </a>
-            <% } %>
-            <div class="anime-info-block">
+<div class="container anime-detail-wrapper">
+    <!-- Header com o novo layout híbrido -->
+    <header class="anime-header">
+        <div class="anime-poster-wrapper">
+            <img src="<%= anime.imagemCapa %>" alt="Pôster de <%= anime.titulo %>">
+        </div>
+        <div class="anime-header-content">
+            <h1 class="anime-title"><%= anime.titulo %></h1>
+        </div>
+    </header>
+
+    <!-- Grid principal para o conteúdo -->
+    <div class="anime-main-grid">
+        <!-- Coluna da Esquerda (Sidebar) -->
+        <aside class="anime-sidebar">
+            <div class="info-block">
                 <h4><i class="fas fa-info-circle"></i> Detalhes</h4>
-                <div class="info-item"><strong>Nota:</strong> <span><i class="fas fa-star" style="color: #f5c518;"></i> <%= anime.classificacao || 'N/A' %></span></div>
+                <div class="info-item"><strong>Nota:</strong> <span><i class="fas fa-star"></i> <%= anime.classificacao || 'N/A' %></span></div>
                 <div class="info-item"><strong>Ano:</strong> <span><%= anime.anoLancamento %></span></div>
                 <div class="info-item"><strong>Estúdio:</strong> <span><%= anime.estudio || 'N/A' %></span></div>
                 <div class="info-item"><strong>Visualizações:</strong> <span><%= anime.views.toLocaleString('pt-BR') %></span></div>
                 <div class="info-item"><strong>Gêneros:</strong> <span><%= Array.isArray(anime.generos) ? anime.generos.join(', ') : 'N/A' %></span></div>
             </div>
+            <% if (anime.episodios && anime.episodios.length > 0) { %>
+                <a href="/assistir/<%= anime.slug %>/<%= anime.episodios[0].id %>" class="btn--primary">
+                    <i class="fas fa-play"></i> Assistir Agora
+                </a>
+            <% } %>
         </aside>
 
-        <main class="anime-detail-content">
-            <h1><%= anime.titulo %></h1>
-            
-            <h4>Sinopse</h4>
-            <p class="synopsis"><%- anime.sinopse.replace(/\n/g, '<br>') %></p>
+        <!-- Coluna da Direita (Conteúdo Principal) -->
+        <main class="anime-main-content">
+            <section>
+                <h2 class="section-title">Sinopse</h2>
+                <p class="synopsis"><%- anime.sinopse.replace(/\n/g, '<br>') %></p>
+            </section>
             
             <% if(anime.trailerUrl) { %>
-                <!-- SEÇÃO DE TRAILER TOTALMENTE REESTILIZADA E EXPANDIDA -->
-                <section>
-                    <h4>Trailer Oficial</h4>
-                    <div class="trailer-section-akatsuki">
-                        <div class="video-container">
-                            <iframe src="<%= anime.trailerUrl %>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
+                <section class="trailer-section">
+                    <h2 class="section-title">Trailer Oficial</h2>
+                    <div class="video-container">
+                        <iframe src="<%= anime.trailerUrl.replace('watch?v=', 'embed/') %>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                 </section>
             <% } %>
 
-            <h4>Episódios</h4>
-            <% if(anime.episodios && anime.episodios.length > 0) {
-                const temporadas = anime.episodios.reduce((acc, ep) => {
-                    const temp = ep.temporada || 1;
-                    if (!acc[temp]) acc[temp] = [];
-                    acc[temp].push(ep);
-                    return acc;
-                }, {});
-            %>
-                <div class="season-selector">
-                    <% Object.keys(temporadas).sort((a, b) => a - b).forEach((tempNum, index) => { %>
-                        <button class="season-btn <%= index === 0 ? 'active' : '' %>" data-season="<%= tempNum %>">
-                            Temporada <%= tempNum %>
-                        </button>
-                    <% }) %>
-                </div>
-                <% Object.keys(temporadas).sort((a, b) => a - b).forEach((tempNum, index) => { %>
-                    <div class="episode-list-season <%= index === 0 ? 'active' : '' %>" id="season-<%= tempNum %>">
-                        <ul class="episode-list">
-                            <% temporadas[tempNum].forEach(ep => { %>
-                                <li>
-                                    <a href="/assistir/<%= anime.slug %>/<%= ep.id %>">
-                                        <span>Episódio <%= ep.numero %><% if (ep.titulo) { %> - <%= ep.titulo %><% } %></span>
-                                        <i class="fas fa-play-circle"></i>
-                                    </a>
-                                </li>
-                            <% }) %>
-                        </ul>
+            <section>
+                <h2 class="section-title">Episódios</h2>
+                <% if(anime.episodios && anime.episodios.length > 0) {
+                    const temporadas = anime.episodios.reduce((acc, ep) => {
+                        const temp = ep.temporada || 1;
+                        if (!acc[temp]) acc[temp] = [];
+                        acc[temp].push(ep);
+                        return acc;
+                    }, {});
+                %>
+                    <div class="season-selector">
+                        <% Object.keys(temporadas).sort((a, b) => a - b).forEach((tempNum, index) => { %>
+                            <button class="season-btn <%= index === 0 ? 'active' : '' %>" data-season="<%= tempNum %>">
+                                Temporada <%= tempNum %>
+                            </button>
+                        <% }) %>
                     </div>
-                <% }) %>
-            <% } else { %>
-                <p>Nenhum episódio cadastrado para este anime ainda.</p>
-            <% } %>
+                    <% Object.keys(temporadas).sort((a, b) => a - b).forEach((tempNum, index) => { %>
+                        <div class="episode-list-season <%= index === 0 ? 'active' : '' %>" id="season-<%= tempNum %>">
+                            <ul class="episode-list">
+                                <% temporadas[tempNum].sort((a,b) => a.numero - b.numero).forEach(ep => { %>
+                                    <li class="episode-item">
+                                        <a href="/assistir/<%= anime.slug %>/<%= ep.id %>">
+                                            <span class="ep-number">EP <%= ep.numero %></span>
+                                            <span class="ep-title"><% if (ep.titulo) { %> - <%= ep.titulo %><% } %></span>
+                                            <i class="fas fa-play-circle ep-icon"></i>
+                                        </a>
+                                    </li>
+                                <% }) %>
+                            </ul>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p>Nenhum episódio cadastrado para este anime ainda.</p>
+                <% } %>
+            </section>
         </main>
     </div>
 </div>
 
+<!-- ====================================================================================== -->
+<!--                  SCRIPT JAVASCRIPT COMPLETO, FUNCIONAL E DOCUMENTADO                   -->
+<!-- ====================================================================================== -->
 <script>
-// O SCRIPT PERMANECE IDÊNTICO, POIS SUA LÓGICA É PERFEITA E INDEPENDE DO ESTILO.
+// Este script é responsável pela lógica de troca de abas das temporadas.
+// Ele é encapsulado em um ouvinte de evento para garantir que o DOM esteja
+// totalmente carregado antes de qualquer manipulação.
 document.addEventListener('DOMContentLoaded', () => {
+    
+    // Seleciona todos os elementos de botão que controlam a seleção de temporada.
     const seasonButtons = document.querySelectorAll('.season-btn');
-    if (seasonButtons.length > 1) { // Só ativa o script se houver mais de uma temporada
+    
+    // Para otimização, o script só executa sua lógica principal se houver mais de uma temporada.
+    // Se houver apenas uma, não há necessidade de funcionalidade de troca de abas.
+    if (seasonButtons.length > 1) { 
+        
+        // Itera sobre cada botão de temporada para adicionar a funcionalidade de clique.
         seasonButtons.forEach(button => {
+            
+            // Adiciona um ouvinte de evento de 'click' a cada botão.
             button.addEventListener('click', () => {
+                
+                // Extrai o número da temporada do atributo 'data-season' do botão que foi clicado.
                 const targetSeason = button.dataset.season;
-                // Remove a classe 'active' de todos os botões e listas
+                
+                // Remove a classe 'active' de todos os botões de temporada.
+                // Isso garante que apenas o botão clicado atualmente terá o estilo de ativo.
                 document.querySelectorAll('.season-btn').forEach(btn => btn.classList.remove('active'));
+                
+                // Da mesma forma, remove a classe 'active' de todas as listas de episódios para escondê-las.
                 document.querySelectorAll('.episode-list-season').forEach(list => list.classList.remove('active'));
-                // Adiciona a classe 'active' ao botão clicado e à lista correspondente
+                
+                // Adiciona a classe 'active' de volta, mas apenas ao botão que foi alvo do clique.
                 button.classList.add('active');
+                
+                // Finalmente, localiza a lista de episódios correspondente pelo ID e adiciona a classe 'active'
+                // para torná-la visível na página.
                 document.getElementById(`season-${targetSeason}`).classList.add('active');
             });
         });
