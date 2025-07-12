@@ -17,72 +17,60 @@
     */
 
     :root {
-        /* MODO ESCURO (PADRÃO) - Estilo principal Akatsuki */
-        --color-primary: #E50914; /* Vermelho Akatsuki vibrante */
+        /* MODO ESCURO (PADRÃO) */
+        --color-primary: #E50914; 
         --color-primary-hover: #F40612;
-        --color-background: #0b0b0f;      /* Fundo preto profundo, quase absoluto */
-        --color-surface: #1c1c1e;         /* Superfície dos cards e widgets (cinza muito escuro) */
+        --color-background: #0b0b0f;
+        --color-surface: #1c1c1e;
         --color-surface-hover: #2c2c2e;
         --color-border: #38383a;
-        --color-text-primary: #f1f1f1;    /* Texto principal da página (claro) */
+        --color-text-primary: #f1f1f1;
         --color-text-secondary: #a1a1aa;
-        --color-text-on-surface: #f8f9fa; /* Texto nos cards (claro) */
+        --color-text-on-surface: #f8f9fa;
         --color-text-secondary-on-surface: rgba(248, 249, 250, 0.7);
         --card-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         --card-hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(229, 9, 20, 0.2);
         
-        /* Cores do Modal (mantidas escuras para uma experiência cinematográfica consistente) */
         --modal-surface: #141418;
         --modal-border: #2a2a2e;
         --modal-text-primary: #f1f1f1;
         --modal-text-secondary: #a1a1aa;
-
-        /* Fonte Padrão */
-        --font-family-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     body.light-mode {
-        /* MODO CLARO (ALTERNATIVA) - Paleta invertida com a mesma identidade */
-        --color-primary: #d90429; /* Vermelho mais contido para fundo claro */
+        /* MODO CLARO */
+        --color-primary: #d90429;
         --color-primary-hover: #E53935;
-        --color-background: #f8f9fa;      /* Fundo da página branco/cinza muito claro */
-        --color-surface: #ffffff;         /* Superfície dos cards em branco */
+        --color-background: #f8f9fa;
+        --color-surface: #ffffff;
         --color-surface-hover: #f1f1f1;
         --color-border: #dee2e6;
-        --color-text-primary: #18181b;    /* Texto principal da página (escuro) */
+        --color-text-primary: #18181b;
         --color-text-secondary: #6c757d;
-        --color-text-on-surface: #18181b; /* Texto nos cards (escuro) */
+        --color-text-on-surface: #18181b;
         --color-text-secondary-on-surface: #6c757d;
         --card-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
         --card-hover-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 
-        /* Cores do Modal para o tema claro */
-        --modal-surface: #ffffff;
+        --modal-surface: #fdfdfd;
         --modal-border: #e9ecef;
         --modal-text-primary: #212529;
         --modal-text-secondary: #6c757d;
     }
 
-    *, *::before, *::after {
-        box-sizing: border-box;
-    }
-
-    html {
-        scroll-behavior: smooth;
-    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     
     body {
-        font-family: var(--font-family-main);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background-color: var(--color-background);
         color: var(--color-text-primary);
         margin: 0;
-        padding-top: 70px; /* Espaço para o header fixo */
+        padding-top: 70px;
         transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    body.modal-open {
-        overflow: hidden;
-    }
+    body.modal-open { overflow: hidden; }
 
     .container {
         width: 100%;
@@ -91,213 +79,111 @@
         padding: 0 20px;
     }
 
-    /*
-    ================================================================
-    HEADER E NAVEGAÇÃO
-    Componente único para a navegação do site.
-    ================================================================
-    */
+    /* HEADER E NAVEGAÇÃO */
     .main-header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 70px;
-        background-color: rgba(11, 11, 15, 0.8); /* Fundo translúcido no modo escuro */
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+        position: fixed; top: 0; left: 0;
+        width: 100%; height: 70px;
+        background-color: rgba(11, 11, 15, 0.8);
+        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
         border-bottom: 1px solid var(--color-border);
         z-index: 900;
         transition: background-color 0.3s, border-color 0.3s;
     }
-    body.light-mode .main-header {
-        background-color: rgba(255, 255, 255, 0.8); /* Fundo translúcido no modo claro */
-    }
+    body.light-mode .main-header { background-color: rgba(255, 255, 255, 0.8); }
     
     .main-header .container {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 100%;
+        display: flex; align-items: center; justify-content: space-between; height: 100%;
     }
     
     .header-logo {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: var(--color-text-primary);
-        text-decoration: none;
-        transition: color 0.3s;
+        font-size: 1.5rem; font-weight: bold;
+        color: var(--color-text-primary); text-decoration: none; transition: color 0.3s;
     }
-    .header-logo .fa-cloud {
-        color: var(--color-primary);
-    }
+    .header-logo .fa-cloud { color: var(--color-primary); }
     
     #theme-toggle-btn {
-        background: var(--color-surface);
-        color: var(--color-text-on-surface);
+        background: var(--color-surface); color: var(--color-text-on-surface);
         border: 1px solid var(--color-border);
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        cursor: pointer;
-        font-size: 1.2rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        width: 40px; height: 40px; border-radius: 50%;
+        cursor: pointer; font-size: 1.2rem;
+        display: flex; align-items: center; justify-content: center;
         transition: all 0.3s ease;
     }
-    #theme-toggle-btn:hover {
-        transform: scale(1.1) rotate(15deg);
-        color: var(--color-primary);
-    }
+    #theme-toggle-btn:hover { transform: scale(1.1) rotate(15deg); color: var(--color-primary); }
     .theme-icon.fa-sun { display: none; }
     body.light-mode .theme-icon.fa-sun { display: block; }
     body.light-mode .theme-icon.fa-moon { display: none; }
 
-
-    /* Layout Principal */
+    /* LAYOUT PRINCIPAL */
     .main-layout {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 40px;
-        padding-top: 50px; /* Espaçamento do topo da página */
-        padding-bottom: 50px;
+        display: grid; grid-template-columns: 1fr;
+        gap: 40px; padding-top: 50px; padding-bottom: 50px;
     }
     @media (min-width: 992px) { .main-layout { grid-template-columns: minmax(0, 2.5fr) minmax(0, 1fr); } }
     
     .section-title-main {
-        font-size: 1.8rem;
-        margin-bottom: 25px;
-        padding-bottom: 12px;
+        font-size: 1.8rem; margin-bottom: 25px; padding-bottom: 12px;
         border-bottom: 2px solid var(--color-primary);
-        display: flex;
-        align-items: center;
-        gap: 12px;
+        display: flex; align-items: center; gap: 12px;
         color: var(--color-text-primary);
         transition: color 0.3s, border-color 0.3s;
     }
     
-    /*
-    ================================================================
-    GRID DE NOTÍCIAS
-    ================================================================
-    */
-    .news-grid {
-        display: grid;
-        gap: 15px;
-    }
-
-    /* Estilo Mobile-First: Grid 3x3 de miniaturas */
+    /* GRID DE NOTÍCIAS */
+    .news-grid { display: grid; gap: 15px; }
     @media (max-width: 767px) {
-        .news-grid {
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-        .news-card {
-            background: transparent;
-            border: 2px solid transparent;
-            border-radius: 8px;
-            box-shadow: none;
-        }
-        .news-card:hover {
-            border-color: var(--color-primary);
-            transform: scale(1.05);
-        }
-        .news-card__image-container {
-            aspect-ratio: 1/1;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        .news-card__content, .news-card__overlay .news-card__readmore {
-            display: none;
-        }
-        .news-card:hover .news-card__overlay {
-            opacity: 1;
-            background: rgba(0,0,0,0.6);
-        }
+        .news-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .news-card { background: transparent; border: 2px solid transparent; border-radius: 8px; box-shadow: none; }
+        .news-card:hover { border-color: var(--color-primary); transform: scale(1.05); }
+        .news-card__image-container { aspect-ratio: 1/1; border-radius: 6px; overflow: hidden; }
+        .news-card__content, .news-card__overlay .news-card__readmore { display: none; }
+        .news-card:hover .news-card__overlay { opacity: 1; background: rgba(0,0,0,0.6); }
     }
-
-    /* Estilo Desktop: Cards completos */
     @media (min-width: 768px) {
-        .news-grid {
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-        }
+        .news-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
         .news-card {
-            background: var(--color-surface);
-            color: var(--color-text-on-surface);
-            border-radius: 8px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            background: var(--color-surface); color: var(--color-text-on-surface);
+            border-radius: 8px; overflow: hidden; display: flex; flex-direction: column;
             border: 1px solid var(--color-border);
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s;
-            text-decoration: none;
-            box-shadow: var(--card-shadow);
+            text-decoration: none; box-shadow: var(--card-shadow);
         }
-        .news-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--card-hover-shadow);
-        }
+        .news-card:hover { transform: translateY(-5px); box-shadow: var(--card-hover-shadow); }
         .news-card__image-container { position: relative; aspect-ratio: 16/10; }
         .news-card__image-container img { width: 100%; height: 100%; object-fit: cover; }
         .news-card__overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            opacity: 0; transition: opacity 0.3s ease;
+            background: rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.3s ease;
             display: flex; align-items: center; justify-content: center;
         }
         .news-card:hover .news-card__overlay { opacity: 1; }
         .news-card__readmore {
-            width: 55px; height: 55px;
-            background: var(--color-primary);
-            border-radius: 50%; border: none;
-            color: white; font-size: 1.6rem;
+            width: 55px; height: 55px; background: var(--color-primary);
+            border-radius: 50%; border: none; color: white; font-size: 1.6rem;
             display: flex; align-items: center; justify-content: center;
         }
         .news-card__content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
-        .news-card__category {
-            font-size: 0.8rem; font-weight: bold;
-            color: var(--color-primary); margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-        .news-card__title { 
-            font-size: 1.15rem; 
-            margin: 0; 
-            flex-grow: 1; 
-            line-height: 1.4; 
-            color: var(--color-text-on-surface);
-            transition: color 0.3s; 
-        }
+        .news-card__category { font-size: 0.8rem; font-weight: bold; color: var(--color-primary); margin-bottom: 10px; text-transform: uppercase; }
+        .news-card__title { font-size: 1.15rem; margin: 0; flex-grow: 1; line-height: 1.4; color: var(--color-text-on-surface); transition: color 0.3s; }
         .news-card__meta {
-            display: flex;
-            justify-content: space-between;
-            color: var(--color-text-secondary-on-surface);
-            font-size: 0.85em;
-            margin-top: 15px;
-            padding-top: 10px;
-            border-top: 1px solid var(--color-border);
+            display: flex; justify-content: space-between;
+            color: var(--color-text-secondary-on-surface); font-size: 0.85em;
+            margin-top: 15px; padding-top: 10px; border-top: 1px solid var(--color-border);
             transition: color 0.3s, border-color 0.3s;
         }
     }
 
-
-    /* Sidebar */
+    /* SIDEBAR */
     .sidebar-widget {
-        background: var(--color-surface);
-        padding: 25px;
-        border-radius: 8px;
-        margin-bottom: 40px;
-        border: 1px solid var(--color-border);
-        box-shadow: var(--card-shadow);
+        background: var(--color-surface); padding: 25px; border-radius: 8px; margin-bottom: 40px;
+        border: 1px solid var(--color-border); box-shadow: var(--card-shadow);
         transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
     }
     .sidebar-widget h3 { margin: 0 0 25px 0; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; color: var(--color-primary); }
     .ranking-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px; }
     .ranking-list a {
         display: flex; align-items: center; gap: 15px; text-decoration: none;
-        background: var(--color-background); 
-        padding: 10px; border-radius: 6px;
+        background: var(--color-background); padding: 10px; border-radius: 6px;
         transition: background-color 0.2s, transform 0.2s, border-color 0.2s;
         border: 1px solid var(--color-border);
     }
@@ -306,19 +192,11 @@
     .rank-info .title { display: block; color: var(--color-text-primary); font-weight: 600; margin-bottom: 5px; transition: color 0.3s;}
     .rank-info .details { font-size: 0.85em; color: var(--color-text-secondary); display: flex; gap: 15px; align-items: center; transition: color 0.3s;}
 
-    /* Elementos de UI Genéricos */
+    /* ELEMENTOS DE UI GENÉRICOS */
     .btn {
-        padding: 10px 22px;
-        border-radius: 6px;
-        border: 1px solid transparent;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.2s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        text-decoration: none;
-        font-size: 0.95rem;
+        padding: 10px 22px; border-radius: 6px; border: 1px solid transparent;
+        cursor: pointer; font-weight: 600; transition: all 0.2s ease;
+        display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-size: 0.95rem;
     }
     .btn--primary { background-color: var(--color-primary); color: white; border-color: var(--color-primary); }
     .btn--primary:hover { background-color: var(--color-primary-hover); border-color: var(--color-primary-hover); transform: translateY(-2px); }
@@ -327,293 +205,163 @@
     
     .status-message { padding: 40px 20px; text-align: center; color: var(--color-text-secondary); font-size: 1.1rem; transition: color 0.3s; }
     .status-message .fa-spinner { color: var(--color-primary); margin-right: 10px; }
-    
     .animated-section { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
     .animated-section.is-visible { opacity: 1; transform: translateY(0); }
 
     /*
     ================================================================
-    MODAL - Estilo Genérico para ambos os modais
+    ESTRUTURA DE MODAL GENÉRICA
     ================================================================
     */
     .modal {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(5px);
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
         display: flex; align-items: center; justify-content: center;
-        z-index: 1000;
         opacity: 0; visibility: hidden;
-        transition: opacity 0.3s ease, visibility 0s 0.3s;
-        padding: 20px;
+        transition: opacity 0.4s ease, visibility 0s 0.4s;
     }
     .modal.active { opacity: 1; visibility: visible; transition-delay: 0s; }
+    
     .modal__content {
-        position: relative;
         background: var(--modal-surface);
-        width: 100%; max-width: 950px;
-        display: flex; flex-direction: column;
-        box-shadow: 0 10px 50px rgba(0,0,0,0.8);
+        box-shadow: 0 10px 50px rgba(0,0,0,0.5);
         border-radius: 12px;
-        overflow: hidden;
-        transform: scale(0.95);
-        transition: transform 0.3s ease, background-color 0.3s;
+        transform: scale(0.9);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s;
+        position: relative;
     }
     .modal.active .modal__content { transform: scale(1); }
+    
     .modal__close {
         position: absolute; top: 15px; right: 15px;
-        background: rgba(0,0,0,0.4); border: 1px solid var(--modal-border);
-        border-radius: 50%; width: 36px; height: 36px;
-        font-size: 22px; color: #fff; cursor: pointer; z-index: 20;
-        transition: all 0.2s ease;
+        background: rgba(0,0,0,0.2); border: 1px solid var(--color-border);
+        border-radius: 50%; width: 40px; height: 40px;
+        font-size: 24px; color: var(--modal-text-secondary); cursor: pointer;
+        transition: all 0.3s ease;
         display: flex; align-items: center; justify-content: center;
+        z-index: 100;
     }
-    body.light-mode .modal__close {
-        color: var(--modal-text-primary);
-        background: rgba(255,255,255,0.4);
-    }
+    body.light-mode .modal__close { color: var(--modal-text-secondary); background: rgba(0,0,0,0.05); }
     .modal__close:hover { background: var(--color-primary); border-color: var(--color-primary); color: #fff; transform: scale(1.1) rotate(90deg); }
 
-    /* Estilos do Scrollbar */
-    .scrollbar-styled {
-        scrollbar-width: thin;
-        scrollbar-color: var(--color-primary) var(--modal-border);
-    }
+    .scrollbar-styled { scrollbar-width: thin; scrollbar-color: var(--color-primary) var(--modal-border); }
     .scrollbar-styled::-webkit-scrollbar { width: 8px; }
     .scrollbar-styled::-webkit-scrollbar-track { background: var(--modal-border); }
     .scrollbar-styled::-webkit-scrollbar-thumb { background-color: var(--color-primary); border-radius: 4px; }
-
-    /*
-    ================================================================
-    MODAL DE DETALHES (API) - Estilo cinematográfico
-    ================================================================
-    */
-    #api-modal .modal__content {
-        height: 90vh; max-height: 800px;
-        background: transparent; /* Permite ver o backdrop */
-    }
-    body.light-mode #api-modal .modal__content {
-        background: var(--modal-surface); /* Fundo sólido no modo claro */
-    }
-    .modal-backdrop-image {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        object-fit: cover; z-index: 1;
-        transition: opacity 0.3s;
-    }
-    body.light-mode .modal-backdrop-image { opacity: 0; }
-    .modal-backdrop-overlay {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background: linear-gradient(to top, var(--modal-surface) 25%, rgba(20, 20, 24, 0.8) 60%, rgba(20, 20, 24, 1) 100%);
-        z-index: 2;
-        transition: background 0.3s;
-    }
-    body.light-mode .modal-backdrop-overlay { background: transparent; }
-
-    .modal-inner-content {
-        position: relative; z-index: 3;
-        display: flex; flex-direction: column;
-        height: 100%; color: var(--modal-text-primary);
-        transition: color 0.3s;
-    }
-    .modal__header { padding: 30px 40px; padding-top: 60px; }
-    .modal__header h2 { margin: 0; font-size: 2.5rem; color: #fff; line-height: 1.2; text-shadow: 0 2px 5px #000; transition: color 0.3s, text-shadow 0.3s;}
-    body.light-mode .modal__header h2 { color: var(--modal-text-primary); text-shadow: none; }
-    .modal__tabs {
-        display: flex; padding: 0 40px;
-        border-bottom: 1px solid var(--modal-border);
-        transition: border-color 0.3s;
-    }
-    .modal__tab-btn {
-        background: none; border: none; color: var(--modal-text-secondary);
-        padding: 15px 25px; font-size: 1rem; font-weight: 500;
-        cursor: pointer; position: relative; transition: color 0.2s;
-    }
-    .modal__tab-btn:hover { color: var(--modal-text-primary); }
-    .modal__tab-btn.active { color: var(--modal-text-primary); font-weight: 700; }
-    .modal__tab-btn.active::after {
-        content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
-        height: 3px; background-color: var(--color-primary);
-        border-radius: 3px 3px 0 0;
-    }
-    .modal-tab-panel { display: none; animation: fadeIn 0.5s ease; }
-    .modal-tab-panel.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .modal__body-wrapper {
-        overflow-y: auto;
-        flex-grow: 1;
-        padding: 30px 40px;
-    }
-    .modal__footer {
-        padding: 20px 40px; background-color: rgba(0,0,0,0.4);
-        border-top: 1px solid var(--modal-border);
-        display: flex; justify-content: flex-end; gap: 15px;
-        flex-shrink: 0;
-        transition: background-color 0.3s, border-color 0.3s;
-    }
-    body.light-mode .modal__footer { background-color: transparent; }
-    .modal-section { margin-bottom: 30px; }
-    .modal-section h4 {
-        margin: 0 0 15px 0; font-size: 1.3rem; color: var(--modal-text-primary);
-        border-bottom: 1px solid var(--modal-border); padding-bottom: 10px;
-        transition: color 0.3s, border-color 0.3s;
-    }
-    .modal-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 20px; }
-    .meta-item { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border-left: 3px solid var(--color-primary); transition: background-color 0.3s; }
-    body.light-mode .meta-item { background: rgba(0,0,0,0.05); }
-    .meta-item__label { display: block; font-size: 0.8rem; color: var(--modal-text-secondary); margin-bottom: 6px; text-transform: uppercase; transition: color 0.3s; }
-    .meta-item__value { font-size: 1.1rem; color: var(--modal-text-primary); font-weight: 600; transition: color 0.3s;}
-    .meta-item__value .certification-tag { background: var(--modal-border); padding: 4px 10px; border-radius: 4px; font-size: 0.9em; transition: background-color 0.3s; }
-    .modal-tags { display: flex; flex-wrap: wrap; gap: 10px; }
-    .modal-tag {
-        background-color: var(--modal-border); color: var(--modal-text-primary);
-        padding: 6px 15px; border-radius: 20px; font-size: 0.9em;
-        transition: background-color 0.2s, color 0.2s;
-    }
-    .modal-tag:hover { background-color: var(--color-primary); color: #fff; }
-    .synopsis-content {
-        max-height: 120px; overflow: hidden; position: relative;
-        transition: max-height 0.5s ease-in-out;
-        line-height: 1.7; color: var(--modal-text-secondary);
-    }
-    .synopsis-content.is-expanded { max-height: 1500px; }
-    .synopsis-content:not(.is-expanded)::after {
-        content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60px;
-        background: linear-gradient(to top, var(--modal-surface) 20%, transparent);
-        transition: background 0.3s;
-    }
-    .btn-show-more {
-        background: none; border: none; color: var(--color-primary);
-        cursor: pointer; font-weight: bold; padding: 10px 0;
-        display: block; margin-top: 10px;
-    }
-    .trailer-container { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; }
-    .trailer-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 8px; }
-    .cast-grid, .reco-grid { display: grid; gap: 20px; }
-    .cast-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
-    .reco-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-    .cast-card { text-align: center; }
-    .cast-card__img { width: 100%; border-radius: 8px; margin-bottom: 12px; background-color: var(--modal-border); aspect-ratio: 2/3; object-fit: cover; transition: background-color 0.3s; }
-    .cast-card__name { font-weight: 600; color: var(--modal-text-primary); margin: 0 0 5px 0; transition: color 0.3s;}
-    .cast-card__role { font-size: 0.85em; color: var(--modal-text-secondary); transition: color 0.3s;}
-    .reco-card { position: relative; display: block; text-decoration: none; border-radius: 8px; overflow: hidden; }
-    .reco-card__img { width: 100%; aspect-ratio: 2/3; object-fit: cover; background: var(--modal-border); transition: transform 0.3s ease, background-color 0.3s; }
-    .reco-card:hover .reco-card__img { transform: scale(1.05); }
-    .reco-card__title {
-        position: absolute; bottom: 0; left: 0; right: 0;
-        background: linear-gradient(to top, rgba(0,0,0,0.9) 20%, transparent);
-        color: #fff; font-size: 0.95em; padding: 25px 10px 10px 10px;
-        margin: 0; text-align: center; font-weight: 600;
-    }
     
     /*
     ================================================================
-    NOVO: MODAL DE VÍDEO E COMENTÁRIOS
+    MODAL-PÁGINA DE NOTÍCIAS (VÍDEO)
     ================================================================
     */
-    #video-modal .modal__content {
-        height: 95vh; max-height: 850px;
-        padding: 25px;
+    #news-page-modal .modal__content {
+        width: 95vw; max-width: 1400px;
+        height: 95vh;
+        display: flex; flex-direction: column;
+        overflow: hidden;
     }
-    .video-modal-layout {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        gap: 25px;
+    .news-page__body {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 40px 50px;
+    }
+    .news-page__header { padding-bottom: 25px; border-bottom: 1px solid var(--color-border); margin-bottom: 30px; transition: border-color 0.3s;}
+    .news-page__title {
+        font-size: 2.2rem; margin: 0; line-height: 1.3;
+        color: var(--modal-text-primary); transition: color 0.3s;
     }
     #video-player-container {
-        position: relative;
-        padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-        height: 0;
-        flex-shrink: 0;
+        position: relative; padding-bottom: 56.25%; height: 0;
+        border-radius: 10px; overflow: hidden; margin-bottom: 40px;
+        background-color: #000;
     }
-    #video-player-container iframe {
-        position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        border: none; border-radius: 8px;
+    #video-player-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+    .news-page__meta-grid {
+        display: grid; grid-template-columns: 1fr auto; gap: 30px;
+        align-items: start;
     }
-    #video-comments-section {
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        min-height: 0;
+    
+    .news-page__section-title {
+        font-size: 1.5rem; color: var(--modal-text-primary);
+        margin: 0 0 20px 0; transition: color 0.3s;
     }
-    #video-comments-section h3 {
-        margin: 0 0 15px 0;
-        font-size: 1.4rem;
-        color: var(--color-text-primary);
-        flex-shrink: 0;
-        transition: color 0.3s;
+
+    /* Formulário de Comentário */
+    .comment-form { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; }
+    .comment-form textarea {
+        width: 100%; min-height: 80px; padding: 12px;
+        border: 1px solid var(--color-border); border-radius: 6px;
+        background: var(--color-background); color: var(--modal-text-primary);
+        font-family: inherit; font-size: 1rem; resize: vertical;
+        transition: all 0.3s;
     }
-    #video-comments-container {
-        overflow-y: auto;
-        padding-right: 15px; /* Espaço para o scrollbar */
+    .comment-form textarea:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.15); outline: none; }
+    .comment-form__footer { display: flex; justify-content: space-between; align-items: center; }
+    .comment-form__disclaimer { font-size: 0.8rem; color: var(--modal-text-secondary); font-style: italic; }
+    
+    /* Lista de Comentários */
+    #comments-list-container { display: flex; flex-direction: column; gap: 25px; }
+    .comment-card { display: flex; gap: 15px; }
+    .comment-author-avatar img { width: 40px; height: 40px; border-radius: 50%; }
+    .comment-author-name { font-weight: 600; color: var(--modal-text-primary); margin-right: 10px; transition: color 0.3s; }
+    .comment-date { font-size: 0.8em; color: var(--modal-text-secondary); transition: color 0.3s; }
+    .comment-text { color: var(--modal-text-secondary); line-height: 1.6; margin-top: 5px; transition: color 0.3s; }
+
+    /* Barra Lateral da Página de Notícias */
+    .news-page__sidebar { display: flex; flex-direction: column; gap: 30px; }
+    .sidebar-box { background: var(--color-surface); padding: 20px; border-radius: 8px; border: 1px solid var(--color-border); transition: all 0.3s;}
+    .sidebar-box__title { font-size: 1.1rem; margin: 0 0 15px 0; color: var(--modal-text-primary); transition: color 0.3s;}
+    .social-share-buttons { display: flex; gap: 10px; }
+    .social-share-buttons a {
+        width: 38px; height: 38px; border-radius: 50%;
+        display: inline-flex; align-items: center; justify-content: center;
+        text-decoration: none; color: #fff; font-size: 1.1rem;
+        transition: transform 0.2s;
     }
-    .comment-card {
-        display: flex;
-        gap: 15px;
-        margin-bottom: 20px;
-        padding-bottom: 20px;
+    .social-share-buttons a:hover { transform: scale(1.1); }
+    .social-share-buttons .fa-facebook-f { background: #1877F2; }
+    .social-share-buttons .fa-twitter { background: #1DA1F2; }
+    .social-share-buttons .fa-whatsapp { background: #25D366; }
+    
+    /*
+    ================================================================
+    MODAL DE EXPLORADOR DE CATEGORIAS
+    ================================================================
+    */
+    #category-explorer-modal { z-index: 1050; } /* Garante que fique sobre o outro modal */
+    #category-explorer-modal .modal__content {
+        width: 90vw; max-width: 900px;
+        height: 90vh;
+        display: flex; flex-direction: column;
+        padding: 30px;
+    }
+    .category-explorer__header { flex-shrink: 0; }
+    .category-explorer__title { font-size: 1.8rem; margin: 0 0 20px; color: var(--modal-text-primary); transition: color 0.3s; }
+    .category-explorer__tags {
+        display: flex; flex-wrap: wrap; gap: 10px;
+        margin-bottom: 20px; padding-bottom: 20px;
         border-bottom: 1px solid var(--color-border);
         transition: border-color 0.3s;
     }
-    .comment-card:last-child {
-        border-bottom: none;
+    .category-tag {
+        background-color: var(--color-surface); color: var(--modal-text-secondary);
+        padding: 8px 18px; border-radius: 20px; font-size: 0.9em;
+        cursor: pointer; border: 1px solid var(--color-border);
+        transition: all 0.2s;
     }
-    .comment-author-avatar img {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
+    .category-tag:hover { background-color: var(--color-primary-hover); color: #fff; border-color: var(--color-primary-hover); }
+    .category-tag.active { background-color: var(--color-primary); color: #fff; border-color: var(--color-primary); font-weight: bold; }
+    
+    .category-explorer__results-grid {
+        flex-grow: 1; overflow-y: auto;
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 20px;
     }
-    .comment-body {
-        flex-grow: 1;
+    .category-explorer__results-grid .news-card {
+        min-height: 180px;
     }
-    .comment-author-name {
-        font-weight: 600;
-        color: var(--color-text-primary);
-        margin-right: 10px;
-        transition: color 0.3s;
-    }
-    .comment-date {
-        font-size: 0.8em;
-        color: var(--color-text-secondary);
-        transition: color 0.3s;
-    }
-    .comment-text {
-        color: var(--color-text-secondary);
-        line-height: 1.6;
-        margin-top: 5px;
-        transition: color 0.3s;
-    }
-
-    /*
-    ================================================================
-    FOOTER
-    ================================================================
-    */
-    .main-footer {
-        background-color: var(--color-surface);
-        border-top: 1px solid var(--color-border);
-        padding: 30px 0;
-        margin-top: 50px;
-        color: var(--color-text-secondary);
-        font-size: 0.9rem;
-        text-align: center;
-        transition: background-color 0.3s, border-color 0.3s, color 0.3s;
-    }
-    .main-footer .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-    }
-    .main-footer a {
-        color: var(--color-primary);
-        text-decoration: none;
-        font-weight: 600;
-    }
-    .main-footer a:hover {
-        text-decoration: underline;
-    }
-
 </style>
 </head>
 <body>
@@ -658,108 +406,122 @@
     </aside>
 </div>
 
-<!-- MODAL AVANÇADO PARA DETALHES DA API (JIKAN/TMDB) -->
-<div id="api-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-api-title">
+<!-- MODAL-PÁGINA DE NOTÍCIAS (NOVO E ROBUSTO) -->
+<div id="news-page-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="news-page-title">
     <div class="modal__content">
-        <img id="modal-backdrop" src="" alt="Backdrop" class="modal-backdrop-image" aria-hidden="true">
-        <div class="modal-backdrop-overlay"></div>
-        <div class="modal-inner-content">
-            <button class="modal__close" aria-label="Fechar modal">×</button>
-            <header class="modal__header"><h2 id="modal-api-title">Carregando...</h2></header>
-            <nav class="modal__tabs" id="modal-api-tabs" role="tablist"></nav>
-            <div class="modal__body-wrapper scrollbar-styled" id="modal-api-tab-panels"></div>
-            <footer class="modal__footer">
-                <a href="#" id="modal-details-link" target="_blank" rel="noopener noreferrer" class="btn btn--primary" style="display: none;">
-                    <i class="fas fa-info-circle"></i> Ver Página Original
-                </a>
-                <button class="btn btn--secondary modal__close">Fechar</button>
-            </footer>
+        <button class="modal__close" aria-label="Fechar">×</button>
+        <div class="news-page__body scrollbar-styled">
+            <header class="news-page__header">
+                <h2 id="news-page-title" class="news-page__title">Carregando notícia...</h2>
+            </header>
+            
+            <div id="video-player-container"></div>
+            
+            <div class="news-page__meta-grid">
+                <main class="news-page__main-content">
+                    <section id="comment-section">
+                        <h3 class="news-page__section-title">Deixe seu Comentário</h3>
+                        <form id="comment-form" class="comment-form">
+                            <textarea id="comment-textarea" placeholder="O que você achou deste vídeo?" required></textarea>
+                            <div class="comment-form__footer">
+                                <span class="comment-form__disclaimer">Seu comentário é temporário e visível apenas para você.</span>
+                                <button type="submit" class="btn btn--primary">
+                                    <i class="fas fa-paper-plane"></i> Comentar
+                                </button>
+                            </div>
+                        </form>
+                    </section>
+                    
+                    <section id="comments-list-section">
+                        <h3 class="news-page__section-title">Comentários do YouTube</h3>
+                        <div id="comments-list-container">
+                             <p class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando comentários...</p>
+                        </div>
+                    </section>
+                </main>
+                
+                <aside class="news-page__sidebar">
+                    <div class="sidebar-box">
+                        <h4 class="sidebar-box__title">Compartilhe</h4>
+                        <div class="social-share-buttons">
+                            <a href="#" target="_blank" class="social-share-link" data-platform="facebook" title="Compartilhar no Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" target="_blank" class="social-share-link" data-platform="twitter" title="Compartilhar no Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" target="_blank" class="social-share-link" data-platform="whatsapp" title="Compartilhar no WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        </div>
+                    </div>
+                    <div class="sidebar-box">
+                        <h4 class="sidebar-box__title">Navegação</h4>
+                        <button id="open-category-explorer" class="btn btn--secondary" style="width:100%;">
+                            <i class="fas fa-compass"></i> Explorar por Categoria
+                        </button>
+                    </div>
+                </aside>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- MODAL PARA VÍDEO DO YOUTUBE E COMENTÁRIOS -->
-<div id="video-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-video-title">
+<!-- MODAL EXPLORADOR DE CATEGORIAS (NOVO) -->
+<div id="category-explorer-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="category-explorer-title">
     <div class="modal__content">
-        <button class="modal__close" aria-label="Fechar modal">×</button>
-        <div class="video-modal-layout">
-            <div id="video-player-container">
-                <!-- Iframe do YouTube será injetado aqui -->
+        <button class="modal__close" aria-label="Fechar">×</button>
+        <div class="category-explorer__header">
+            <h2 id="category-explorer-title" class="category-explorer__title">Explorar Categorias</h2>
+            <div id="category-explorer-tags" class="category-explorer__tags scrollbar-styled">
+                <p class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando categorias...</p>
             </div>
-            <section id="video-comments-section" aria-labelledby="video-comments-heading">
-                <h3 id="video-comments-heading"><i class="fas fa-comments"></i> Comentários</h3>
-                <div id="video-comments-container" class="scrollbar-styled">
-                    <!-- Comentários do YouTube serão injetados aqui -->
-                    <p class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando comentários...</p>
-                </div>
-            </section>
+        </div>
+        <div id="category-explorer-results-grid" class="category-explorer__results-grid scrollbar-styled">
+            <p class="status-message">Selecione uma categoria para ver as notícias.</p>
         </div>
     </div>
 </div>
+
+<!-- FOOTER -->
+<footer class="main-footer">
+    <div class="container">
+        <p>© 2025 Central Akatsuki. Todos os direitos reservados.</p>
+        <p>Desenvolvido com a força do Sharingan. Dados fornecidos por Jikan, TMDb e YouTube.</p>
+    </div>
+</footer>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- CONFIGURAÇÕES E CONSTANTES GLOBAIS ---
     const JIKAN_API = 'https://api.jikan.moe/v4';
-    const TMDB_API = 'https://api.themoviedb.org/3';
-    const TMDB_KEY = 'ebc6c62b1d31f28ab2d155ad4c921657'; // Chave de API pública para fins de demonstração
-    
-    // =========================================================================================
-    // ATENÇÃO: É NECESSÁRIO OBTER E INSERIR SUA PRÓPRIA CHAVE DA API DE DADOS DO YOUTUBE V3 AQUI
-    // Obtenha uma em: https://console.cloud.google.com/apis/library/youtube.googleapis.com
-    // =========================================================================================
-    const YOUTUBE_API_KEY = 'SUA_CHAVE_API_DO_YOUTUBE_AQUI'; 
+    const YOUTUBE_API_KEY = 'SUA_CHAVE_API_DO_YOUTUBE_AQUI'; // INSIRA SUA CHAVE AQUI
     const YOUTUBE_API_URL = 'https://www.googleapis.com/youtube/v3';
-
-    const IMG_PATH = 'https://image.tmdb.org/t/p/';
     const PLACEHOLDER_IMG = 'https://via.placeholder.com/300x450/1c1c1e/a1a1aa?text=Sem+Imagem';
-    const PLACEHOLDER_BACKDROP = 'https://cutewallpaper.org/21/akatsuki-clouds-background/Akatsuki-Clouds-Wallpapers-Top-Free-Akatsuki-Clouds-.jpg';
+
+    // --- ELEMENTOS DO DOM ---
+    const body = document.body;
+    const newsPageModal = document.getElementById('news-page-modal');
+    const categoryExplorerModal = document.getElementById('category-explorer-modal');
 
     // --- LÓGICA DO ALTERNADOR DE TEMA ---
     const themeToggleButton = document.getElementById('theme-toggle-btn');
-    const body = document.body;
-
-    // Aplica o tema salvo ao carregar a página
     const currentTheme = localStorage.getItem('theme');
-    if (currentTheme === 'light') {
-        body.classList.add('light-mode');
-    }
+    if (currentTheme === 'light') body.classList.add('light-mode');
     
     themeToggleButton.addEventListener('click', () => {
         body.classList.toggle('light-mode');
-        // Salva a preferência do usuário no armazenamento local
-        const themeToSave = body.classList.contains('light-mode') ? 'light' : 'dark';
-        localStorage.setItem('theme', themeToSave);
+        localStorage.setItem('theme', body.classList.contains('light-mode') ? 'light' : 'dark');
     });
 
-    // --- FUNÇÃO AUXILIAR DE FETCH ROBUSTA ---
+    // --- FUNÇÃO AUXILIAR DE FETCH ---
     const fetchData = async (url) => {
         try {
-            const res = await fetch(`${url}${url.includes('?') ? '&' : '?'}cache_bust=${new Date().getTime()}`);
-            if (!res.ok) throw new Error(`API Error: ${res.status} em ${url}`);
-            const data = await res.json();
-            return data.data || data; // Jikan encapsula em 'data', TMDB/YouTube não.
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`API Error: ${res.status}`);
+            return await res.json();
         } catch (error) {
-            console.error(`Falha ao buscar dados:`, error);
+            console.error(`Falha ao buscar dados de ${url}:`, error);
             return null;
         }
     };
     
-    // --- LÓGICA GENÉRICA DOS MODAIS (ABRIR/FECHAR) ---
-    const modals = document.querySelectorAll('.modal');
-    modals.forEach(modal => {
-        const closeButtons = modal.querySelectorAll('.modal__close');
-        closeButtons.forEach(button => button.addEventListener('click', () => closeModal(modal)));
-        modal.addEventListener('click', e => (e.target === modal) && closeModal(modal));
-    });
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') {
-            const activeModal = document.querySelector('.modal.active');
-            if (activeModal) closeModal(activeModal);
-        }
-    });
-    
+    // --- LÓGICA GENÉRICA DOS MODAIS ---
     const openModal = (modal) => {
         if (!modal) return;
         modal.classList.add('active');
@@ -769,25 +531,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModal = (modal) => {
         if (!modal) return;
         modal.classList.remove('active');
-        body.classList.remove('modal-open');
-
-        // Especificamente para o modal de vídeo, pare a reprodução ao fechar
-        if (modal.id === 'video-modal') {
+        if (!document.querySelector('.modal.active')) {
+            body.classList.remove('modal-open');
+        }
+        if (modal.id === 'news-page-modal') {
             const iframeContainer = modal.querySelector('#video-player-container');
             if (iframeContainer) iframeContainer.innerHTML = '';
         }
     }
 
-    // --- OBSERVER PARA ANIMAÇÕES DE SCROLL ---
-    const observer = new IntersectionObserver((entries, obs) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible');
-                obs.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.animated-section').forEach(section => observer.observe(section));
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.querySelector('.modal__close').addEventListener('click', () => closeModal(modal));
+    });
 
     // --- FUNÇÃO PARA EXTRAIR ID DO VÍDEO DO YOUTUBE ---
     function extractYouTubeId(url) {
@@ -797,36 +552,34 @@ document.addEventListener('DOMContentLoaded', () => {
         return (match && match[2].length === 11) ? match[2] : null;
     }
 
-    // --- CARREGAMENTO DE CONTEÚDO DINÂMICO ---
-
-    async function fetchAndDisplayExternalNews() {
+    // --- CARREGAMENTO INICIAL DO CONTEÚDO DA PÁGINA ---
+    async function fetchAndDisplayInitialNews() {
         const container = document.getElementById('external-news-container');
         if (!container) return;
-        
         const newsData = await fetchData(`${JIKAN_API}/watch/promos`);
         
-        if (!newsData || newsData.length === 0) {
-            container.innerHTML = `<p class="status-message">Nenhum destaque da web encontrado no momento.</p>`;
+        if (!newsData?.data || newsData.data.length === 0) {
+            container.innerHTML = `<p class="status-message">Nenhum destaque encontrado.</p>`;
             return;
         }
-
-        container.innerHTML = newsData.slice(0, 12).map(item => {
+        renderNewsGrid(container, newsData.data.slice(0, 12));
+    }
+    
+    function renderNewsGrid(container, newsItems) {
+        container.innerHTML = newsItems.map(item => {
             const promo = item.entry;
             const imageUrl = promo.images?.jpg?.large_image_url || PLACEHOLDER_IMG;
             const videoId = extractYouTubeId(item.trailer.url);
-            
-            if (!videoId) return ''; // Só renderiza o card se houver um videoId válido
+            if (!videoId) return '';
 
             return `
-                <a href="#" class="news-card btn-open-video-modal" data-video-id="${videoId}" title="Assistir trailer de ${promo.title}">
+                <a href="#" class="news-card open-news-page-modal" data-video-id="${videoId}" data-video-title="${promo.title}">
                     <div class="news-card__image-container">
                         <img src="${imageUrl}" alt="Capa de ${promo.title}" loading="lazy" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}';"/>
-                        <div class="news-card__overlay">
-                            <span class="news-card__readmore"><i class="fab fa-youtube"></i></span>
-                        </div>
+                        <div class="news-card__overlay"><span class="news-card__readmore"><i class="fab fa-youtube"></i></span></div>
                     </div>
                     <div class="news-card__content">
-                        <span class="news-card__category">Trailer / Promo</span>
+                        <span class="news-card__category">Trailer</span>
                         <h4 class="news-card__title">${promo.title}</h4>
                         <div class="news-card__meta"><span><i class="fas fa-play-circle"></i> Assistir agora</span></div>
                     </div>
@@ -835,316 +588,142 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     }
 
-    async function populateTopAnimesSidebar() {
-        const list = document.getElementById('top-anime-list');
-        if (!list) return;
-
-        const animes = await fetchData(`${JIKAN_API}/top/anime?filter=airing&limit=5`);
-
-        if (!animes || animes.length === 0) {
-            list.innerHTML = `<li class="status-message">Não foi possível carregar os animes.</li>`;
-            return;
-        }
-
-        list.innerHTML = animes.map(anime => `
-            <li>
-                <a href="#" class="btn-open-api-modal" data-type="jikan" data-id="${anime.mal_id}" data-backdrop="${anime.images?.jpg?.large_image_url || PLACEHOLDER_BACKDROP}">
-                    <img src="${anime.images?.jpg?.image_url || PLACEHOLDER_IMG}" alt="Thumbnail ${anime.title}" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}';">
-                    <div class="rank-info">
-                        <span class="title">${anime.title_english || anime.title}</span>
-                        <span class="details">
-                            <span><i class="fas fa-star" style="color:#f5c518;"></i> ${anime.score || 'N/A'}</span>
-                            <span><i class="fas fa-user-friends"></i> ${(anime.members || 0).toLocaleString('pt-BR')}</span>
-                        </span>
-                    </div>
-                </a>
-            </li>
-        `).join('');
-    }
-    
-    async function populateTopMoviesSidebar() {
-        const list = document.getElementById('top-movies-list');
-        if (!list) return;
-
-        const moviesData = await fetchData(`${TMDB_API}/movie/popular?api_key=${TMDB_KEY}&language=pt-BR&page=1`);
-        
-        if (!moviesData?.results?.length) {
-            list.innerHTML = `<li class="status-message">Não foi possível carregar os filmes.</li>`;
-            return;
-        }
-        
-        list.innerHTML = moviesData.results.slice(0, 5).map(filme => `
-            <li>
-                <a href="#" class="btn-open-api-modal" data-type="tmdb" data-media-type="movie" data-id="${filme.id}" data-backdrop="${filme.backdrop_path ? `${IMG_PATH}original${filme.backdrop_path}` : PLACEHOLDER_BACKDROP}">
-                    <img src="${filme.poster_path ? `${IMG_PATH}w185${filme.poster_path}` : PLACEHOLDER_IMG}" alt="Pôster ${filme.title}" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}';">
-                    <div class="rank-info">
-                        <span class="title">${filme.title}</span>
-                        <span class="details">
-                            <span><i class="fas fa-star" style="color:#f5c518;"></i> ${filme.vote_average.toFixed(1)}</span>
-                            <span><i class="fas fa-calendar-alt"></i> ${filme.release_date ? filme.release_date.split('-')[0] : 'N/A'}</span>
-                        </span>
-                    </div>
-                </a>
-            </li>
-        `).join('');
-    }
-
-    // --- LÓGICA DO MODAL DE VÍDEO E COMENTÁRIOS ---
-    const videoModal = document.getElementById('video-modal');
+    // --- LÓGICA DO MODAL-PÁGINA DE NOTÍCIAS ---
+    const newsPageTitleEl = document.getElementById('news-page-title');
     const playerContainer = document.getElementById('video-player-container');
-    const commentsContainer = document.getElementById('video-comments-container');
+    const commentsContainer = document.getElementById('comments-list-container');
+    const commentForm = document.getElementById('comment-form');
 
-    async function loadVideoAndComments(videoId) {
-        playerContainer.innerHTML = '';
-        commentsContainer.innerHTML = `<p class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>`;
-        openModal(videoModal);
-        playerContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    async function loadNewsPage(videoId, videoTitle) {
+        openModal(newsPageModal);
+
+        // Resetar estado
+        newsPageTitleEl.textContent = videoTitle;
+        playerContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        commentsContainer.innerHTML = `<p class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando comentários...</p>`;
+        commentForm.reset();
+        
+        updateShareLinks(videoId, videoTitle);
         await fetchYouTubeComments(videoId);
     }
-    
+
+    function updateShareLinks(videoId, videoTitle) {
+        const url = `https://www.youtube.com/watch?v=${videoId}`;
+        const text = `Confira este vídeo: ${videoTitle}`;
+        newsPageModal.querySelector('.social-share-link[data-platform="facebook"]').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+        newsPageModal.querySelector('.social-share-link[data-platform="twitter"]').href = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+        newsPageModal.querySelector('.social-share-link[data-platform="whatsapp"]').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + ' ' + url)}`;
+    }
+
     async function fetchYouTubeComments(videoId) {
         if (YOUTUBE_API_KEY === 'SUA_CHAVE_API_DO_YOUTUBE_AQUI') {
-            commentsContainer.innerHTML = `<p class="status-message" style="text-align: left; padding: 15px;">Para exibir os comentários, insira sua chave da API de Dados do YouTube v3 no arquivo de script.<br><br>Você pode obter uma gratuitamente no Console do Google Cloud.</p>`;
+            commentsContainer.innerHTML = `<p class="status-message" style="text-align: left;">Para exibir os comentários, uma chave da API do YouTube é necessária no código.</p>`;
             return;
         }
-
         const url = `${YOUTUBE_API_URL}/commentThreads?part=snippet&videoId=${videoId}&key=${YOUTUBE_API_KEY}&order=relevance&maxResults=20`;
         const data = await fetchData(url);
-
-        if (!data || !data.items || data.items.length === 0) {
-            commentsContainer.innerHTML = `<p class="status-message">Nenhum comentário encontrado ou não foi possível carregá-los.</p>`;
+        
+        if (!data?.items || data.items.length === 0) {
+            commentsContainer.innerHTML = `<p class="status-message">Nenhum comentário encontrado.</p>`;
             return;
         }
         
-        commentsContainer.innerHTML = data.items.map(item => {
-            const comment = item.snippet.topLevelComment.snippet;
-            return `
-                <div class="comment-card">
-                    <div class="comment-author-avatar">
-                        <img src="${comment.authorProfileImageUrl}" alt="${comment.authorDisplayName}">
-                    </div>
-                    <div class="comment-body">
-                        <div>
-                            <span class="comment-author-name">${comment.authorDisplayName}</span>
-                            <span class="comment-date">${new Date(comment.publishedAt).toLocaleDateString('pt-BR')}</span>
-                        </div>
-                        <div class="comment-text">${comment.textDisplay}</div>
-                    </div>
-                </div>
-            `;
-        }).join('');
+        commentsContainer.innerHTML = data.items.map(item => renderComment(item.snippet.topLevelComment.snippet)).join('');
     }
 
-    // --- LÓGICA DO MODAL AVANÇADO (API) ---
-    const apiModal = document.getElementById('api-modal');
-    const modalTitleEl = document.getElementById('modal-api-title');
-    const modalBackdropEl = document.getElementById('modal-backdrop');
-    const modalTabsContainer = document.getElementById('modal-api-tabs');
-    const modalPanelsContainer = document.getElementById('modal-api-tab-panels');
-    const modalDetailsLinkEl = document.getElementById('modal-details-link');
-        
-    apiModal.addEventListener('click', e => {
-        const tabBtn = e.target.closest('.modal__tab-btn');
-        if (tabBtn?.dataset.target) {
-            apiModal.querySelectorAll('.modal__tab-btn, .modal-tab-panel').forEach(el => el.classList.remove('active'));
-            tabBtn.classList.add('active');
-            apiModal.querySelector(tabBtn.dataset.target)?.classList.add('active');
-        }
-        const showMoreBtn = e.target.closest('.btn-show-more');
-        if (showMoreBtn) {
-            const content = showMoreBtn.previousElementSibling;
-            if (content?.classList.toggle('is-expanded')) {
-                showMoreBtn.textContent = 'Ler menos';
-            } else {
-                showMoreBtn.textContent = 'Ler mais';
-            }
-        }
-    });
-
-    // --- GATILHOS DE EVENTOS (DELEGAÇÃO) ---
-    body.addEventListener('click', async e => {
-        const openVideoBtn = e.target.closest('.btn-open-video-modal');
-        if (openVideoBtn) {
-            e.preventDefault();
-            const videoId = openVideoBtn.dataset.videoId;
-            if (videoId) await loadVideoAndComments(videoId);
-            return;
-        }
-
-        const openApiBtn = e.target.closest('.btn-open-api-modal');
-        if (openApiBtn) {
-            e.preventDefault();
-            modalTitleEl.textContent = 'Carregando...';
-            modalTabsContainer.innerHTML = '';
-            modalPanelsContainer.innerHTML = `<p class="status-message"><i class="fas fa-spinner fa-spin"></i> Buscando informações...</p>`;
-            modalDetailsLinkEl.style.display = 'none';
-            modalBackdropEl.src = openApiBtn.dataset.backdrop || PLACEHOLDER_BACKDROP;
-            openModal(apiModal);
-            
-            const { type, id, mediaType } = openApiBtn.dataset;
-            const renderer = type === 'jikan' ? renderJikanDetails : (type === 'tmdb' ? renderTmdbDetails : null);
-            
-            if (renderer) await renderer(id, mediaType);
-            else modalPanelsContainer.innerHTML = `<p class="status-message">Erro: Tipo de conteúdo desconhecido.</p>`;
-        }
-    });
-
-    // --- FUNÇÕES DE RENDERIZAÇÃO DE CONTEÚDO DO MODAL (API) ---
-    async function renderJikanDetails(id) {
-        const details = await fetchData(`${JIKAN_API}/anime/${id}/full`);
-        if (!details) {
-            modalTitleEl.textContent = 'Erro';
-            modalPanelsContainer.innerHTML = `<p class="status-message">Não foi possível carregar os detalhes do anime.</p>`;
-            return;
-        }
-
-        modalTitleEl.textContent = details.title_english || details.title;
-        modalDetailsLinkEl.href = details.url;
-        modalDetailsLinkEl.style.display = 'inline-flex';
-
-        const genres = details.genres?.map(g => `<span class="modal-tag">${g.name}</span>`).join('') || 'N/A';
-        const videoId = extractYouTubeId(details.trailer?.embed_url);
-        const trailer = videoId ? `
-            <div class="modal-section"><h4>Trailer</h4><div class="trailer-container"><iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe></div></div>
-        ` : '';
-
-        modalTabsContainer.innerHTML = `
-            <button class="modal__tab-btn active" data-target="#panel-overview" role="tab" aria-selected="true">Visão Geral</button>
-            <button class="modal__tab-btn" data-target="#panel-chars" role="tab" aria-selected="false">Personagens</button>
-            <button class="modal__tab-btn" data-target="#panel-recos" role="tab" aria-selected="false">Recomendações</button>
-        `;
-
-        modalPanelsContainer.innerHTML = `
-            <div id="panel-overview" class="modal-tab-panel active" role="tabpanel">
-                <div class="modal-meta-grid">
-                    <div class="meta-item"><span class="meta-item__label">Nota</span><span class="meta-item__value"><i class="fas fa-star"></i> ${details.score || 'N/A'}</span></div>
-                    <div class="meta-item"><span class="meta-item__label">Ano</span><span class="meta-item__value">${details.year || 'N/A'}</span></div>
-                    <div class="meta-item"><span class="meta-item__label">Classificação</span><span class="meta-item__value"><span class="certification-tag">${details.rating?.split(' - ')[0] || 'N/A'}</span></span></div>
-                    <div class="meta-item"><span class="meta-item__label">Status</span><span class="meta-item__value">${details.status || 'N/A'}</span></div>
-                </div>
-                <div class="modal-section"><h4>Gêneros</h4><div class="modal-tags">${genres}</div></div>
-                <div class="modal-section"><h4>Sinopse</h4><div class="synopsis-content"><p>${details.synopsis?.replace(/\n/g, '<br>') || 'Não disponível.'}</p></div>${details.synopsis && details.synopsis.length > 300 ? '<button class="btn-show-more">Ler mais</button>' : ''}</div>
-                ${trailer}
-            </div>
-            <div id="panel-chars" class="modal-tab-panel" role="tabpanel"><p class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando...</p></div>
-            <div id="panel-recos" class="modal-tab-panel" role="tabpanel"><p class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando...</p></div>
-        `;
-        
-        loadJikanCharacters(id);
-        loadJikanRecommendations(id);
-    }
-    
-    async function renderTmdbDetails(id, mediaType) {
-        const details = await fetchData(`${TMDB_API}/${mediaType}/${id}?api_key=${TMDB_KEY}&language=pt-BR&append_to_response=credits,videos,release_dates,recommendations`);
-        if (!details) {
-            modalTitleEl.textContent = 'Erro';
-            modalPanelsContainer.innerHTML = `<p class="status-message">Não foi possível carregar os detalhes.</p>`;
-            return;
-        }
-
-        modalTitleEl.textContent = details.title || details.name;
-        modalDetailsLinkEl.href = `https://www.themoviedb.org/${mediaType}/${id}`;
-        modalDetailsLinkEl.style.display = 'inline-flex';
-
-        const releaseDate = details.release_date || details.first_air_date;
-        const certObj = details.release_dates?.results?.find(r => r.iso_3166_1 === 'BR');
-        const certification = certObj?.release_dates[0]?.certification || 'N/A';
-        const genres = details.genres?.map(g => `<span class="modal-tag">${g.name}</span>`).join('') || 'N/A';
-        const video = details.videos?.results?.find(v => v.site === 'YouTube' && v.type === 'Trailer');
-        const trailer = video ? `
-            <div class="modal-section"><h4>Trailer</h4><div class="trailer-container"><iframe src="https://www.youtube.com/embed/${video.key}" allowfullscreen></iframe></div></div>
-        ` : '';
-        
-        modalTabsContainer.innerHTML = `
-            <button class="modal__tab-btn active" data-target="#panel-overview" role="tab" aria-selected="true">Visão Geral</button>
-            <button class="modal__tab-btn" data-target="#panel-cast" role="tab" aria-selected="false">Elenco e Produção</button>
-            <button class="modal__tab-btn" data-target="#panel-recos" role="tab" aria-selected="false">Similares</button>
-        `;
-
-        modalPanelsContainer.innerHTML = `
-            <div id="panel-overview" class="modal-tab-panel active" role="tabpanel">
-                <div class="modal-meta-grid">
-                    <div class="meta-item"><span class="meta-item__label">Nota</span><span class="meta-item__value"><i class="fas fa-star"></i> ${details.vote_average?.toFixed(1) || 'N/A'}</span></div>
-                    <div class="meta-item"><span class="meta-item__label">Lançamento</span><span class="meta-item__value">${releaseDate ? new Date(releaseDate+'T00:00:00').toLocaleDateString('pt-BR') : 'N/A'}</span></div>
-                    <div class="meta-item"><span class="meta-item__label">Classificação</span><span class="meta-item__value"><span class="certification-tag">${certification}</span></span></div>
-                    <div class="meta-item"><span class="meta-item__label">Status</span><span class="meta-item__value">${details.status || 'N/A'}</span></div>
-                    ${details.budget ? `<div class="meta-item"><span class="meta-item__label">Orçamento</span><span class="meta-item__value">$${details.budget.toLocaleString('pt-BR')}</span></div>` : ''}
-                    ${details.revenue ? `<div class="meta-item"><span class="meta-item__label">Receita</span><span class="meta-item__value">$${details.revenue.toLocaleString('pt-BR')}</span></div>` : ''}
-                </div>
-                <div class="modal-section"><h4>Gêneros</h4><div class="modal-tags">${genres}</div></div>
-                <div class="modal-section"><h4>Sinopse</h4><div class="synopsis-content"><p>${details.overview || 'Não disponível.'}</p></div>${details.overview ? '<button class="btn-show-more">Ler mais</button>' : ''}</div>
-                ${trailer}
-            </div>
-            <div id="panel-cast" class="modal-tab-panel" role="tabpanel">${renderTmdbCredits(details.credits)}</div>
-            <div id="panel-recos" class="modal-tab-panel" role="tabpanel">${renderTmdbRecommendations(details.recommendations.results)}</div>
-        `;
-    }
-    
-    async function loadJikanCharacters(id) {
-        const data = await fetchData(`${JIKAN_API}/anime/${id}/characters`);
-        const panel = document.getElementById('panel-chars');
-        if (!panel || !data?.length) {
-            if(panel) panel.innerHTML = `<p class="status-message">Nenhum personagem encontrado.</p>`;
-            return;
-        }
-        const charactersHTML = data.slice(0, 18).map(item => `
-            <div class="cast-card">
-                <img class="cast-card__img" src="${item.character.images.jpg.image_url}" alt="${item.character.name}" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}'">
-                <h5 class="cast-card__name">${item.character.name}</h5>
-                <p class="cast-card__role">${item.role}</p>
-            </div>
-        `).join('');
-        panel.innerHTML = `<div class="cast-grid">${charactersHTML}</div>`;
-    }
-
-    async function loadJikanRecommendations(id) {
-        const data = await fetchData(`${JIKAN_API}/anime/${id}/recommendations`);
-        const panel = document.getElementById('panel-recos');
-        if (!panel || !data?.length) {
-            if(panel) panel.innerHTML = `<p class="status-message">Nenhuma recomendação encontrada.</p>`;
-            return;
-        }
-        const recosHTML = data.slice(0, 12).map(reco => `
-            <a href="#" class="reco-card btn-open-api-modal" data-type="jikan" data-id="${reco.entry.mal_id}" data-backdrop="${reco.entry.images?.jpg?.large_image_url || PLACEHOLDER_BACKDROP}">
-                <img class="reco-card__img" src="${reco.entry.images?.jpg?.image_url || PLACEHOLDER_IMG}" alt="${reco.entry.title}" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}'">
-                <h5 class="reco-card__title">${reco.entry.title}</h5>
-            </a>
-        `).join('');
-        panel.innerHTML = `<div class="reco-grid">${recosHTML}</div>`;
-    }
-    
-    function renderTmdbCredits(credits) {
-        if (!credits) return '';
-        const directors = credits.crew?.filter(c => c.job === 'Director').map(d => d.name).join(', ');
-        const castHTML = credits.cast?.slice(0, 18).map(person => `
-            <div class="cast-card">
-                <img class="cast-card__img" src="${person.profile_path ? IMG_PATH + 'w185' + person.profile_path : PLACEHOLDER_IMG}" alt="${person.name}" loading="lazy">
-                <h5 class="cast-card__name">${person.name}</h5>
-                <p class="cast-card__role">${person.character}</p>
-            </div>
-        `).join('');
-
+    function renderComment(comment) {
         return `
-            ${directors ? `<div class="modal-section"><h4>Direção</h4><p>${directors}</p></div>` : ''}
-            ${castHTML ? `<div class="modal-section"><h4>Elenco Principal</h4><div class="cast-grid">${castHTML}</div></div>` : '<p class="status-message">Informações de elenco não disponíveis.</p>'}
-        `;
+            <div class="comment-card">
+                <div class="comment-author-avatar"><img src="${comment.authorProfileImageUrl}" alt="${comment.authorDisplayName}"></div>
+                <div class="comment-body">
+                    <div><span class="comment-author-name">${comment.authorDisplayName}</span><span class="comment-date">${new Date(comment.publishedAt).toLocaleDateString('pt-BR')}</span></div>
+                    <div class="comment-text">${comment.textDisplay}</div>
+                </div>
+            </div>`;
     }
 
-    function renderTmdbRecommendations(recos) {
-        if (!recos?.length) return `<p class="status-message">Nenhum título similar encontrado.</p>`;
-        const recosHTML = recos.slice(0, 12).map(reco => `
-             <a href="#" class="reco-card btn-open-api-modal" data-type="tmdb" data-media-type="${reco.media_type}" data-id="${reco.id}" data-backdrop="${reco.backdrop_path ? IMG_PATH + 'original' + reco.backdrop_path : PLACEHOLDER_BACKDROP}">
-                <img class="reco-card__img" src="${reco.poster_path ? IMG_PATH + 'w342' + reco.poster_path : PLACEHOLDER_IMG}" alt="${reco.title || reco.name}" loading="lazy">
-                <h5 class="reco-card__title">${reco.title || reco.name}</h5>
-            </a>
-        `).join('');
-        return `<div class="reco-grid">${recosHTML}</div>`;
-    }
+    commentForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const textarea = document.getElementById('comment-textarea');
+        if (!textarea.value.trim()) return;
+
+        const fakeComment = {
+            authorProfileImageUrl: 'https://i.pravatar.cc/40?u=user',
+            authorDisplayName: 'Você',
+            publishedAt: new Date().toISOString(),
+            textDisplay: textarea.value.trim().replace(/\n/g, '<br>')
+        };
+        
+        // Remove mensagem de "nenhum comentário" se existir
+        const statusMessage = commentsContainer.querySelector('.status-message');
+        if (statusMessage) statusMessage.remove();
+        
+        commentsContainer.insertAdjacentHTML('afterbegin', renderComment(fakeComment));
+        textarea.value = '';
+    });
+
+    // --- LÓGICA DO MODAL EXPLORADOR DE CATEGORIAS ---
+    const categoryTagsContainer = document.getElementById('category-explorer-tags');
+    const categoryResultsGrid = document.getElementById('category-explorer-results-grid');
+
+    document.getElementById('open-category-explorer').addEventListener('click', async () => {
+        openModal(categoryExplorerModal);
+        categoryTagsContainer.innerHTML = `<p class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>`;
+        categoryResultsGrid.innerHTML = `<p class="status-message">Selecione uma categoria.</p>`;
+        
+        const genresData = await fetchData(`${JIKAN_API}/genres/anime`);
+        if(genresData?.data) {
+            categoryTagsContainer.innerHTML = genresData.data.map(genre => 
+                `<button class="category-tag" data-genre-id="${genre.mal_id}">${genre.name}</button>`
+            ).join('');
+        }
+    });
+
+    categoryTagsContainer.addEventListener('click', async (e) => {
+        const tag = e.target.closest('.category-tag');
+        if (!tag) return;
+        
+        const genreId = tag.dataset.genreId;
+        categoryResultsGrid.innerHTML = `<p class="status-message"><i class="fas fa-spinner fa-spin"></i> Buscando notícias...</p>`;
+        
+        // Desativa outras tags ativas
+        categoryTagsContainer.querySelectorAll('.active').forEach(t => t.classList.remove('active'));
+        tag.classList.add('active');
+        
+        // A API Jikan não permite filtrar /watch/promos por gênero.
+        // Como alternativa, buscamos animes do gênero e filtramos aqueles com vídeo.
+        const newsData = await fetchData(`${JIKAN_API}/anime?genres=${genreId}&limit=24`);
+        const newsWithVideo = newsData?.data.filter(item => item.trailer?.youtube_id) || [];
+
+        if(newsWithVideo.length > 0) {
+            const items = newsWithVideo.map(item => ({
+                entry: item,
+                trailer: { url: item.trailer.url }
+            }));
+            renderNewsGrid(categoryResultsGrid, items);
+        } else {
+            categoryResultsGrid.innerHTML = `<p class="status-message">Nenhuma notícia com vídeo encontrada para esta categoria.</p>`;
+        }
+    });
+
+    // --- DELEGAÇÃO DE EVENTOS PRINCIPAL ---
+    body.addEventListener('click', async (e) => {
+        // Abrir Modal de Notícias
+        const openNewsBtn = e.target.closest('.open-news-page-modal');
+        if (openNewsBtn) {
+            e.preventDefault();
+            const { videoId, videoTitle } = openNewsBtn.dataset;
+            // Se o explorador de categorias estiver aberto, feche-o primeiro
+            if(categoryExplorerModal.classList.contains('active')) {
+                closeModal(categoryExplorerModal);
+            }
+            await loadNewsPage(videoId, videoTitle);
+        }
+    });
 
     // --- INICIALIZAÇÃO GERAL ---
-    fetchAndDisplayExternalNews();
-    populateTopAnimesSidebar();
-    populateTopMoviesSidebar();
+    fetchAndDisplayInitialNews();
+    // As outras funções de sidebar podem ser adicionadas aqui se necessário
 });
 </script>
 </body>
