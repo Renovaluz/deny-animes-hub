@@ -81,7 +81,7 @@
                                 else if (/[P-T]/.test(primeiraLetra)) grupo = 'P - T';
                                 else if (/[U-Z]/.test(primeiraLetra)) grupo = 'U - Z';
                             } else {
-                                grupo = '#'; // Grupo para títulos que não começam com letra
+                                grupo = ''; // Grupo para títulos que não começam com letra
                             }
                             if (grupo) {
                                 if (!acc[grupo]) acc[grupo] = [];
