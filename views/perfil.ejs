@@ -1,128 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- ================================================================================================== -->
+    <!--                            CONFIGURAÇÕES GERAIS E DEPENDÊNCIAS DO DOCUMENTO                        -->
+    <!-- ================================================================================================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de <%= user.nome %> - DenyAnimeHub</title>
+
+    <!-- Importação da fonte 'Poppins' do Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Importação da biblioteca de ícones 'Font Awesome' -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 <style>
-    /* ==========================================================================
-       ESTILOS DA PÁGINA DE PERFIL - VERSÃO FINAL AKATSUKI
-    ========================================================================== */
+    /* ================================================================================================== */
+    /*      ESTILIZAÇÃO CSS COMPLETA, ROBUSTA E EXPANSIVA - NÍVEL AKATSUKI (SEM NENHUMA OMISSÃO)            */
+    /*      - Design de Perfil Moderno com Cabeçalho Unificado e Efeito Parallax.                         */
+    /*      - Layout Adaptativo (Mobile "Miniaturizado" / Desktop Expansivo).                             */
+    /*      - Carrossel de Histórico e Widgets Redesenhados.                                              */
+    /* ================================================================================================== */
+
+    /* -------------------------------------------------------------------------------------------------- */
+    /*           DEFINIÇÃO DAS VARIÁVEIS GLOBAIS DE DESIGN (PALETA DE CORES DEFINITIVA)                     */
+    /* -------------------------------------------------------------------------------------------------- */
+    :root {
+        /* Paleta de Cores Akatsuki Definitiva */
+        --akatsuki-red: #E50914; 
+        --akatsuki-red-rgb: 229, 9, 20;
+        --akatsuki-red-glow: #ff2c36;
+        --akatsuki-dark: #0A0A0A; 
+        --akatsuki-dark-rgb: 10, 10, 10;
+        --akatsuki-charcoal: #151515;
+        --akatsuki-gray: #242424;
+        --akatsuki-light-text: #f9f9f9;
+        --akatsuki-muted-text: #c5c5c5;
+        --akatsuki-border: rgba(var(--akatsuki-red-rgb), 0.5);
+        --akatsuki-border-soft: #3a3a3a;
+        --shadow-glow-strong: 0 0 35px rgba(var(--akatsuki-red-rgb), 0.6);
+        --shadow-glow-subtle: 0 0 15px rgba(var(--akatsuki-red-rgb), 0.3);
+
+        /* Variáveis de Configuração de Layout */
+        --font-primary: 'Poppins', sans-serif;
+        --container-width: 1440px;
+        --transition-speed: 0.3s;
+        --border-radius: 10px;
+        --border-radius-lg: 16px;
+    }
+
+    /* -------------------------------------------------------------------------------------------------- */
+    /*                                     ESTILOS GLOBAIS E DE RESET                                     */
+    /* -------------------------------------------------------------------------------------------------- */
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: var(--font-primary);
+        background-color: var(--akatsuki-dark);
+        color: var(--akatsuki-light-text);
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXVדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדה/wAARCAAgACADASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AL/AFQAAA//Z');
+        overflow-x: hidden;
+    }
+
+    /* -------------------------------------------------------------------------------------------------- */
+    /*                         ESTRUTURA DA PÁGINA: CABEÇALHO E CONTEÚDO PRINCIPAL                        */
+    /* -------------------------------------------------------------------------------------------------- */
+
+    .profile-page-container {
+        width: 100%;
+    }
 
     .profile-header {
-        position: relative; height: 380px; background-size: cover; background-position: center;
-        display: flex; align-items: flex-end; padding: 2rem 2.5rem; color: #fff;
+        height: 350px;
+        position: relative;
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed; /* Efeito Parallax */
     }
+
     .profile-header-overlay {
-        position: absolute; inset: 0;
-        background: linear-gradient(to top, rgba(var(--bg-primary-rgb), 1) 10%, rgba(var(--bg-primary-rgb), 0.7) 50%, transparent 100%);
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, var(--akatsuki-dark) 5%, rgba(var(--akatsuki-dark-rgb), 0.8) 40%, rgba(var(--akatsuki-dark-rgb), 0.3) 100%);
+        backdrop-filter: blur(2px);
     }
-    .profile-header-content {
-        position: relative; z-index: 2; display: flex; align-items: flex-end;
-        gap: 24px; width: 100%; max-width: 1280px; margin: 0 auto;
+    
+    .profile-header-actions {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        z-index: 4;
+        display: flex;
+        gap: 1rem;
     }
+
+    .btn {
+        display: inline-flex; align-items: center; justify-content: center;
+        gap: 0.75rem; padding: 0.8rem 1.8rem; border-radius: 50px;
+        text-decoration: none; cursor: pointer; font-weight: 700;
+        transition: all var(--transition-speed) ease; border: 2px solid transparent;
+        text-transform: uppercase; letter-spacing: 1px;
+        font-size: 0.9rem;
+    }
+    
+    .btn--primary {
+        background: linear-gradient(45deg, var(--akatsuki-red-glow), var(--akatsuki-red));
+        color: white;
+        box-shadow: 0 4px 15px rgba(var(--akatsuki-red-rgb), 0.4);
+    }
+    .btn--primary:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 8px 25px rgba(var(--akatsuki-red-rgb), 0.6);
+    }
+    
+    .btn--secondary {
+        background-color: rgba(var(--akatsuki-charcoal-rgb), 0.7);
+        backdrop-filter: blur(5px);
+        color: var(--akatsuki-muted-text);
+        border-color: var(--akatsuki-border-soft);
+    }
+    .btn--secondary:hover {
+        color: var(--akatsuki-light-text);
+        border-color: var(--akatsuki-red);
+    }
+
+    .profile-content-wrapper {
+        max-width: var(--container-width);
+        margin: -150px auto 0 auto; /* Puxa o conteúdo para cima, sobrepondo o header */
+        padding: 0 1rem 3rem 1rem;
+        position: relative;
+        z-index: 3;
+    }
+
+    /* -------------------------------------------------------------------------------------------------- */
+    /*                         INFORMAÇÕES DO USUÁRIO: AVATAR, NOME E WIDGETS                             */
+    /* -------------------------------------------------------------------------------------------------- */
+
+    .profile-user-card {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .profile-avatar-container {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        margin: 0 auto 1.5rem auto;
+        padding: 7px;
+        background: linear-gradient(45deg, var(--akatsuki-red-glow), var(--accent-primary));
+        animation: pulse-border 3s infinite;
+    }
+    @keyframes pulse-border {
+        0% { box-shadow: 0 0 0 0 rgba(var(--akatsuki-red-rgb), 0.7); }
+        70% { box-shadow: 0 0 0 15px rgba(var(--akatsuki-red-rgb), 0); }
+        100% { box-shadow: 0 0 0 0 rgba(var(--akatsuki-red-rgb), 0); }
+    }
+    
     .profile-avatar {
-        width: 160px; height: 160px; border-radius: 50%; border: 5px solid var(--bg-secondary);
-        box-shadow: 0 0 0 2px var(--accent-primary), var(--shadow-md); object-fit: cover; flex-shrink: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--akatsuki-dark);
     }
-    .profile-user-info h1 { font-size: 2.8rem; font-weight: 700; margin-bottom: 0.25rem; text-shadow: 2px 2px 5px rgba(0,0,0,0.7); }
+    
+    .profile-user-info h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
     .profile-role {
         display: inline-block; padding: 5px 15px; border-radius: 50px; font-size: 0.9rem;
-        font-weight: 600; background-color: var(--accent-primary); color: #fff; margin-bottom: 0.75rem;
+        font-weight: 600; background-color: var(--akatsuki-red); color: #fff; margin-bottom: 0.75rem;
     }
-    .profile-join-date { font-size: 0.9rem; color: #e0e0e0; opacity: 0.9; }
-    .profile-header-actions { position: absolute; top: 1.5rem; right: 1.5rem; display: flex; gap: 1rem; }
-    .profile-header-actions .btn { backdrop-filter: blur(5px); background-color: rgba(var(--bg-secondary-rgb), 0.5); }
+    .profile-join-date { font-size: 0.9rem; color: var(--akatsuki-muted-text); }
+
+
+    /* Grid principal para o conteúdo (widgets) */
+    .profile-grid-layout {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    @media (min-width: 992px) {
+        .profile-grid-layout {
+            grid-template-columns: 350px 1fr;
+        }
+    }
+
+    .profile-widget {
+        background-color: rgba(var(--akatsuki-charcoal-rgb), 0.7);
+        backdrop-filter: blur(10px);
+        padding: 1.5rem 2rem;
+        border-radius: var(--border-radius-lg);
+        border: 1px solid var(--akatsuki-border-soft);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    }
     
-    .profile-grid-layout { display: grid; grid-template-columns: 320px 1fr; gap: 32px; padding-top: 40px; padding-bottom: 60px; }
-    .profile-widget { background-color: var(--bg-secondary); padding: 30px; border-radius: var(--border-radius-lg); border: 1px solid var(--border-color); margin-bottom: 32px; box-shadow: var(--shadow-md); }
-    .profile-widget h3 { margin: 0 0 24px 0; padding-bottom: 12px; font-size: 1.5rem; font-weight: 600; display: flex; align-items: center; border-bottom: 2px solid var(--accent-primary); }
-    .profile-widget h3 i { margin-right: 14px; color: var(--accent-primary); font-size: 1.3rem; }
-    .profile-bio { color: var(--text-secondary); }
+    .profile-widget h3 {
+        margin: 0 0 1.5rem 0; padding-bottom: 0.75rem; font-size: 1.5rem;
+        font-weight: 700; display: flex; align-items: center;
+        border-bottom: 2px solid var(--akatsuki-border);
+        letter-spacing: 1px;
+    }
+    .profile-widget h3 i {
+        margin-right: 1rem; color: var(--akatsuki-red);
+        font-size: 1.3rem;
+    }
+    .profile-bio {
+        color: var(--akatsuki-muted-text);
+        font-size: 1rem;
+        line-height: 1.8;
+    }
+
+    /* -------------------------------------------------------------------------------------------------- */
+    /*                         CARROSSEL "CONTINUAR ASSISTINDO" COM DESIGN APRIMORADO                     */
+    /* -------------------------------------------------------------------------------------------------- */
     
-    /* --- ESTILOS DO CARROSSEL "CONTINUAR ASSISTINDO" --- */
     #continue-watching-container {
         display: flex; overflow-x: auto; gap: 20px;
         padding: 5px 5px 20px 5px; margin: 0 -5px;
-        scrollbar-color: var(--accent-primary) var(--bg-tertiary); scrollbar-width: thin;
+        scrollbar-color: var(--akatsuki-red) var(--akatsuki-gray); scrollbar-width: thin;
     }
     #continue-watching-container::-webkit-scrollbar { height: 10px; }
-    #continue-watching-container::-webkit-scrollbar-track { background: var(--bg-tertiary); border-radius: 10px; }
-    #continue-watching-container::-webkit-scrollbar-thumb { background-color: var(--accent-primary); border-radius: 10px; border: 2px solid var(--bg-tertiary); }
+    #continue-watching-container::-webkit-scrollbar-track { background: var(--akatsuki-gray); border-radius: 10px; }
+    #continue-watching-container::-webkit-scrollbar-thumb { background-color: var(--akatsuki-red); border-radius: 10px; border: 2px solid var(--akatsuki-gray); }
     
     .episode-item {
-        flex: 0 0 280px; border-radius: var(--border-radius-md); overflow: hidden;
-        background-color: var(--bg-tertiary); border: 1px solid var(--border-color);
-        box-shadow: var(--shadow-md); transition: all 0.3s ease;
+        flex: 0 0 280px; border-radius: var(--border-radius); overflow: hidden;
+        background-color: var(--akatsuki-gray); border: 1px solid var(--akatsuki-border-soft);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        transition: all var(--transition-speed) ease;
+        position: relative;
     }
-    .episode-item:hover { transform: translateY(-8px) scale(1.02); box-shadow: var(--shadow-lg), var(--shadow-glow); }
-    .episode-link { display: block; text-decoration: none; position: relative; }
-    .episode-thumbnail { width: 100%; height: 158px; object-fit: cover; display: block; }
+    .episode-item:hover {
+        transform: translateY(-10px) scale(1.03);
+        box-shadow: 0 12px 35px rgba(0,0,0,0.7), var(--shadow-glow-subtle);
+        border-color: var(--akatsuki-border);
+    }
+    
+    .episode-link { display: block; text-decoration: none; }
+    
+    .episode-thumbnail-wrapper {
+        position: relative;
+        width: 100%;
+        height: 158px;
+    }
+    .episode-thumbnail { width: 100%; height: 100%; object-fit: cover; display: block; }
+    
     .episode-play-icon {
-        position: absolute; top: calc(158px / 2); left: 50%;
-        transform: translate(-50%, -50%) scale(0); font-size: 4rem; color: #fff;
-        background-color: rgba(var(--accent-primary-rgb), 0.7); backdrop-filter: blur(4px);
-        border-radius: 50%; padding: 1rem; opacity: 0; transition: all 0.3s ease; pointer-events: none;
+        position: absolute; top: 50%; left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        font-size: 3.5rem; color: #fff;
+        background-color: rgba(var(--akatsuki-red-rgb), 0.7);
+        backdrop-filter: blur(4px);
+        border-radius: 50%; width: 70px; height: 70px;
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; transition: all 0.3s ease; pointer-events: none;
     }
-    .episode-item:hover .episode-play-icon { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    .episode-item:hover .episode-play-icon {
+        opacity: 1; transform: translate(-50%, -50%) scale(1);
+    }
     
     .episode-info { padding: 12px 14px; }
     .episode-anime-name, .episode-number { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .episode-anime-name { font-weight: 600; color: var(--text-primary); font-size: 1rem; }
-    .episode-number { font-size: 0.85rem; color: var(--text-secondary); }
+    .episode-anime-name { font-weight: 600; color: var(--text-primary); font-size: 1rem; margin-bottom: 4px; }
+    .episode-number { font-size: 0.85rem; color: var(--akatsuki-muted-text); }
     
-    .progress-bar { height: 6px; background-color: rgba(var(--accent-primary-rgb), 0.2); margin-top: 8px; border-radius: 3px; }
-    .progress-bar-inner { height: 100%; background-color: var(--accent-primary); border-radius: 3px; width: 0%; transition: width 0.5s ease; }
+    .progress-bar { height: 6px; background-color: rgba(var(--akatsuki-red-rgb), 0.2); margin-top: 10px; border-radius: 3px; }
+    .progress-bar-inner { height: 100%; background: linear-gradient(90deg, var(--akatsuki-red), var(--akatsuki-red-glow)); border-radius: 3px; width: 0%; transition: width 0.5s ease; }
 
     /* Placeholder e Loader */
-    .history-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; width: 100%; min-height: 220px; color: var(--text-secondary); border: 2px dashed var(--border-color); border-radius: var(--border-radius); background-color: var(--bg-primary); }
-    .history-placeholder.loading .fa-spinner { display: inline-block; animation: spin 1s linear infinite; font-size: 2rem; }
+    .history-placeholder {
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        gap: 1rem; width: 100%; min-height: 220px; color: var(--akatsuki-muted-text);
+        border: 2px dashed var(--akatsuki-border-soft); border-radius: var(--border-radius);
+        background-color: var(--akatsuki-gray);
+    }
+    .history-placeholder.loading .fa-spinner {
+        display: inline-block; animation: spin 1s linear infinite; font-size: 2rem;
+    }
     .history-placeholder.loading span { display: none; }
     .history-placeholder .fa-spinner { display: none; }
 
-    @media (max-width: 992px) { .profile-grid-layout { grid-template-columns: 1fr; } }
-    @media (max-width: 768px) { /* ... outros estilos responsivos ... */ }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
 </style>
-<div class="profile-page-container animated-section fade-in">
-    <!-- Profile Header com Capa -->
+</head>
+<body>
+
+<!-- ====================================================================================== -->
+<!--                  ESTRUTURA HTML COMPLETA E FINAL DA PÁGINA (SEM OMISSÕES)              -->
+<!-- ====================================================================================== -->
+
+<div class="profile-page-container">
+    <!-- Cabeçalho com imagem de capa, efeito parallax e botões de ação -->
     <header class="profile-header" style="background-image: url('<%= user.capaPerfil %>');">
         <div class="profile-header-overlay"></div>
-        <div class="profile-header-content">
+        <div class="profile-header-actions">
+            <a href="/perfil/editar" class="btn btn--secondary"><i class="fas fa-pencil-alt"></i> Editar Perfil</a>
+            <% if(user.role === 'admin') { %>
+                <a href="/admin/dashboard" class="btn btn--primary"><i class="fas fa-user-shield"></i> Painel</a>
+            <% } %>
+        </div>
+    </header>
+
+    <!-- Wrapper principal para o conteúdo que sobrepõe o cabeçalho -->
+    <div class="profile-content-wrapper">
+
+        <!-- Card de Informações do Usuário (Avatar, Nome, etc.) -->
+        <div class="profile-user-card">
             <div class="profile-avatar-container">
                 <img src="<%= user.avatar || '/images/avatar_padrao.png' %>" alt="Avatar de <%= user.nome %>" class="profile-avatar">
             </div>
             <div class="profile-user-info">
                 <h1><%= user.nome %></h1>
-                <p class="profile-role"><%= user.role.charAt(0).toUpperCase() + user.role.slice(1) %></p>
+                <span class="profile-role"><%= user.role.charAt(0).toUpperCase() + user.role.slice(1) %></span>
                 <p class="profile-join-date">Membro desde <%= new Date(user.createdAt).toLocaleDateString('pt-BR', { year: 'numeric', month: 'long' }) %></p>
             </div>
-            
-            <div class="profile-header-actions">
-                <a href="/perfil/editar" class="btn btn--secondary profile-edit-btn"><i class="fas fa-pencil-alt"></i> Editar Perfil</a>
-                <% if(user.role === 'admin') { %>
-                    <a href="/admin/dashboard" class="btn btn--primary profile-admin-btn"><i class="fas fa-user-shield"></i> Dashboard</a>
-                <% } %>
-            </div>
         </div>
-    </header>
 
-    <div class="profile-grid-layout container">
-        <aside class="profile-sidebar">
-            <div class="profile-widget">
-                <h3><i class="fas fa-address-card"></i> Sobre Mim</h3>
-                <p class="profile-bio"><%= user.bio %></p>
-            </div>
-        </aside>
-
-        <main class="profile-main-content">
-            <div class="profile-widget">
-                <h3><i class="fas fa-history"></i> Continuar Assistindo</h3>
-                
-                <!-- CONTAINER DINÂMICO PARA O HISTÓRICO -->
-                <div id="history-container-wrapper">
-                    <!-- Placeholder de Carregamento -->
-                    <div id="history-placeholder" class="history-placeholder loading">
-                        <i class="fas fa-spinner"></i>
-                        <span>Carregando seu histórico...</span>
-                    </div>
-                    <!-- O Carrossel será inserido aqui pelo JavaScript -->
+        <!-- Grid para os widgets de conteúdo -->
+        <div class="profile-grid-layout">
+            <!-- Coluna da Esquerda (Sidebar no Desktop) -->
+            <aside class="profile-sidebar">
+                <div class="profile-widget">
+                    <h3><i class="fas fa-address-card"></i> Sobre Mim</h3>
+                    <p class="profile-bio">
+                        <% if (user.bio) { %>
+                            <%- user.bio.replace(/\n/g, '<br>') %>
+                        <% } else { %>
+                            Este usuário ainda não escreveu uma biografia.
+                        <% } %>
+                    </p>
                 </div>
+            </aside>
 
+            <!-- Coluna da Direita (Conteúdo Principal no Desktop) -->
+            <main class="profile-main-content">
+                <div class="profile-widget">
+                    <h3><i class="fas fa-history"></i> Continuar Assistindo</h3>
+                    
+                    <!-- Container dinâmico que será preenchido pelo JavaScript -->
+                    <div id="history-container-wrapper">
+                        <!-- Placeholder inicial que mostra o estado de carregamento -->
+                        <div id="history-placeholder" class="history-placeholder loading">
+                            <i class="fas fa-spinner"></i>
+                            <span>Carregando seu histórico...</span>
+                        </div>
+                        <!-- O carrossel de episódios será injetado aqui dinamicamente -->
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+<!-- ====================================================================================== -->
+<!--                  SCRIPT JAVASCRIPT COMPLETO, FUNCIONAL E DOCUMENTADO                   -->
+<!-- ====================================================================================== -->
+<script>
+// Este script é encapsulado para garantir que o código só execute após
+// o carregamento completo do DOM, prevenindo erros de elementos não encontrados.
+document.addEventListener('DOMContentLoaded', () => {
+
+    // Função assíncrona para buscar o histórico de visualização do usuário.
+    // No momento, esta função simula uma chamada de API.
+    // TODO: Substituir a simulação pela chamada real à sua API de histórico.
+    async function fetchWatchHistory() {
+        // Simula um atraso de rede para demonstrar o estado de carregamento.
+        await new Promise(resolve => setTimeout(resolve, 1500)); 
+
+        // Retorna dados de exemplo. Em um cenário real, você faria:
+        // const response = await fetch('/api/user/history');
+        // const data = await response.json();
+        // return data.history;
+        return [
+            { animeSlug: 'naruto-shippuden', animeTitle: 'Naruto Shippuden', epId: 1, epNumber: 221, epTitle: 'Armazenamento', thumbnail: '/uploads/capas/placeholder1.jpg', progress: 80 },
+            { animeSlug: 'jujutsu-kaisen', animeTitle: 'Jujutsu Kaisen', epId: 2, epNumber: 15, epTitle: 'Festival de Intercâmbio', thumbnail: '/uploads/capas/placeholder2.jpg', progress: 45 },
+            { animeSlug: 'attack-on-titan', animeTitle: 'Attack on Titan', epId: 3, epNumber: 78, epTitle: 'A Retumbância', thumbnail: '/uploads/capas/placeholder3.jpg', progress: 15 },
+            { animeSlug: 'one-piece', animeTitle: 'One Piece', epId: 4, epNumber: 1015, epTitle: 'Luffy do Chapéu de Palha', thumbnail: '/uploads/capas/placeholder4.jpg', progress: 95 }
+        ];
+    }
+
+    /**
+     * Cria e retorna o HTML para um único card de episódio no carrossel.
+     * @param {object} item - O objeto contendo os dados do episódio.
+     * @returns {string} O HTML do elemento do card.
+     */
+    function createEpisodeItemHTML(item) {
+        return `
+            <div class="episode-item">
+                <a href="/assistir/${item.animeSlug}/${item.epId}" class="episode-link" title="${item.animeTitle} - Episódio ${item.epNumber}">
+                    <div class="episode-thumbnail-wrapper">
+                        <img src="${item.thumbnail}" alt="Thumbnail de ${item.animeTitle}" class="episode-thumbnail">
+                        <div class="episode-play-icon"><i class="fas fa-play"></i></div>
+                    </div>
+                    <div class="episode-info">
+                        <span class="episode-anime-name">${item.animeTitle}</span>
+                        <span class="episode-number">Episódio ${item.epNumber}</span>
+                        <div class="progress-bar">
+                            <div class="progress-bar-inner" style="width: ${item.progress}%;"></div>
+                        </div>
+                    </div>
+                </a>
             </div>
-        </main>
-    </div>
-    </div>
+        `;
+    }
+
+    /**
+     * Renderiza o histórico de visualização na página.
+     * @param {Array} historyData - Um array de objetos de episódio.
+     */
+    function renderHistory(historyData) {
+        const wrapper = document.getElementById('history-container-wrapper');
+        const placeholder = document.getElementById('history-placeholder');
+
+        // Se não houver dados ou o array estiver vazio, mostra uma mensagem apropriada.
+        if (!historyData || historyData.length === 0) {
+            placeholder.classList.remove('loading');
+            placeholder.innerHTML = '<span><i class="fas fa-film"></i> Você ainda não assistiu nada.</span>';
+            return;
+        }
+
+        // Cria o container do carrossel.
+        const carouselContainer = document.createElement('div');
+        carouselContainer.id = 'continue-watching-container';
+        
+        // Gera o HTML para cada item e o adiciona ao container.
+        carouselContainer.innerHTML = historyData.map(createEpisodeItemHTML).join('');
+        
+        // Substitui o placeholder pelo carrossel preenchido.
+        wrapper.innerHTML = '';
+        wrapper.appendChild(carouselContainer);
+    }
+    
+    // Ponto de entrada da lógica da página.
+    // Chama a função para buscar os dados e, em seguida, renderizá-los.
+    fetchWatchHistory()
+        .then(historyData => {
+            renderHistory(historyData);
+        })
+        .catch(error => {
+            // Em caso de erro na busca, exibe uma mensagem de falha.
+            console.error('Falha ao buscar histórico:', error);
+            const placeholder = document.getElementById('history-placeholder');
+            placeholder.classList.remove('loading');
+            placeholder.innerHTML = '<span><i class="fas fa-exclamation-triangle"></i> Falha ao carregar o histórico.</span>';
+        });
+
+});
+</script>
+
+</body>
+</html>
