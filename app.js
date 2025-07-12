@@ -121,15 +121,65 @@ app.get('/anime/:slug', async (req, res) => {
     }
 });
 
+// ======================================================================================
+//          ROTA DE ASSISTIR CORRIGIDA E ROBUSTA (EM APP.JS)
+// ======================================================================================
+
+// Importe o Sequelize e o Op no topo do seu app.js, se ainda não o fez
+const { Sequelize, Op } = require('sequelize');
+
+// ... (resto do seu código app.js)
+
+// Substitua a sua rota de assistir por esta versão completa
 app.get('/assistir/:slug/:epId', proteger, async (req, res) => {
     try {
         const { slug, epId } = req.params;
-        const anime = await db.Anime.findOne({ where: { slug }, include: [{ model: db.Episodio, as: 'episodios'}] });
-        if (!anime) { return res.status(404).render('404', { layout: false, titulo: 'Anime não encontrado' }); }
+
+        // 1. Busca o anime e todos os seus episódios associados
+        const anime = await db.Anime.findOne({ 
+            where: { slug }, 
+            include: [{ model: db.Episodio, as: 'episodios' }] 
+        });
+
+        if (!anime) {
+            return res.status(404).render('404', { layout: false, titulo: 'Anime não encontrado' });
+        }
+
+        // 2. Encontra o episódio específico que o usuário quer assistir
         const episodioAtual = (anime.episodios || []).find(ep => ep.id.toString() === epId);
-        if (!episodioAtual) { return res.status(404).render('404', { layout: false, titulo: 'Episódio não encontrado neste anime' }); }
-        const todosEpisodiosOrdenados = (anime.episodios || []).sort((a, b) => { if (a.temporada !== b.temporada) return a.temporada - b.temporada; return a.numero - b.numero; });
-        res.render('assistir', { page_name: 'player', initialAnime: anime.get({ plain: true }), initialEpisode: episodioAtual.get({ plain: true }), todosEpisodios: todosEpisodiosOrdenados.map(ep => ep.get({ plain: true })), titulo: `Assistindo: ${anime.titulo} - Ep. ${episodioAtual.numero}` });
+
+        if (!episodioAtual) {
+            return res.status(404).render('404', { layout: false, titulo: 'Episódio não encontrado neste anime' });
+        }
+
+        // 3. Ordena todos os episódios do anime para a lista de navegação
+        const todosEpisodiosOrdenados = (anime.episodios || []).sort((a, b) => {
+            if (a.temporada !== b.temporada) return a.temporada - b.temporada;
+            return a.numero - b.numero;
+        });
+
+        // 4. [LÓGICA CORRIGIDA] Busca 4 animes aleatórios para sugestão, excluindo o atual
+        const sugestoes = await db.Anime.findAll({
+            where: {
+                id: { [Op.ne]: anime.id } // Op.ne significa "not equal" (diferente de)
+            },
+            order: [
+                [Sequelize.fn('RANDOM')] // Para PostgreSQL/SQLite. Use Sequelize.fn('RAND') para MySQL.
+            ],
+            limit: 4
+        });
+        
+        // 5. Renderiza a página, passando TODOS os dados necessários de uma vez
+        res.render('assistir', { 
+            layout: 'layouts/main', // Garante que o layout principal seja usado
+            page_name: 'player', 
+            initialAnime: anime.get({ plain: true }), 
+            initialEpisode: episodioAtual.get({ plain: true }), 
+            todosEpisodios: todosEpisodiosOrdenados.map(ep => ep.get({ plain: true })),
+            sugestoes: sugestoes.map(s => s.get({ plain: true })),
+            titulo: `Assistindo: ${anime.titulo} - Ep. ${episodioAtual.numero}` 
+        });
+
     } catch (err) {
         console.error("ERRO CRÍTICO NA PÁGINA DO PLAYER:", err);
         res.status(500).render('500', { layout: false, titulo: 'Erro no Servidor', error: err });

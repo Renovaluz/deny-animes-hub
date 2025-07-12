@@ -1,200 +1,391 @@
+<%# /* ================================================================================================== */ %>
+<%# /*      LÓGICA DE PREPARAÇÃO DO PLAYER - VERSÃO FINAL (SEM QUERIES DE BANCO)                         */ %>
+<%# /*      - Esta seção agora apenas prepara as URLs do player e de download.                          */ %>
+<%# /*      - A busca de dados foi movida para o controller, consertando o erro de 'await'.             */ %>
+<%# /* ================================================================================================== */ %>
 <%
-    // ==========================================================================
-    //          LÓGICA DE PREPARAÇÃO (VERSÃO RIKUDŌ SENNIN - AUTOCONTIDA)
-    // ==========================================================================
-    // Toda a inteligência de conversão está aqui, garantindo que o arquivo sempre funcione.
-
     let urlPlayer = initialEpisode.urlVideo;
     let linksParaDownload = [];
     let podeBaixar = false;
 
-    // Apenas episódios com uma URL válida podem ter opções de player ou download.
     if (initialEpisode.urlVideo) {
-        
-        // --- LÓGICA PARA UPLOADS LOCAIS ---
         if (initialEpisode.tipoVideo === 'upload') {
             podeBaixar = true;
             try {
-                // Tenta interpretar a urlVideo como um JSON de múltiplas qualidades.
                 const parsedQualities = JSON.parse(initialEpisode.urlVideo);
                 if (typeof parsedQualities === 'object' && parsedQualities !== null && Object.keys(parsedQualities).length > 0) {
-                    urlPlayer = Object.values(parsedQualities)[0]; // Player usa a primeira qualidade
-                    for (const qualidade in parsedQualities) {
-                        linksParaDownload.push({
-                            qualidade: qualidade,
-                            urlDownload: parsedQualities[qualidade]
-                        });
-                    }
-                } else { throw new Error("JSON inválido ou vazio."); }
+                    urlPlayer = Object.values(parsedQualities)[0];
+                    for (const qualidade in parsedQualities) { linksParaDownload.push({ qualidade: qualidade, urlDownload: parsedQualities[qualidade] }); }
+                } else { throw new Error("JSON inválido."); }
             } catch (e) {
-                // Se não for um JSON, é uma URL única de upload.
                 urlPlayer = initialEpisode.urlVideo;
-                linksParaDownload.push({
-                    qualidade: 'Padrão',
-                    urlDownload: initialEpisode.urlVideo
-                });
+                linksParaDownload.push({ qualidade: 'Padrão', urlDownload: initialEpisode.urlVideo });
             }
         
-        // --- LÓGICA MESTRE PARA GOOGLE DRIVE ---
         } else if (initialEpisode.tipoVideo === 'gdrive') {
             try {
-                // Expressão regular para extrair o ID do arquivo de QUALQUER link do Google Drive
                 const regex = /(?:drive\.google\.com\/(?:file\/d\/|open\?id=|drive\/folders\/))([a-zA-Z0-9_-]{25,})/;
                 const match = initialEpisode.urlVideo.match(regex);
-
                 if (match && match[1]) {
                     const fileId = match[1];
                     podeBaixar = true;
-                    
-                    // GERA A URL PARA O PLAYER (IFRAME)
                     urlPlayer = `https://drive.google.com/file/d/${fileId}/preview`;
-                    
-                    // GERA A URL PARA O BOTÃO DE DOWNLOAD (TELA DE CONFIRMAÇÃO)
                     const urlDownloadFinal = `https://drive.usercontent.google.com/download?id=${fileId}&export=download&authuser=0`;
-                    
-                    linksParaDownload.push({
-                        qualidade: 'Google Drive',
-                        urlDownload: urlDownloadFinal
-                    });
-                } else {
-                    // Se o link do GDrive for inválido, não mostra nada.
-                    podeBaixar = false;
-                    urlPlayer = '';
-                    console.warn("Link do Google Drive inválido, não foi possível extrair ID:", initialEpisode.urlVideo);
-                }
-            } catch(e) {
-                console.error("Erro ao processar link do Google Drive:", e);
-                podeBaixar = false;
-                urlPlayer = '';
-            }
+                    linksParaDownload.push({ qualidade: 'Google Drive', urlDownload: urlDownloadFinal });
+                } else { podeBaixar = false; urlPlayer = ''; }
+            } catch(e) { podeBaixar = false; urlPlayer = ''; }
 
-        // --- LÓGICA PARA OUTROS SERVIÇOS ---
         } else if (['mega', 'mediafire', 'iframe'].includes(initialEpisode.tipoVideo)) {
-            // Para estes, o link é o mesmo para player e download, e não há download direto.
-            podeBaixar = (initialEpisode.tipoVideo !== 'iframe'); // iFrames não têm botão de download
+            podeBaixar = (initialEpisode.tipoVideo !== 'iframe');
             urlPlayer = initialEpisode.urlVideo;
             if (podeBaixar) {
-                linksParaDownload.push({
-                    qualidade: `${initialEpisode.tipoVideo.charAt(0).toUpperCase() + initialEpisode.tipoVideo.slice(1)}`,
-                    urlDownload: initialEpisode.urlVideo
-                });
+                linksParaDownload.push({ qualidade: `${initialEpisode.tipoVideo.charAt(0).toUpperCase() + initialEpisode.tipoVideo.slice(1)}`, urlDownload: initialEpisode.urlVideo });
             }
         }
     }
 %>
 
 <style>
-    /* ESTILOS PROFISSIONAIS E COMPLETOS PARA A PÁGINA DO PLAYER, SEM OMISSÕES */
-    :root { /* Fallbacks para variáveis CSS, caso não existam no seu layout principal */ --space-5: 1.5rem; --space-6: 2rem; --bg-secondary: #141414; --border-radius: 8px; --border-color: #303030; --space-3: 0.75rem; --accent-primary: #E50914; --text-secondary: #A0A0A0; --space-4: 1rem; --bg-tertiary: #222222; --accent-primary-rgb: 229, 9, 20; }
-    .player-main-container { padding: var(--space-5, 1.5rem) 0; }
-    .player-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-6, 2rem); }
-    @media (min-width: 1024px) { .player-grid { grid-template-columns: 1fr 350px; } }
-    .video-player-section { background-color: var(--bg-secondary, #141414); border-radius: var(--border-radius, 8px); border: 1px solid var(--border-color, #303030); padding: var(--space-3, 0.75rem); display: flex; flex-direction: column; }
-    .video-player-header { padding: var(--space-3, 0.75rem); }
-    .video-player-header h1 { font-size: 1.8rem; margin: 0; color: var(--accent-primary, #E50914); }
-    .video-player-header h1 a { color: inherit; text-decoration: none; }
-    .video-player-header h1 a:hover { text-decoration: underline; }
-    .video-player-header p { color: var(--text-secondary, #A0A0A0); margin: 0.5rem 0 0 0; }
-    .video-player-container { position: relative; width: 100%; aspect-ratio: 16 / 9; background-color: #000; border-radius: var(--border-radius, 8px); overflow: hidden; }
-    .video-player-container iframe, .video-player-container video { width: 100%; height: 100%; border: none; }
-    .player-controls { padding: var(--space-4, 1rem); border-top: 1px solid var(--border-color, #303030); margin-top: 1rem; }
-    .player-controls .actions-cell { display: flex; justify-content: space-between; gap: var(--space-3, 0.75rem); }
-    .player-controls .actions-cell .btn { flex-grow: 1; }
-    .player-controls h4 { font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-secondary, #A0A0A0); }
-    .download-options { display: flex; flex-wrap: wrap; gap: var(--space-3, 0.75rem); margin-bottom: 1.5rem; }
-    .download-options .btn { background-color: var(--bg-tertiary, #222); }
-    .episode-list-sidebar { background-color: var(--bg-secondary, #141414); border-radius: var(--border-radius, 8px); border: 1px solid var(--border-color, #303030); max-height: calc(100vh - 150px); overflow-y: auto; }
-    .episode-list-sidebar h3 { padding: var(--space-4, 1rem); margin: 0; border-bottom: 1px solid var(--border-color, #303030); font-size: 1.2rem; position: sticky; top: 0; background-color: var(--bg-secondary, #141414); z-index: 10; }
-    .episode-list { list-style: none; padding: 0; margin: 0; }
-    .episode-list li a { display: flex; align-items: center; gap: 1rem; padding: 1rem; color: var(--text-secondary, #A0A0A0); transition: all 0.2s ease; border-bottom: 1px solid var(--border-color, #303030); text-decoration: none; }
-    .episode-list li:last-child a { border-bottom: none; }
-    .episode-list li a:hover { background-color: rgba(var(--accent-primary-rgb, 229, 9, 20), 0.1); color: var(--accent-primary, #E50914); }
-    .episode-list li.active a { background-color: var(--accent-primary, #E50914); color: white; font-weight: 600; }
-    .episode-number-badge { flex-shrink: 0; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background-color: var(--bg-tertiary, #222); border-radius: 4px; font-weight: 600; font-size: 0.9em; }
-    .episode-list li.active .episode-number-badge { background-color: rgba(255, 255, 255, 0.2); }
-    .episode-title { flex-grow: 1; line-height: 1.4; }
+    /* ================================================================================================== */
+    /*      ESTILIZAÇÃO CSS COMPLETA, ROBUSTA E EXPANSIVA - VERSÃO RESTAURADA E APRIMORADA                  */
+    /* ================================================================================================== */
+    :root {
+        --akatsuki-red: #E50914; 
+        --akatsuki-red-rgb: 229, 9, 20;
+        --akatsuki-red-glow: #ff2c36;
+        --akatsuki-dark: #0A0A0A; 
+        --akatsuki-dark-rgb: 10, 10, 10;
+        --akatsuki-charcoal: #151515;
+        --akatsuki-gray: #242424;
+        --akatsuki-light-text: #f9f9f9;
+        --akatsuki-muted-text: #c5c5c5;
+        --akatsuki-border: rgba(var(--akatsuki-red-rgb), 0.5);
+        --akatsuki-border-soft: #3a3a3a;
+        --shadow-glow: 0 0 20px rgba(var(--akatsuki-red-rgb), 0.5);
+        --font-primary: 'Poppins', sans-serif;
+        --transition-speed: 0.3s;
+        --border-radius: 8px;
+        --border-radius-lg: 12px;
+    }
+    
+    .player-page-container {
+        width: 100%;
+        max-width: 1440px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 1.5rem;
+    }
+
+    .player-page-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+        animation: fadeInUp 0.6s ease-out;
+    }
+    @media (min-width: 1024px) {
+        .player-page-grid {
+            grid-template-columns: 1fr 400px;
+        }
+    }
+    
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .video-player-section {
+        background: var(--akatsuki-charcoal);
+        padding: 1rem;
+        border-radius: var(--border-radius-lg);
+        border: 1px solid var(--akatsuki-border-soft);
+    }
+    @media (min-width: 768px) {
+        .video-player-section { padding: 1.5rem; }
+    }
+
+    .video-player-header h1 {
+        font-size: clamp(1.4rem, 4vw, 2.2rem);
+        font-weight: 700;
+    }
+    .video-player-header h1 a {
+        color: inherit; text-decoration: none;
+        transition: color var(--transition-speed) ease;
+    }
+    .video-player-header h1 a:hover { color: var(--akatsuki-red); }
+    .video-player-header p {
+        font-size: 1rem; color: var(--akatsuki-muted-text);
+        margin-top: 0.25rem;
+    }
+
+    .video-player-container {
+        position: relative; width: 100%; aspect-ratio: 16 / 9;
+        background-color: #000; border-radius: var(--border-radius);
+        overflow: hidden; margin-top: 1.5rem;
+        border: 2px solid var(--akatsuki-border-soft);
+        box-shadow: 0 5px 30px rgba(0,0,0,0.6);
+    }
+    .video-player-container iframe, .video-player-container video {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;
+    }
+    .player-placeholder {
+        width: 100%; height: 100%; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 1rem;
+        color: var(--akatsuki-muted-text); text-align: center; padding: 1rem;
+    }
+    .player-placeholder i { font-size: 2.5rem; color: var(--akatsuki-red); }
+
+    .player-controls {
+        padding-top: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem;
+    }
+    .player-options-bar {
+        display: flex; flex-wrap: wrap; justify-content: flex-end;
+        align-items: center; gap: 1rem;
+    }
+    .btn-group { display: flex; gap: 0.75rem; }
+    
+    .btn {
+        display: inline-flex; align-items: center; justify-content: center;
+        gap: 0.5rem; padding: 0.7rem 1.2rem; border-radius: 50px;
+        text-decoration: none; cursor: pointer; font-weight: 600;
+        transition: all var(--transition-speed) ease; border: 2px solid transparent;
+        text-transform: uppercase; letter-spacing: 1px;
+        font-size: 0.8rem;
+    }
+    .btn--secondary {
+        background-color: var(--akatsuki-gray); color: var(--akatsuki-muted-text);
+        border-color: var(--akatsuki-border-soft);
+    }
+    .btn--secondary:hover { color: var(--akatsuki-light-text); border-color: var(--akatsuki-red); }
+    .btn--primary {
+        background: linear-gradient(45deg, var(--akatsuki-red-glow), var(--akatsuki-red));
+        color: white; box-shadow: 0 4px 15px rgba(var(--akatsuki-red-rgb), 0.3);
+    }
+    .btn--primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(var(--akatsuki-red-rgb), 0.5); }
+    
+    .download-dropdown { position: relative; }
+    .download-dropdown .dropdown-menu {
+        display: none; position: absolute; bottom: calc(100% + 10px);
+        right: 0;
+        background-color: var(--akatsuki-gray);
+        min-width: 200px; box-shadow: 0 8px 30px rgba(0,0,0,0.6); z-index: 100;
+        border-radius: var(--border-radius); border: 1px solid var(--akatsuki-border-soft);
+        padding: 0.5rem; animation: fadeInDropdown 0.2s ease-out;
+    }
+    .download-dropdown .dropdown-menu.show { display: block; }
+
+    @keyframes fadeInDropdown {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .dropdown-item {
+        color: var(--akatsuki-muted-text); padding: 0.75rem 1rem; text-decoration: none;
+        display: flex; align-items: center; gap: 0.75rem; font-weight: 500;
+        transition: all var(--transition-speed) ease; border-radius: var(--border-radius);
+    }
+    .dropdown-item:hover { background-color: var(--akatsuki-red); color: white; }
+    
+    .actions-cell {
+        display: flex; justify-content: space-between; gap: 1rem;
+        border-top: 1px solid var(--akatsuki-border-soft); padding-top: 1.5rem;
+    }
+    .actions-cell .btn { flex-grow: 1; }
+    
+    .player-sidebar {
+        background-color: var(--akatsuki-charcoal); border-radius: var(--border-radius-lg);
+        border: 1px solid var(--akatsuki-border-soft); display: flex; flex-direction: column;
+    }
+    @media (min-width: 1024px) { .player-sidebar { max-height: 85vh; } }
+
+    .player-sidebar h3 {
+        padding: 1.25rem 1.5rem; margin: 0; border-bottom: 1px solid var(--akatsuki-border-soft);
+        font-size: 1.2rem; font-weight: 700; position: sticky; top: 0;
+        background-color: var(--akatsuki-charcoal); z-index: 10;
+        border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+    }
+
+    .episode-list-scroll-wrapper { overflow-y: auto; padding: 1rem; }
+    .episode-list-scroll-wrapper::-webkit-scrollbar { height: 8px; width: 8px; }
+    .episode-list-scroll-wrapper::-webkit-scrollbar-track { background: var(--akatsuki-gray); border-radius: 10px; }
+    .episode-list-scroll-wrapper::-webkit-scrollbar-thumb { background-color: var(--akatsuki-red); border-radius: 10px; }
+    
+    .episode-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+    
+    .episode-list-item a {
+        display: flex; align-items: center; gap: 1rem; padding: 0.5rem;
+        color: var(--akatsuki-muted-text); transition: all var(--transition-speed) ease;
+        border-radius: var(--border-radius); text-decoration: none; border: 2px solid transparent;
+    }
+    .episode-list-item a:hover {
+        background-color: var(--akatsuki-gray); border-color: var(--akatsuki-border-soft);
+        color: var(--akatsuki-light-text);
+    }
+    .episode-list-item.active a {
+        background-color: var(--akatsuki-red); color: white;
+        font-weight: 600; border-color: var(--akatsuki-red-glow);
+    }
+    
+    .ep-list-thumbnail {
+        flex-shrink: 0; width: 100px; height: 56px;
+        background-color: #000; border-radius: var(--border-radius);
+        background-size: cover; background-position: center;
+    }
+    
+    .ep-list-info { flex-grow: 1; overflow: hidden; }
+    .ep-list-info .ep-list-title {
+        font-weight: 500; font-size: 0.9rem;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .episode-list-item.active a .ep-list-info .ep-list-title { color: white; }
+    
+    .suggestions-section {
+        margin-top: 2.5rem; grid-column: 1 / -1;
+    }
+    .suggestions-section h2 {
+        font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem;
+        border-left: 4px solid var(--akatsuki-red); padding-left: 1rem;
+    }
+    .suggestions-grid {
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1.5rem;
+    }
+    .suggestion-card a {
+        display: block; text-decoration: none; color: var(--akatsuki-light-text);
+        border-radius: var(--border-radius); overflow: hidden;
+        background-color: var(--akatsuki-gray);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+        transition: all var(--transition-speed) ease;
+    }
+    .suggestion-card a:hover { transform: translateY(-8px); box-shadow: 0 12px 30px rgba(0,0,0,0.6); }
+    .suggestion-card-image {
+        aspect-ratio: 2 / 3; background-size: cover;
+        background-position: center; transition: transform var(--transition-speed) ease;
+    }
+    .suggestion-card a:hover .suggestion-card-image { transform: scale(1.05); }
+    .suggestion-card-title {
+        padding: 0.75rem; font-weight: 600; font-size: 0.9rem;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
 </style>
 
-<div class="player-main-container container">
-    <div class="player-grid">
-        
-        <main class="video-player-section">
-            <div class="video-player-header">
-                <!-- ATUALIZAÇÃO: Usando initialAnime e initialEpisode para consistência com o backend -->
-                <a href="/anime/<%= initialAnime.slug %>" title="Voltar para a página do anime"><h1><%= initialAnime.titulo %></h1></a>
-                <p>Episódio <%= initialEpisode.numero %><% if (initialEpisode.titulo) { %>: <%= initialEpisode.titulo %><% } %></p>
-            </div>
-            
-            <div class="video-player-container">
-                <% if (urlPlayer) { %>
-                    <% if (initialEpisode.tipoVideo === 'upload') { %>
-                        <video controls src="<%= urlPlayer %>" autoplay></video>
-                    <% } else { %>
-                        <iframe src="<%= urlPlayer %>" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
-                    <% } %>
-                <% } else { %>
-                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-secondary);">
-                        <p>Vídeo indisponível no momento.</p>
-                    </div>
-                <% } %>
-            </div>
-            
-            <div class="player-controls">
-                <% if (podeBaixar && linksParaDownload.length > 0) { %>
-                    <h4><i class="fas fa-download"></i> Opções de Download</h4>
-                    <div class="download-options">
-                        <% linksParaDownload.forEach(dl => { %>
-                            <% if (initialEpisode.tipoVideo === 'upload') { %>
-                                <!-- Para uploads locais, força o download com o atributo 'download' -->
-                                <a href="<%= dl.urlDownload %>" class="btn btn--secondary" download>
-                                    <i class="fas fa-hdd"></i> <%= dl.qualidade %>
-                                </a>
-                            <% } else { %>
-                                <!-- Para links externos (GDrive, etc.), abre em uma nova aba para a página de download -->
-                                <a href="<%= dl.urlDownload %>" target="_blank" rel="noopener noreferrer" class="btn btn--secondary">
-                                    <i class="fas fa-cloud-download-alt"></i> <%= dl.qualidade %>
-                                </a>
-                            <% } %>
-                        <% }) %>
-                    </div>
-                    <hr style="border-color: var(--border-color, #303030); margin: 1.5rem 0;">
-                <% } %>
+<div class="player-page-container">
+    <div class="player-page-grid">
+        <main class="main-content">
+            <div class="video-player-section">
+                <div class="video-player-header">
+                    <h1><a href="/anime/<%= initialAnime.slug %>" title="Voltar para a página do anime"><%= initialAnime.titulo %></a></h1>
+                    <p>Temporada <%= initialEpisode.temporada %> • Episódio <%= initialEpisode.numero %><% if (initialEpisode.titulo) { %>: <%= initialEpisode.titulo %><% } %></p>
+                </div>
                 
-                <div class="actions-cell">
-                    <% 
-                        const episodioAtualIndex = todosEpisodios.findIndex(ep => ep.id == initialEpisode.id);
-                        const episodioAnterior = todosEpisodios[episodioAtualIndex - 1];
-                        const proximoEpisodio = todosEpisodios[episodioAtualIndex + 1];
-                    %>
-                    
-                    <% if(episodioAnterior) { %>
-                        <a href="/assistir/<%= initialAnime.slug %>/<%= episodioAnterior.id %>" class="btn btn--secondary"><i class="fas fa-backward"></i> Anterior</a>
+                <div class="video-player-container">
+                    <% if (urlPlayer) { %>
+                        <iframe src="<%= urlPlayer %>" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
                     <% } else { %>
-                        <span class="btn btn--secondary" style="opacity: 0.5; cursor: not-allowed;"><i class="fas fa-backward"></i> Anterior</span>
-                    <% } %>
-
-                    <% if(proximoEpisodio) { %>
-                        <a href="/assistir/<%= initialAnime.slug %>/<%= proximoEpisodio.id %>" class="btn btn--primary">Próximo <i class="fas fa-forward"></i></a>
-                    <% } else { %>
-                        <span class="btn btn--primary" style="opacity: 0.5; cursor: not-allowed;">Próximo <i class="fas fa-forward"></i></span>
+                        <div class="player-placeholder">
+                            <i class="fas fa-video-slash"></i>
+                            <p>Vídeo indisponível.</p>
+                        </div>
                     <% } %>
                 </div>
+                
+                <div class="player-controls">
+                    <div class="player-options-bar">
+                        <div class="btn-group">
+                            <% if (podeBaixar && linksParaDownload.length > 0) { %>
+                                <div class="download-dropdown">
+                                    <button id="downloadBtn" class="btn btn--secondary">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                    <div id="downloadMenu" class="dropdown-menu">
+                                        <% linksParaDownload.forEach(dl => { %>
+                                            <a href="<%= dl.urlDownload %>" target="_blank" rel="noopener noreferrer" class="dropdown-item">
+                                                <i class="fas fa-cloud-download-alt"></i> <span><%= dl.qualidade %></span>
+                                            </a>
+                                        <% }) %>
+                                    </div>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <div class="actions-cell">
+                        <% 
+                            const episodioAtualIndex = todosEpisodios.findIndex(ep => ep.id == initialEpisode.id);
+                            const episodioAnterior = todosEpisodios[episodioAtualIndex - 1];
+                            const proximoEpisodio = todosEpisodios[episodioAtualIndex + 1];
+                        %>
+                        <div class="btn-group">
+                            <% if(episodioAnterior) { %>
+                                <a href="/assistir/<%= initialAnime.slug %>/<%= episodioAnterior.id %>" class="btn btn--secondary"><i class="fas fa-backward"></i> Ant</a>
+                            <% } else { %>
+                                <span class="btn btn--secondary" style="opacity: 0.5; cursor: not-allowed;"><i class="fas fa-backward"></i> Ant</span>
+                            <% } %>
+                            <% if(proximoEpisodio) { %>
+                                <a href="/assistir/<%= initialAnime.slug %>/<%= proximoEpisodio.id %>" class="btn btn--primary">Próx <i class="fas fa-forward"></i></a>
+                            <% } else { %>
+                                <span class="btn btn--primary" style="opacity: 0.5; cursor: not-allowed;">Próx <i class="fas fa-forward"></i></span>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <section class="suggestions-section">
+                <h2>Você também pode gostar</h2>
+                <div class="suggestions-grid">
+                    <% if (sugestoes.length > 0) { %>
+                        <% sugestoes.forEach(anime => { %>
+                            <div class="suggestion-card">
+                                <a href="/anime/<%= anime.slug %>">
+                                    <div class="suggestion-card-image" style="background-image: url('<%= anime.imagemCapa %>');"></div>
+                                    <h4 class="suggestion-card-title"><%= anime.titulo %></h4>
+                                </a>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <p>Nenhuma sugestão disponível no momento.</p>
+                    <% } %>
+                </div>
+            </section>
         </main>
         
-        <aside class="episode-list-sidebar">
+        <aside class="player-sidebar">
             <h3><i class="fas fa-list-ol"></i> Lista de Episódios</h3>
-            <ul class="episode-list">
-                <% todosEpisodios.forEach(ep => { %>
-                   <li class="<%= ep.id == initialEpisode.id ? 'active' : '' %>">
-                       <a href="/assistir/<%= initialAnime.slug %>/<%= ep.id %>" title="Assistir Episódio <%= ep.numero %>: <%= ep.titulo || '' %>">
-                           <span class="episode-number-badge"><%= ep.numero %></span>
-                           <span class="episode-title"><%= ep.titulo || `Episódio ${ep.numero}` %></span>
-                       </a>
-                   </li>
-               <% }) %>
-           </ul>
+            <div class="episode-list-scroll-wrapper">
+                <ul class="episode-list">
+                    <% todosEpisodios.forEach(ep => { %>
+                       <li class="episode-list-item <%= ep.id == initialEpisode.id ? 'active' : '' %>">
+                           <a href="/assistir/<%= initialAnime.slug %>/<%= ep.id %>" title="Assistir Episódio <%= ep.numero %>: <%= ep.titulo || '' %>">
+                               <div class="ep-list-thumbnail" style="background-image: url('<%= ep.thumbnailUrl || initialAnime.imagemCapa || "/images/avatar_padrao.png" %>')"></div>
+                               <div class="ep-list-info">
+                                    <span class="ep-list-title"><%= ep.titulo || `Episódio ${ep.numero}` %></span>
+                               </div>
+                           </a>
+                       </li>
+                   <% }) %>
+               </ul>
+            </div>
         </aside>
-
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const downloadBtn = document.getElementById('downloadBtn');
+    const downloadMenu = document.getElementById('downloadMenu');
+    if (downloadBtn && downloadMenu) {
+        downloadBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            downloadMenu.classList.toggle('show');
+        });
+        window.addEventListener('click', (event) => {
+            if (downloadMenu.classList.contains('show') && !downloadBtn.contains(event.target) && !downloadMenu.contains(event.target)) {
+                downloadMenu.classList.remove('show');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
