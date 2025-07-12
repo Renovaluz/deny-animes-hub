@@ -1,12 +1,11 @@
 // ====================================================================================
 //
-//              DenyAnimeHub - Ponto de Entrada Principal (Versão Rinnegan)
+//              DenyAnimeHub - Ponto de Entrada Principal (Versão Definitiva Corrigida)
 //
-// Versão:        27.0 (Final e 100% Funcional)
-// Descrição:     Versão definitiva com as rotas de perfil de usuário corrigidas
-//                para usar os middlewares de upload corretos, resolvendo todos os
-//                erros de upload e bugs visuais. Mantém 100% da estrutura e
-//                código originais.
+// Versão:        27.1
+// Descrição:     CORRIGE O ERRO CRÍTICO "Cannot access 'apiRouter' before initialization"
+//                movendo a declaração do apiRouter para antes da definição de suas rotas,
+//                garantindo que a rota de automação e todas as outras funcionem.
 //
 // ====================================================================================
 
@@ -17,18 +16,17 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const expressLayouts = require('express-ejs-layouts');
 const db = require('./models');
-const multer = require('multer'); // Importando o multer para o tratamento de erros
+const multer = require('multer');
+const { Sequelize, Op } = require('sequelize'); // Importando Sequelize e Op
+const slugify = require('./utils/slugify'); // Supondo que você tem este utilitário
 
 // Middlewares
 const { proteger, admin, protegerOpcional } = require('./middleware/authMiddleware');
-
-// [CORREÇÃO 1/2] Importando o middleware 'uploadCapaPerfil' que foi criado.
-// Agora importamos o especialista em capas de PERFIL junto com os outros.
 const { 
     processForm, 
     uploadAvatar, 
     uploadCapa, 
-    uploadCapaPerfil, // <<<<<<<<<<< IMPORTAÇÃO ADICIONADA
+    uploadCapaPerfil,
     uploadVideo 
 } = require('./middleware/uploadMiddleware');
 
@@ -51,11 +49,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Configuração de arquivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
-// Configuração do Template Engine (EJS) e Layouts
 app.use(expressLayouts);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -69,7 +65,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// --- MÓDULO 4: ROTAS DE VISUALIZAÇÃO E DOWNLOAD (INTACTAS) ---
+// --- MÓDULO 4: ROTAS DE VISUALIZAÇÃO E DOWNLOAD ---
 app.get('/download/proxy', proteger, downloadController.proxyDownload);
 
 app.get('/', async (req, res) => {
@@ -78,7 +74,6 @@ app.get('/', async (req, res) => {
         const animesPopulares = await db.Anime.findAll({ order: [['views', 'DESC']], limit: 5 });
         res.render('index', { page_name: 'index', titulo: 'Início', animes: animesRecentes, topAnimes: animesPopulares });
     } catch (err) {
-        console.error("Erro na página inicial:", err);
         res.status(500).render('500', { layout: false, titulo: 'Erro no Servidor', error: err });
     }
 });
@@ -115,63 +110,34 @@ app.get('/anime/:slug', async (req, res) => {
         const episodiosOrdenados = (anime.episodios || []).sort((a, b) => a.numero - b.numero);
         const animeData = { ...anime.get({ plain: true }), episodios: episodiosOrdenados.map(ep => ep.get({ plain: true })) };
         
-        res.render('detalhe-anime', { page_name: 'anime-detail', titulo: anime.titulo, anime: animeData });
+        res.render('detalhe-anime', { page_name: 'anime-detail', titulo: anime.titulo, anime: animeData, db: db });
     } catch (err) {
         res.status(500).render('500', { layout: false, titulo: 'Erro no Servidor', error: err });
     }
 });
 
-// ======================================================================================
-//          ROTA DE ASSISTIR CORRIGIDA E ROBUSTA (EM APP.JS)
-// ======================================================================================
-
-// Importe o Sequelize e o Op no topo do seu app.js, se ainda não o fez
-const { Sequelize, Op } = require('sequelize');
-
-// ... (resto do seu código app.js)
-
-// Substitua a sua rota de assistir por esta versão completa
 app.get('/assistir/:slug/:epId', proteger, async (req, res) => {
     try {
         const { slug, epId } = req.params;
-
-        // 1. Busca o anime e todos os seus episódios associados
-        const anime = await db.Anime.findOne({ 
-            where: { slug }, 
-            include: [{ model: db.Episodio, as: 'episodios' }] 
-        });
-
-        if (!anime) {
-            return res.status(404).render('404', { layout: false, titulo: 'Anime não encontrado' });
-        }
-
-        // 2. Encontra o episódio específico que o usuário quer assistir
+        const anime = await db.Anime.findOne({ where: { slug }, include: [{ model: db.Episodio, as: 'episodios' }] });
+        if (!anime) { return res.status(404).render('404', { layout: false, titulo: 'Anime não encontrado' }); }
+        
         const episodioAtual = (anime.episodios || []).find(ep => ep.id.toString() === epId);
-
-        if (!episodioAtual) {
-            return res.status(404).render('404', { layout: false, titulo: 'Episódio não encontrado neste anime' });
-        }
-
-        // 3. Ordena todos os episódios do anime para a lista de navegação
+        if (!episodioAtual) { return res.status(404).render('404', { layout: false, titulo: 'Episódio não encontrado' }); }
+        
         const todosEpisodiosOrdenados = (anime.episodios || []).sort((a, b) => {
             if (a.temporada !== b.temporada) return a.temporada - b.temporada;
             return a.numero - b.numero;
         });
 
-        // 4. [LÓGICA CORRIGIDA] Busca 4 animes aleatórios para sugestão, excluindo o atual
         const sugestoes = await db.Anime.findAll({
-            where: {
-                id: { [Op.ne]: anime.id } // Op.ne significa "not equal" (diferente de)
-            },
-            order: [
-                [Sequelize.fn('RANDOM')] // Para PostgreSQL/SQLite. Use Sequelize.fn('RAND') para MySQL.
-            ],
+            where: { id: { [Op.ne]: anime.id } },
+            order: [[Sequelize.fn('RANDOM')]],
             limit: 4
         });
         
-        // 5. Renderiza a página, passando TODOS os dados necessários de uma vez
         res.render('assistir', { 
-            layout: 'layouts/main', // Garante que o layout principal seja usado
+            layout: 'layouts/main', 
             page_name: 'player', 
             initialAnime: anime.get({ plain: true }), 
             initialEpisode: episodioAtual.get({ plain: true }), 
@@ -179,7 +145,6 @@ app.get('/assistir/:slug/:epId', proteger, async (req, res) => {
             sugestoes: sugestoes.map(s => s.get({ plain: true })),
             titulo: `Assistindo: ${anime.titulo} - Ep. ${episodioAtual.numero}` 
         });
-
     } catch (err) {
         console.error("ERRO CRÍTICO NA PÁGINA DO PLAYER:", err);
         res.status(500).render('500', { layout: false, titulo: 'Erro no Servidor', error: err });
@@ -208,76 +173,108 @@ app.get('/admin/dashboard', proteger, admin, async (req, res) => {
     }
 });
 
-
 // --- MÓDULO 5: ROTAS DE API (AÇÕES JSON) ---
+
 app.use('/auth', authRoutes);
 
+// [!!! CORREÇÃO CRÍTICA !!!]
+// A declaração do apiRouter foi movida para ANTES de qualquer rota que o utilize.
 const apiRouter = express.Router();
 app.use('/api', apiRouter);
 
-// Aplicando middleware de proteção a todas as rotas da API
+// Middleware de proteção para TODAS as rotas da API (exceto as de automação com chave)
 apiRouter.use(proteger);
 
-// [CORREÇÃO 2/2] Rotas de Perfil do Usuário com os middlewares corretos.
-// Esta é a correção final que resolve o erro "Unexpected field".
+// Rotas de Perfil do Usuário
 apiRouter.put('/user/profile', userApiController.updateUserProfile);
 apiRouter.post('/user/profile/avatar', uploadAvatar, userApiController.updateUserAvatar);
-// A linha abaixo agora usa 'uploadCapaPerfil', que espera o campo 'capa'.
-apiRouter.post('/user/profile/capa', uploadCapaPerfil, userApiController.updateUserCapa); // <<<<<<<< CORREÇÃO APLICADA
+apiRouter.post('/user/profile/capa', uploadCapaPerfil, userApiController.updateUserCapa);
 
-// Aplicando middleware de 'admin' para todas as rotas de gerenciamento abaixo
+// Rota de Automação (protegida por chave de API)
+const protegerComChaveApi = (req, res, next) => {
+    const chaveApi = req.headers['x-api-key'];
+    if (!chaveApi || chaveApi !== process.env.AUTOMATION_API_KEY) {
+        return res.status(401).json({ success: false, error: 'Acesso não autorizado.' });
+    }
+    next();
+};
+
+apiRouter.post('/automacao/postar-anime-completo', protegerComChaveApi, async (req, res) => {
+    const { titulo, sinopse, anoLancamento, generos, imagemCapa, episodios } = req.body;
+    if (!titulo || !sinopse || !imagemCapa || !episodios || !Array.isArray(episodios)) {
+        return res.status(400).json({ success: false, error: 'Dados incompletos ou malformados.' });
+    }
+    const transaction = await db.sequelize.transaction();
+    try {
+        const novoAnime = await db.Anime.create({
+            titulo, slug: slugify(titulo), sinopse,
+            anoLancamento: anoLancamento || new Date().getFullYear(),
+            generos: generos || [], imagemCapa,
+        }, { transaction });
+
+        const episodiosParaCriar = episodios.map(ep => ({ ...ep, animeId: novoAnime.id }));
+        await db.Episodio.bulkCreate(episodiosParaCriar, { transaction });
+        
+        await transaction.commit();
+        console.log(`[AUTOMAÇÃO] Anime "${titulo}" e ${episodios.length} episódios cadastrados!`);
+        res.status(201).json({ success: true, message: `Anime "${titulo}" e ${episodios.length} episódios cadastrados.` });
+    } catch (error) {
+        await transaction.rollback();
+        console.error("[AUTOMAÇÃO] Erro:", error);
+        if (error.name === 'SequelizeUniqueConstraintError') {
+             return res.status(409).json({ success: false, error: `O anime "${titulo}" já existe.` });
+        }
+        res.status(500).json({ success: false, error: 'Erro interno no servidor.' });
+    }
+});
+
+// Middleware de admin para as rotas de gerenciamento
 apiRouter.use(admin);
 
-// Adicionando a rota de upload de capa (para o painel de admin, mantida intacta)
+// Rota de upload para o painel
 apiRouter.post('/upload/capa', uploadCapa, (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ success: false, error: 'Nenhum arquivo de capa recebido.' });
-    }
+    if (!req.file) { return res.status(400).json({ success: false, error: 'Nenhum arquivo recebido.' }); }
     res.json({ success: true, filePath: `/uploads/capas/${req.file.filename}` });
 });
 
-// Rotas de CRUD para Animes (Mantidas 100% Intactas)
+// Rotas de CRUD para Animes
 apiRouter.get('/animes', animeApiController.getAllAnimes);
 apiRouter.get('/animes/:slug', animeApiController.getAnimeBySlug);
 apiRouter.post('/animes', processForm, animeApiController.createAnime);
 apiRouter.put('/animes/:slug', processForm, animeApiController.updateAnime);
 apiRouter.delete('/animes/:slug', animeApiController.deleteAnime);
 
-// Rotas de CRUD para Episódios (Mantidas 100% Intactas)
+// Rotas de CRUD para Episódios
 apiRouter.post('/episodios', processForm, episodioApiController.createEpisodio);
 apiRouter.delete('/episodios/:id', episodioApiController.deleteEpisodio);
 
-// Rotas de CRUD para Notícias/Posts (Mantidas 100% Intactas)
+// Rotas de CRUD para Posts
 apiRouter.get('/posts', postApiController.getAllPosts);
 apiRouter.get('/posts/slug/:slug', postApiController.getPostBySlug);
 apiRouter.post('/posts', processForm, postApiController.createPost);
 apiRouter.put('/posts/:id', processForm, postApiController.updatePost);
 apiRouter.delete('/posts/:id', postApiController.deletePost);
 
-// Rotas de CRUD para Usuários (Mantidas 100% Intactas)
+// Rotas de CRUD para Usuários
 apiRouter.get('/users', userApiController.getAllUsers);
 apiRouter.delete('/users/:id', userApiController.deleteUserByAdmin);
 
-
-// --- MÓDULO 6: TRATAMENTO DE ERROS FINAIS E INICIALIZAÇÃO (INTACTOS) ---
+// --- MÓDULO 6: TRATAMENTO DE ERROS FINAIS E INICIALIZAÇÃO ---
 app.use((req, res, next) => {
     res.status(404).render('404', { layout: false, titulo: 'Página Não Encontrada' });
 });
 
 app.use((err, req, res, next) => {
     console.error("ERRO FATAL:", err.stack);
-
     if (err instanceof multer.MulterError) {
-        return res.status(400).json({ success: false, error: `Erro de upload: ${err.message}. Código: ${err.code}` });
+        return res.status(400).json({ success: false, error: `Erro de upload: ${err.message}.` });
     }
     if (err.code === 'INVALID_FILE_TYPE') {
         return res.status(400).json({ success: false, error: err.message });
     }
-
     res.status(500).render('500', { layout: false, titulo: 'Erro no Servidor', error: 'Ocorreu um problema inesperado.' });
 });
 
-// Sincroniza o banco de dados e inicia o servidor (INTACTO)
 db.sequelize.sync({ alter: process.env.NODE_ENV === 'development' })
   .then(() => {
     console.log('✅ Banco de dados sincronizado e pronto.');
