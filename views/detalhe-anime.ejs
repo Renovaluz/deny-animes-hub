@@ -19,9 +19,9 @@
 <style>
     /* ================================================================================================== */
     /*      ESTILIZAÇÃO CSS COMPLETA, ROBUSTA E EXPANSIVA - VERSÃO DEFINITIVA (SEM NENHUMA OMISSÃO)         */
-    /*      - Layout Híbrido Balanceado (Mobile Centrado / Desktop em Colunas Aprimoradas).               */
-    /*      - Botão de Ação movido para após a Sinopse.                                                   */
-    /*      - Seção de Episódios redesenhada com "Cards" interativos.                                     */
+    /*      - Layout Unificado e Adaptativo (Mobile Centrado / Desktop em Colunas).                       */
+    /*      - Título com Visibilidade e Poder Restaurados.                                                */
+    /*      - Efeitos Visuais e Contraste Otimizados para uma Experiência Premium.                        */
     /* ================================================================================================== */
 
     /* -------------------------------------------------------------------------------------------------- */
@@ -93,27 +93,27 @@
         max-width: var(--container-width);
         margin-left: auto;
         margin-right: auto;
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
 
     /* -------------------------------------------------------------------------------------------------- */
-    /*                         ESTRUTURA DA PÁGINA: HERO, WRAPPER E LAYOUT HÍBRIDO                          */
+    /*              ESTRUTURA DA PÁGINA: HERO, WRAPPER E O LAYOUT UNIFICADO E ADAPTATIVO                     */
     /* -------------------------------------------------------------------------------------------------- */
 
     .anime-detail-hero {
         position: absolute; top: 0; left: 0; right: 0;
-        height: 60vh;
+        height: 55vh;
         background-size: cover;
         background-position: center 20%;
         filter: blur(10px) brightness(0.4) saturate(1.4);
         transform: scale(1.15);
-        z-index: -1;
+        z-index: 1;
     }
 
     .anime-detail-hero-overlay {
         position: absolute; inset: 0;
-        background: linear-gradient(to top, var(--bg-primary) 10%, rgba(var(--bg-primary-rgb), 0.8) 50%, transparent 100%);
+        background: linear-gradient(to top, var(--bg-primary) 10%, rgba(var(--bg-primary-rgb), 0.8) 60%, transparent 100%);
     }
 
     .anime-detail-wrapper {
@@ -122,17 +122,24 @@
         z-index: 2;
     }
     
-    /* [!!! LAYOUT HÍBRIDO DEFINITIVO !!!] */
-    /* Padrão Mobile-First: Pôster centrado, conteúdo abaixo */
-    .anime-header {
-        text-align: center;
-        margin-bottom: 2.5rem;
+    /* [!!! LAYOUT UNIFICADO E DEFINITIVO !!!] */
+    /* A estrutura principal é um grid que se adapta. */
+    .anime-main-grid {
+        display: grid;
+        grid-template-columns: 1fr; /* Uma coluna por padrão (mobile) */
+        gap: 2.5rem;
+    }
+
+    .anime-sidebar {
+        /* No mobile, a sidebar é a primeira seção do conteúdo */
+        grid-row: 1;
     }
     
     .anime-poster-wrapper {
         display: block;
-        max-width: 280px; /* Tamanho elegante para o pôster no mobile */
-        margin: 0 auto 2rem auto;
+        max-width: 300px; /* Tamanho robusto para o pôster no mobile */
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .anime-poster-wrapper img {
@@ -150,20 +157,15 @@
         border-color: var(--akatsuki-red-glow);
         box-shadow: 0 20px 50px rgba(0,0,0,1), 0 0 45px rgba(var(--akatsuki-red-rgb), 0.8);
     }
-    
-    .anime-title {
+
+    .anime-main-content .anime-title {
         font-size: clamp(2.5rem, 7vw, 4.8rem);
         font-weight: 900;
         line-height: 1.15;
         color: var(--akatsuki-light-text);
         text-shadow: 0 6px 25px rgba(0,0,0,0.9), 0 0 10px rgba(var(--akatsuki-red-rgb), 0.3);
-    }
-
-    /* Grid principal para o conteúdo abaixo do header */
-    .anime-main-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 3rem;
+        text-align: center; /* Título centralizado no mobile */
+        margin-top: 2rem;
     }
 
     /* Media Query para transformar em layout de 2 colunas no Desktop */
@@ -172,31 +174,20 @@
             padding-top: 18vh;
         }
 
-        /* No desktop, o grid principal assume as 2 colunas */
         .anime-main-grid {
-            grid-template-columns: 320px 1fr;
+            grid-template-columns: 320px 1fr; /* Duas colunas para o desktop */
             gap: 4rem;
         }
-        
-        /* O header de mobile é escondido */
-        .anime-header {
-            display: none;
+
+        .anime-main-content .anime-title {
+            text-align: left; /* Título alinhado à esquerda no desktop */
+            margin-top: 0;
         }
     }
-    
+
     /* -------------------------------------------------------------------------------------------------- */
     /*                      COMPONENTES DA UI (SIDEBAR, CONTEÚDO, BOTÕES, LISTAS)                           */
     /* -------------------------------------------------------------------------------------------------- */
-
-    /* A sidebar só é visível no grid de desktop */
-    .anime-sidebar {
-        display: none; /* Escondido por padrão (mobile) */
-    }
-    @media (min-width: 992px) {
-        .anime-sidebar {
-            display: block; /* Visível em telas maiores */
-        }
-    }
 
     .anime-sidebar .info-block {
         background: var(--bg-secondary);
@@ -204,7 +195,15 @@
         border-radius: var(--border-radius-lg);
         border: 1px solid var(--border-color-soft);
         box-shadow: inset 0 1px 5px rgba(0,0,0,0.5);
+        margin-top: 2rem; /* Espaçamento após o pôster no mobile */
     }
+
+    @media (min-width: 992px) {
+        .anime-sidebar .info-block {
+            margin-top: 0; /* Remove a margem no desktop */
+        }
+    }
+
     .info-block h4 {
         margin: 0 0 1rem 0; font-size: 1.2rem; color: var(--text-primary);
         font-weight: 600; border-bottom: 2px solid var(--accent-primary);
@@ -236,12 +235,11 @@
         padding: 1.5rem; border-radius: var(--border-radius);
     }
 
-    /* [!!! NOVO BOTÃO DE AÇÃO APÓS SINOPSE !!!] */
-    .synopsis-cta-section {
-        margin-top: 2rem;
+    .action-button-wrapper {
+        margin-top: 2.5rem;
         text-align: center;
     }
-    .btn-synopsis-cta {
+    .btn-action-primary {
         display: inline-flex; align-items: center; justify-content: center; gap: 1rem;
         background: linear-gradient(45deg, var(--akatsuki-red-glow), var(--accent-primary));
         color: white; border: none; padding: 1rem 2.5rem; border-radius: 50px;
@@ -250,9 +248,9 @@
         box-shadow: 0 5px 25px rgba(var(--accent-primary-rgb), 0.5);
         font-size: 1.2rem;
     }
-    .btn-synopsis-cta:hover {
+    .btn-action-primary:hover {
         transform: translateY(-5px) scale(1.05);
-        box-shadow: 0 10px 40px rgba(var(--akatsuki-red-rgb), 0.7);
+        box-shadow: 0 10px 40px rgba(var(--accent-primary-rgb), 0.7);
     }
     
     .trailer-section {
@@ -286,12 +284,9 @@
     .episode-list-season.active { display: block; animation: fadeInUp 0.5s ease-out; }
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* [!!! REDESIGN DA LISTA DE EPISÓDIOS !!!] */
     .episode-list {
         list-style: none; padding: 0; margin: 0;
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 1rem;
+        display: grid; grid-template-columns: 1fr; gap: 1rem;
     }
     .episode-card a {
         display: flex; align-items: center; gap: 1rem; padding: 1.25rem;
@@ -302,8 +297,7 @@
         box-shadow: 0 4px 15px rgba(0,0,0,0.4);
     }
     .episode-card a:hover {
-        background: var(--bg-tertiary);
-        border-color: var(--border-color);
+        background: var(--bg-tertiary); border-color: var(--border-color);
         color: var(--text-primary); transform: translateY(-5px) scale(1.02);
         box-shadow: 0 8px 30px rgba(0,0,0,0.6);
     }
@@ -333,22 +327,12 @@
 
 <div class="container anime-detail-wrapper">
 
-    <!-- Header com layout híbrido: muda de mobile para desktop -->
-    <header class="anime-header">
-        <!-- O pôster fica fora do grid de conteúdo principal em telas de desktop -->
-        <div class="anime-poster-wrapper" id="desktop-poster-wrapper" style="display: none;">
-             <img src="<%= anime.imagemCapa %>" alt="Pôster de <%= anime.titulo %>">
-        </div>
-        
-        <h1 class="anime-title"><%= anime.titulo %></h1>
-    </header>
-
-    <!-- Grid principal para o conteúdo -->
+    <!-- Grid principal que organiza todo o conteúdo de forma adaptativa -->
     <div class="anime-main-grid">
-        <!-- Coluna da Esquerda (Sidebar) -->
+
+        <!-- Coluna da Esquerda (Sidebar): Contém o pôster e as informações. -->
         <aside class="anime-sidebar">
-             <!-- Pôster Visível Apenas no Desktop -->
-            <div class="anime-poster-wrapper" id="desktop-sidebar-poster">
+            <div class="anime-poster-wrapper">
                 <img src="<%= anime.imagemCapa %>" alt="Pôster de <%= anime.titulo %>">
             </div>
             
@@ -364,14 +348,17 @@
 
         <!-- Coluna da Direita (Conteúdo Principal) -->
         <main class="anime-main-content">
+            <!-- Título do anime, que aparece aqui no fluxo normal do conteúdo -->
+            <h1 class="anime-title"><%= anime.titulo %></h1>
+            
             <section>
                 <h2 class="section-title">Sinopse</h2>
                 <p class="synopsis"><%- anime.sinopse.replace(/\n/g, '<br>') %></p>
                 
                 <!-- Botão de Ação movido para após a sinopse -->
                 <% if (anime.episodios && anime.episodios.length > 0) { %>
-                    <div class="synopsis-cta-section">
-                        <a href="/assistir/<%= anime.slug %>/<%= anime.episodios[0].id %>" class="btn-synopsis-cta">
+                    <div class="action-button-wrapper">
+                        <a href="/assistir/<%= anime.slug %>/<%= anime.episodios[0].id %>" class="btn-action-primary">
                             <i class="fas fa-play"></i> Assistir Agora
                         </a>
                     </div>
@@ -468,29 +455,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
-
-    // [!!! NOVO SCRIPT PARA LAYOUT HÍBRIDO !!!]
-    // Esta função controla a visibilidade do pôster para evitar duplicação.
-    const handleLayoutChange = () => {
-        const desktopPoster = document.getElementById('desktop-sidebar-poster');
-        const mobileHeader = document.querySelector('.anime-header');
-
-        if (window.innerWidth >= 992) {
-            // Em telas de desktop, mostra o pôster da sidebar e esconde o header de mobile.
-            if (desktopPoster) desktopPoster.style.display = 'block';
-            if (mobileHeader) mobileHeader.style.display = 'none';
-        } else {
-            // Em telas de mobile, esconde o pôster da sidebar e mostra o header de mobile.
-            if (desktopPoster) desktopPoster.style.display = 'none';
-            if (mobileHeader) mobileHeader.style.display = 'grid'; // Usa grid para o layout interno do header
-        }
-    };
-
-    // Executa a função na primeira carga da página.
-    handleLayoutChange();
-    
-    // Adiciona um ouvinte para executar a função sempre que a janela for redimensionada.
-    window.addEventListener('resize', handleLayoutChange);
 });
 </script>
 
