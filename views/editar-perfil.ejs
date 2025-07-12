@@ -7,41 +7,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= titulo %> - DenyAnimeHub</title>
-
-    <!-- Importação da fonte 'Poppins' do Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Importação da biblioteca de ícones 'Font Awesome' -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <style>
     /* ================================================================================================== */
-    /*      ESTILIZAÇÃO CSS COMPLETA, ROBUSTA E EXPANSIVA - NÍVEL AKATSUKI (SEM NENHUMA OMISSÃO)            */
-    /*      - Design de Painel Flutuante.                                                                 */
-    /*      - Cabeçalho de Perfil Unificado (Capa + Avatar).                                              */
-    /*      - Efeitos Visuais (Glow, Gradientes) Aprimorados.                                             */
+    /*      ESTILIZAÇÃO CSS COMPLETA - NÍVEL RESTAURAÇÃO COMPLETA (SEM NENHUMA OMISSÃO)                   */
     /* ================================================================================================== */
 
     /* -------------------------------------------------------------------------------------------------- */
     /*           DEFINIÇÃO DAS VARIÁVEIS GLOBAIS DE DESIGN (PALETA DE CORES DEFINITIVA)                     */
     /* -------------------------------------------------------------------------------------------------- */
     :root {
-        /* Paleta de Cores Akatsuki Definitiva */
-        --akatsuki-red: #E50914; 
-        --akatsuki-red-rgb: 229, 9, 20;
-        --akatsuki-red-glow: #ff2c36;
-        --akatsuki-dark: #0A0A0A; 
-        --akatsuki-dark-rgb: 10, 10, 10;
-        --akatsuki-charcoal: #151515;
-        --akatsuki-gray: #242424;
-        --akatsuki-light-text: #f9f9f9;
-        --akatsuki-muted-text: #c5c5c5;
-        --akatsuki-border: rgba(var(--akatsuki-red-rgb), 0.5);
-        --akatsuki-border-soft: #3a3a3a;
-        --success-glow: rgba(76, 175, 80, 0.4);
-        --error-glow: rgba(244, 67, 54, 0.4);
+        /* TEMA ESCURO (PADRÃO AKATSUKI) */
+        --theme-bg-primary: #0A0A0A;
+        --theme-bg-primary-rgb: 10, 10, 10;
+        --theme-bg-secondary: #151515;
+        --theme-bg-tertiary: #242424;
+        --theme-text-primary: #f9f9f9;
+        --theme-text-primary-rgb: 249, 249, 249;
+        --theme-text-secondary: #c5c5c5;
+        --theme-accent-primary: #E50914;
+        --theme-accent-primary-rgb: 229, 9, 20;
+        --theme-accent-glow: #ff2c36;
+        --theme-border-color: #3a3a3a;
+        --theme-success: #2E7D32;
+        --theme-success-border: #4CAF50;
+        --theme-success-glow: rgba(76, 175, 80, 0.4);
+        --theme-error: #C62828;
+        --theme-error-border: #F44336;
+        --theme-error-glow: rgba(244, 67, 54, 0.4);
+        --shadow-color-rgb: 0, 0, 0;
 
         /* Variáveis de Configuração de Layout */
         --font-primary: 'Poppins', sans-serif;
@@ -51,300 +49,115 @@
         --border-radius-lg: 16px;
     }
 
-    /* -------------------------------------------------------------------------------------------------- */
-    /*                                     ESTILOS GLOBAIS E DE RESET                                     */
-    /* -------------------------------------------------------------------------------------------------- */
-    
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+    /* TEMA CLARO */
+    body.light-theme {
+        --theme-bg-primary: #f4f7f9;
+        --theme-bg-secondary: #ffffff;
+        --theme-bg-tertiary: #e9eef2;
+        --theme-text-primary: #1c1c1c;
+        --theme-text-primary-rgb: 28, 28, 28;
+        --theme-text-secondary: #555555;
+        --theme-accent-primary: #D32F2F;
+        --theme-accent-primary-rgb: 211, 47, 47;
+        --theme-accent-glow: #E53935;
+        --theme-border-color: #d1d8e0;
+        --theme-success: #388E3C;
+        --theme-success-border: #66BB6A;
+        --theme-error: #D32F2F;
+        --theme-error-border: #EF5350;
+        --shadow-color-rgb: 100, 116, 139;
     }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
         font-family: var(--font-primary);
-        background-color: var(--akatsuki-dark);
-        color: var(--akatsuki-light-text);
+        background-color: var(--theme-bg-primary);
+        color: var(--theme-text-primary);
         background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXVדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדה/wAARCAAgACADASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AL/AFQAAA//Z');
         padding: 2rem 1rem;
+        transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
     }
-
-    /* -------------------------------------------------------------------------------------------------- */
-    /*                         ESTRUTURA PRINCIPAL: PAINEL FLUTUANTE E LAYOUT ADAPTATIVO                    */
-    /* -------------------------------------------------------------------------------------------------- */
 
     .edit-profile-panel {
         max-width: var(--container-width);
         margin: 2rem auto;
-        background-color: var(--akatsuki-charcoal);
+        background-color: var(--theme-bg-secondary);
         border-radius: var(--border-radius-lg);
-        border: 1px solid var(--akatsuki-border-soft);
-        box-shadow: 0 10px 50px rgba(0,0,0,0.7);
-        overflow: hidden; /* Garante que os cantos arredondados sejam respeitados */
-    }
-
-    .panel-grid {
-        display: grid;
-        grid-template-columns: 1fr; /* Uma coluna no mobile */
-    }
-    
-    /* Media Query para layout de duas colunas no desktop */
-    @media (min-width: 992px) {
-        .panel-grid {
-            grid-template-columns: 400px 1fr;
-        }
-    }
-    
-    /* -------------------------------------------------------------------------------------------------- */
-    /*                         CABEÇALHO DO PERFIL: CAPA, AVATAR E BOTÕES DE UPLOAD                         */
-    /* -------------------------------------------------------------------------------------------------- */
-    
-    .profile-header {
-        position: relative;
-        background-color: var(--akatsuki-gray);
-    }
-
-    .cover-image-wrapper {
-        width: 100%;
-        height: 200px; /* Altura fixa para a capa */
-        position: relative;
-    }
-
-    .cover-image-wrapper img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .avatar-wrapper {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        border: 5px solid var(--akatsuki-charcoal);
-        position: absolute;
-        bottom: -75px; /* Metade para fora */
-        left: 50%;
-        transform: translateX(-50%);
+        border: 1px solid var(--theme-border-color);
+        box-shadow: 0 10px 50px rgba(var(--shadow-color-rgb), 0.2);
         overflow: hidden;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
     }
+
+    .panel-grid { display: grid; grid-template-columns: 1fr; }
+    @media (min-width: 992px) { .panel-grid { grid-template-columns: 400px 1fr; } }
     
-    .avatar-wrapper img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+    .profile-header { position: relative; background-color: var(--theme-bg-tertiary); }
+    .cover-image-wrapper { width: 100%; height: 200px; position: relative; }
+    .cover-image-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar-wrapper {
+        width: 150px; height: 150px; border-radius: 50%;
+        border: 5px solid var(--theme-bg-secondary); /* Usa variável */
+        position: absolute; bottom: -75px; left: 50%;
+        transform: translateX(-50%); overflow: hidden;
+        box-shadow: 0 5px 20px rgba(var(--shadow-color-rgb), 0.3);
     }
-    
-    .upload-buttons {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        display: flex;
-        gap: 0.5rem;
-    }
+    .avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+    .upload-buttons { position: absolute; top: 1rem; right: 1rem; display: flex; gap: 0.75rem; z-index: 5; }
 
     .btn-upload {
-        background-color: rgba(0,0,0,0.6);
-        color: white;
-        border: 1px solid rgba(255,255,255,0.3);
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all var(--transition-speed) ease;
+        background-color: rgba(var(--theme-bg-primary-rgb), 0.6);
+        color: var(--theme-text-primary);
+        border: 1px solid rgba(var(--theme-text-primary), 0.3);
+        border-radius: 50%; width: 40px; height: 40px;
+        display: inline-flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: all var(--transition-speed) ease;
+        backdrop-filter: blur(5px);
     }
-    .btn-upload:hover {
-        background-color: var(--akatsuki-red);
-        transform: scale(1.1);
-    }
-    .btn-upload .loading-spinner {
-        display: none; width: 20px; height: 20px;
-        border: 2px solid rgba(255,255,255,0.3);
-        border-top-color: white; border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
+    .btn-upload:hover { background-color: var(--theme-accent-primary); color: #fff; transform: scale(1.1); border-color: transparent; }
+    .btn-upload .loading-spinner { display: none; width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
     .btn-upload.is-loading .btn-text { display: none; }
     .btn-upload.is-loading .loading-spinner { display: block; }
     
-    /* -------------------------------------------------------------------------------------------------- */
-    /*                                        FORMULÁRIO DE EDIÇÃO                                        */
-    /* -------------------------------------------------------------------------------------------------- */
+    .form-content { padding: 1rem; }
+    .profile-info { padding-top: 100px; text-align: center; }
+    .profile-info h1 { font-size: 1.8rem; font-weight: 700; color: var(--theme-text-primary); }
+    .profile-info p { font-size: 1rem; color: var(--theme-text-secondary); margin-bottom: 2.5rem; }
+    @media (min-width: 992px) { .form-content { padding: 2.5rem; } .profile-info { padding-top: 0; text-align: left; } }
     
-    .form-content {
-        padding: 1rem;
-    }
+    .form-group { margin-bottom: 2rem; position: relative; }
+    .form-label { display: block; margin-bottom: 0.75rem; font-weight: 600; color: var(--theme-text-secondary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+    .form-control { width: 100%; padding: 1rem; background-color: var(--theme-bg-tertiary); border: 2px solid var(--theme-border-color); border-radius: var(--border-radius); color: var(--theme-text-primary); font-size: 1rem; font-family: var(--font-primary); transition: all var(--transition-speed) ease; }
+    .form-control:focus { outline: none; border-color: var(--theme-accent-primary); box-shadow: 0 0 0 4px rgba(var(--theme-accent-primary-rgb), 0.3); }
+    .form-control::placeholder { color: var(--theme-text-secondary); opacity: 0.6; }
+    .form-control:disabled { background-color: var(--theme-bg-tertiary); opacity: 0.6; color: var(--theme-text-secondary); cursor: not-allowed; }
+    textarea.form-control { resize: vertical; min-height: 140px; }
 
-    .profile-info {
-        padding-top: 100px; /* Espaço para o avatar que está para fora */
-        text-align: center;
-    }
-
-    .profile-info h1 {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: var(--akatsuki-light-text);
-    }
+    .actions-cell { display: flex; justify-content: flex-end; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 3rem; border-top: 1px solid var(--theme-border-color); padding-top: 2rem; }
     
-    .profile-info p {
-        font-size: 1rem;
-        color: var(--akatsuki-muted-text);
-        margin-bottom: 2.5rem;
-    }
-
-    @media (min-width: 992px) {
-        .form-content {
-            padding: 2.5rem;
-        }
-        .profile-info {
-            padding-top: 0;
-            text-align: left;
-        }
-    }
-    
-    .form-group {
-        margin-bottom: 2rem;
-        position: relative;
-    }
-
-    .form-label {
-        display: block;
-        margin-bottom: 0.75rem;
-        font-weight: 600;
-        color: var(--akatsuki-muted-text);
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 1rem;
-        background-color: var(--akatsuki-gray);
-        border: 2px solid var(--akatsuki-border-soft);
-        border-radius: var(--border-radius);
-        color: var(--akatsuki-light-text);
-        font-size: 1rem;
-        font-family: var(--font-primary);
-        transition: all var(--transition-speed) ease;
-    }
-
-    .form-control:focus {
-        outline: none;
-        border-color: var(--akatsuki-red);
-        box-shadow: 0 0 0 4px rgba(var(--akatsuki-red-rgb), 0.3);
-    }
-
-    .form-control::placeholder {
-        color: var(--akatsuki-muted-text);
-        opacity: 0.6;
-    }
-
-    .form-control:disabled {
-        background-color: rgba(33, 33, 33, 0.7);
-        color: var(--akatsuki-muted-text);
-        cursor: not-allowed;
-    }
-
-    textarea.form-control {
-        resize: vertical;
-        min-height: 140px;
-    }
-
-    .actions-cell {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-        margin-top: 3rem;
-        border-top: 1px solid var(--akatsuki-border-soft);
-        padding-top: 2rem;
-    }
-    
-    .btn {
-        display: inline-flex; align-items: center; justify-content: center;
-        gap: 0.75rem; padding: 0.8rem 1.8rem; border-radius: 50px;
-        text-decoration: none; cursor: pointer; font-weight: 700;
-        transition: all var(--transition-speed) ease; border: 2px solid transparent;
-        text-transform: uppercase; letter-spacing: 1px;
-        font-size: 0.9rem;
-    }
-    
-    .btn--primary {
-        background: linear-gradient(45deg, var(--akatsuki-red-glow), var(--akatsuki-red));
-        color: white;
-        box-shadow: 0 4px 15px rgba(var(--akatsuki-red-rgb), 0.4);
-    }
-    .btn--primary:hover {
-        transform: translateY(-3px) scale(1.05);
-        box-shadow: 0 8px 25px rgba(var(--akatsuki-red-rgb), 0.6);
-    }
-    
-    .btn--secondary {
-        background-color: transparent;
-        color: var(--akatsuki-muted-text);
-        border-color: var(--akatsuki-border-soft);
-    }
-    .btn--secondary:hover {
-        color: var(--akatsuki-light-text);
-        border-color: var(--akatsuki-red);
-    }
-    
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem; padding: 0.8rem 1.8rem; border-radius: 50px; text-decoration: none; cursor: pointer; font-weight: 700; transition: all var(--transition-speed) ease; border: 2px solid transparent; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; }
+    .btn--primary { background: var(--theme-accent-primary); color: #fff; box-shadow: 0 4px 15px rgba(var(--theme-accent-primary-rgb), 0.4); }
+    .btn--primary:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 8px 25px rgba(var(--theme-accent-primary-rgb), 0.6); }
+    .btn--secondary { background-color: transparent; color: var(--theme-text-secondary); border-color: var(--theme-border-color); }
+    .btn--secondary:hover { color: var(--theme-text-primary); border-color: var(--theme-accent-primary); }
     .btn.is-loading { cursor: not-allowed; position: relative; }
     .btn.is-loading > * { opacity: 0; }
-    .btn.is-loading .loading-spinner {
-        display: inline-block; opacity: 1; position: absolute;
-        top: 50%; left: 50%; transform: translate(-50%, -50%);
-        width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3);
-        border-top-color: white; border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin { 
-        0% { transform: translate(-50%, -50%) rotate(0deg); } 
-        100% { transform: translate(-50%, -50%) rotate(360deg); } 
-    }
+    .btn.is-loading .loading-spinner { display: inline-block; opacity: 1; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
 
-    /* -------------------------------------------------------------------------------------------------- */
-    /*                                        BARRA DE NOTIFICAÇÃO                                        */
-    /* -------------------------------------------------------------------------------------------------- */
     #notification-bar {
-        position: fixed;
-        bottom: 2rem;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 1rem 2rem;
-        border-radius: var(--border-radius);
-        color: white;
-        font-weight: 600;
-        z-index: 10000;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.4s ease;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-        border-left: 5px solid;
+        position: fixed; bottom: -100%; left: 50%; transform: translateX(-50%);
+        padding: 1rem 2rem; border-radius: var(--border-radius); color: #fff; /* Texto sempre branco para contraste */
+        font-weight: 600; z-index: 10000; transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        box-shadow: 0 5px 20px rgba(var(--shadow-color-rgb), 0.4); border-left: 5px solid;
     }
-    #notification-bar.show {
-        opacity: 1;
-        visibility: visible;
-        bottom: 3rem;
-    }
-    #notification-bar.success {
-        background-color: #2E7D32; /* Verde escuro e forte */
-        border-color: #4CAF50;
-        box-shadow: 0 5px 20px var(--success-glow);
-    }
-    #notification-bar.error {
-        background-color: #C62828; /* Vermelho escuro e forte */
-        border-color: #F44336;
-        box-shadow: 0 5px 20px var(--error-glow);
-    }
+    #notification-bar.show { bottom: 3rem; }
+    #notification-bar.success { background-color: var(--theme-success); border-color: var(--theme-success-border); }
+    #notification-bar.error { background-color: var(--theme-error); border-color: var(--theme-error-border); }
 </style>
 </head>
-<body>
+<body class="dark-theme">
 
 <!-- ====================================================================================== -->
 <!--                  ESTRUTURA HTML COMPLETA E FINAL DA PÁGINA (SEM OMISSÕES)              -->
@@ -353,7 +166,6 @@
 <div class="edit-profile-panel">
     <div class="panel-grid">
         
-        <!-- Coluna da Esquerda: Cabeçalho do Perfil -->
         <header class="profile-header">
             <div class="cover-image-wrapper">
                 <img src="<%= user.capaPerfil || '/images/default-cover.png' %>" id="capa-preview" alt="Capa do perfil de <%= user.nome %>">
@@ -362,14 +174,14 @@
                 <img src="<%= user.avatar || '/images/default-avatar.png' %>" id="avatar-preview" alt="Avatar de <%= user.nome %>">
             </div>
             <div class="upload-buttons">
-                <!-- Botão para alterar capa -->
+                <button id="theme-toggle" class="btn-upload" title="Alternar Tema">
+                    <span class="btn-text"><i class="fas fa-sun"></i></span>
+                </button>
                 <button type="button" id="capa-btn" class="btn-upload" title="Alterar Capa" onclick="document.getElementById('capa-input').click();">
                     <span class="btn-text"><i class="fas fa-image"></i></span>
                     <div class="loading-spinner"></div>
                 </button>
                 <input type="file" id="capa-input" name="capa" accept="image/png, image/jpeg, image/gif" style="display: none;">
-                
-                <!-- Botão para alterar avatar -->
                 <button type="button" id="avatar-btn" class="btn-upload" title="Alterar Avatar" onclick="document.getElementById('avatar-input').click();">
                     <span class="btn-text"><i class="fas fa-camera"></i></span>
                     <div class="loading-spinner"></div>
@@ -378,7 +190,6 @@
             </div>
         </header>
 
-        <!-- Coluna da Direita: Formulário -->
         <main class="form-content">
             <div class="profile-info">
                 <h1><%= user.nome %></h1>
@@ -411,47 +222,21 @@
 <div id="notification-bar"></div>
 
 <!-- ====================================================================================== -->
-<!--                  SCRIPT JAVASCRIPT COMPLETO, FUNCIONAL E DOCUMENTADO                   -->
+<!--                  SCRIPT JAVASCRIPT COMPLETO E ORIGINAL - RESTAURADO 100%               -->
 <!-- ====================================================================================== -->
 <script>
-// Este script é encapsulado para garantir que o código só execute após
-// o carregamento completo do DOM, prevenindo erros de elementos não encontrados.
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --------------------------------------------------------------------------
-    // MÓDULO 1: SELETORES DO DOM
-    // Centraliza a seleção de todos os elementos da página para fácil manutenção.
-    // --------------------------------------------------------------------------
+    // LÓGICA ORIGINAL RESTAURADA E INTEGRADA COM O NOVO MÓDULO DE TEMA
+
     const ui = {
-        capa: {
-            input: document.getElementById('capa-input'),
-            preview: document.getElementById('capa-preview'),
-            button: document.getElementById('capa-btn'),
-        },
-        avatar: {
-            input: document.getElementById('avatar-input'),
-            preview: document.getElementById('avatar-preview'),
-            button: document.getElementById('avatar-btn'),
-        },
-        form: {
-            element: document.getElementById('profile-info-form'),
-            nomeInput: document.getElementById('nome'),
-            bioInput: document.getElementById('bio'),
-            saveButton: document.getElementById('save-button'),
-        },
+        capa: { input: document.getElementById('capa-input'), preview: document.getElementById('capa-preview'), button: document.getElementById('capa-btn') },
+        avatar: { input: document.getElementById('avatar-input'), preview: document.getElementById('avatar-preview'), button: document.getElementById('avatar-btn') },
+        form: { element: document.getElementById('profile-info-form'), nomeInput: document.getElementById('nome'), bioInput: document.getElementById('bio'), saveButton: document.getElementById('save-button') },
         notificationBar: document.getElementById('notification-bar'),
+        themeToggleButton: document.getElementById('theme-toggle'),
     };
 
-    // --------------------------------------------------------------------------
-    // MÓDULO 2: FUNÇÕES UTILITÁRIAS
-    // Funções genéricas que podem ser reutilizadas em toda a aplicação.
-    // --------------------------------------------------------------------------
-    
-    /**
-     * Exibe uma notificação na tela.
-     * @param {string} message - A mensagem a ser exibida.
-     * @param {string} type - O tipo de notificação ('success' ou 'error').
-     */
     const showNotification = (message, type = 'success') => {
         ui.notificationBar.textContent = message;
         ui.notificationBar.className = `show ${type}`;
@@ -460,11 +245,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 5000);
     };
     
-    /**
-     * Controla o estado de carregamento de um botão.
-     * @param {HTMLButtonElement} button - O botão a ser controlado.
-     * @param {boolean} isLoading - True para ativar o estado de carregamento, false para desativar.
-     */
     const setButtonLoading = (button, isLoading) => {
         if(button) {
             button.disabled = isLoading;
@@ -472,67 +252,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --------------------------------------------------------------------------
-    // MÓDULO 3: LÓGICA DE NEGÓCIOS
-    // Funções que lidam com as ações principais da página.
-    // --------------------------------------------------------------------------
-
-    /**
-     * Lida com o upload de uma imagem (avatar ou capa).
-     * @param {File} file - O arquivo de imagem selecionado.
-     * @param {string} endpoint - O endpoint da API para onde enviar a imagem ('avatar' ou 'capa').
-     * @param {HTMLImageElement} previewElement - O elemento <img> para exibir a pré-visualização.
-     * @param {HTMLButtonElement} button - O botão que iniciou a ação, para controle de loading.
-     */
     const handleImageUpload = async (file, endpoint, previewElement, button) => {
         if (!file) return;
-
         setButtonLoading(button, true);
         const originalSrc = previewElement.src;
         previewElement.src = URL.createObjectURL(file);
-
         const formData = new FormData();
-        // O backend espera o arquivo em um campo com o nome do endpoint (ex: 'avatar' ou 'capa')
         formData.append(endpoint, file);
-
         try {
-            const response = await fetch(`/api/user/profile/${endpoint}`, { 
-                method: 'POST', 
-                body: formData 
-            });
+            const response = await fetch(`/api/user/profile/${endpoint}`, { method: 'POST', body: formData });
             const result = await response.json();
-
-            if (!response.ok) {
-                // Se a API retornar um erro, lança uma exceção com a mensagem dela.
-                throw new Error(result.message || `Falha no upload.`);
-            }
-
-            // Atualiza a imagem com o novo caminho retornado pela API e mostra sucesso.
+            if (!response.ok) { throw new Error(result.message || `Falha no upload.`); }
             previewElement.src = result.filePath;
             showNotification(result.message, 'success');
-
         } catch (error) {
             console.error(`Erro no upload da ${endpoint}:`, error);
             showNotification(error.message, 'error');
-            previewElement.src = originalSrc; // Reverte para a imagem original em caso de erro.
+            previewElement.src = originalSrc;
         } finally {
-            setButtonLoading(button, false); // Garante que o estado de loading seja removido.
+            setButtonLoading(button, false);
         }
     };
 
-    /**
-     * Lida com o envio do formulário de informações do perfil.
-     * @param {Event} event - O evento de submit do formulário.
-     */
     const handleProfileInfoSubmit = async (event) => {
-        event.preventDefault(); // Impede o recarregamento padrão da página.
+        event.preventDefault();
         setButtonLoading(ui.form.saveButton, true);
-
         const body = {
             nome: ui.form.nomeInput.value,
             bio: ui.form.bioInput.value,
         };
-
         try {
             const response = await fetch('/api/user/profile', {
                 method: 'PUT',
@@ -540,20 +288,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(body)
             });
             const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(result.message || 'Erro ao salvar as informações.');
-            }
-            
+            if (!response.ok) { throw new Error(result.message || 'Erro ao salvar as informações.'); }
             showNotification(result.message, 'success');
-
-            // [CORREÇÃO CRUCIAL] Usa os dados retornados do servidor para atualizar
-            // os campos do formulário, garantindo consistência visual.
             if (result.user) {
                 ui.form.nomeInput.value = result.user.nome;
                 ui.form.bioInput.value = result.user.bio;
             }
-
         } catch (error) {
             console.error('Erro ao atualizar perfil:', error);
             showNotification(error.message, 'error');
@@ -562,27 +302,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --------------------------------------------------------------------------
-    // MÓDULO 4: INICIALIZAÇÃO E OUVINTES DE EVENTOS
-    // Conecta a lógica de negócios aos eventos do usuário na página.
-    // --------------------------------------------------------------------------
-
-    // Ouvinte para o input de mudança de capa.
-    ui.capa.input.addEventListener('change', (e) => {
-        if (e.target.files[0]) {
-            handleImageUpload(e.target.files[0], 'capa', ui.capa.preview, ui.capa.button);
+    // [NOVO] MÓDULO DE ALTERNÂNCIA DE TEMA
+    const themeModule = {
+        button: ui.themeToggleButton,
+        icon: ui.themeToggleButton.querySelector('.btn-text i'),
+        
+        applyInitialTheme() {
+            const savedTheme = localStorage.getItem('profileEditTheme') || 'dark';
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+            } else {
+                document.body.classList.remove('light-theme');
+            }
+            this.updateIcon();
+        },
+        toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            const currentTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+            localStorage.setItem('profileEditTheme', currentTheme);
+            this.updateIcon();
+        },
+        updateIcon() {
+            if (this.icon) {
+                const isLightTheme = document.body.classList.contains('light-theme');
+                this.icon.className = isLightTheme ? 'fas fa-moon' : 'fas fa-sun';
+            }
+        },
+        init() {
+            if (this.button) {
+                this.button.addEventListener('click', () => this.toggleTheme());
+                this.applyInitialTheme();
+            }
         }
-    });
+    };
 
-    // Ouvinte para o input de mudança de avatar.
-    ui.avatar.input.addEventListener('change', (e) => {
-        if (e.target.files[0]) {
-            handleImageUpload(e.target.files[0], 'avatar', ui.avatar.preview, ui.avatar.button);
-        }
-    });
-
-    // Ouvinte para o envio do formulário de informações.
+    // INICIALIZAÇÃO DE TODOS OS LISTENERS E MÓDULOS
+    ui.capa.input.addEventListener('change', (e) => e.target.files[0] && handleImageUpload(e.target.files[0], 'capa', ui.capa.preview, ui.capa.button));
+    ui.avatar.input.addEventListener('change', (e) => e.target.files[0] && handleImageUpload(e.target.files[0], 'avatar', ui.avatar.preview, ui.avatar.button));
     ui.form.element.addEventListener('submit', handleProfileInfoSubmit);
+    themeModule.init();
 
 });
 </script>
