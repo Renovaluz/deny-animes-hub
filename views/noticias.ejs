@@ -12,7 +12,7 @@
     /*
     ================================================================
     TEMA DUAL (ESCURO E CLARO)
-    Otimizado para clareza e consistência.
+    Revisado para máxima consistência, fluidez e profissionalismo.
     ================================================================
     */
 
@@ -35,16 +35,17 @@
         --modal-border: #2a2a2e;
         --modal-text-primary: #f1f1f1;
         --modal-text-secondary: #a1a1aa;
+        --modal-backdrop-color: rgba(0, 0, 0, 0.7);
     }
 
     body.light-mode {
         /* MODO CLARO */
         --color-primary: #d90429;
         --color-primary-hover: #E53935;
-        --color-background: #f8f9fa;
+        --color-background: #f4f4f5;
         --color-surface: #ffffff;
         --color-surface-hover: #f1f1f1;
-        --color-border: #dee2e6;
+        --color-border: #e2e8f0;
         --color-text-primary: #18181b;
         --color-text-secondary: #6c757d;
         --color-text-on-surface: #18181b;
@@ -56,18 +57,20 @@
         --modal-border: #e9ecef;
         --modal-text-primary: #212529;
         --modal-text-secondary: #6c757d;
+        --modal-backdrop-color: rgba(255, 255, 255, 0.1);
     }
-
+    
+    /* RESET E CONFIGURAÇÕES GLOBAIS */
     *, *::before, *::after { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     
     body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
         background-color: var(--color-background);
         color: var(--color-text-primary);
         margin: 0;
         padding-top: 70px;
-        transition: background-color 0.3s ease, color 0.3s ease;
+        transition: background-color 0.4s ease, color 0.4s ease;
     }
 
     body.modal-open { overflow: hidden; }
@@ -79,7 +82,11 @@
         padding: 0 20px;
     }
 
-    /* HEADER E NAVEGAÇÃO */
+    /*
+    ================================================================
+    HEADER E NAVEGAÇÃO
+    ================================================================
+    */
     .main-header {
         position: fixed; top: 0; left: 0;
         width: 100%; height: 70px;
@@ -87,17 +94,15 @@
         backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
         border-bottom: 1px solid var(--color-border);
         z-index: 900;
-        transition: background-color 0.3s, border-color 0.3s;
+        transition: background-color 0.4s ease, border-color 0.4s ease;
     }
-    body.light-mode .main-header { background-color: rgba(255, 255, 255, 0.8); }
+    body.light-mode .main-header { background-color: rgba(244, 244, 245, 0.8); }
     
-    .main-header .container {
-        display: flex; align-items: center; justify-content: space-between; height: 100%;
-    }
+    .main-header .container { display: flex; align-items: center; justify-content: space-between; height: 100%; }
     
     .header-logo {
         font-size: 1.5rem; font-weight: bold;
-        color: var(--color-text-primary); text-decoration: none; transition: color 0.3s;
+        color: var(--color-text-primary); text-decoration: none; transition: color 0.4s ease;
     }
     .header-logo .fa-cloud { color: var(--color-primary); }
     
@@ -107,14 +112,18 @@
         width: 40px; height: 40px; border-radius: 50%;
         cursor: pointer; font-size: 1.2rem;
         display: flex; align-items: center; justify-content: center;
-        transition: all 0.3s ease;
+        transition: all 0.4s ease;
     }
     #theme-toggle-btn:hover { transform: scale(1.1) rotate(15deg); color: var(--color-primary); }
     .theme-icon.fa-sun { display: none; }
     body.light-mode .theme-icon.fa-sun { display: block; }
     body.light-mode .theme-icon.fa-moon { display: none; }
 
-    /* LAYOUT PRINCIPAL */
+    /*
+    ================================================================
+    LAYOUT PRINCIPAL
+    ================================================================
+    */
     .main-layout {
         display: grid; grid-template-columns: 1fr;
         gap: 40px; padding-top: 50px; padding-bottom: 50px;
@@ -126,10 +135,14 @@
         border-bottom: 2px solid var(--color-primary);
         display: flex; align-items: center; gap: 12px;
         color: var(--color-text-primary);
-        transition: color 0.3s, border-color 0.3s;
+        transition: color 0.4s ease, border-color 0.4s ease;
     }
     
-    /* GRID DE NOTÍCIAS */
+    /*
+    ================================================================
+    GRID DE NOTÍCIAS
+    ================================================================
+    */
     .news-grid { display: grid; gap: 15px; }
     @media (max-width: 767px) {
         .news-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -145,7 +158,7 @@
             background: var(--color-surface); color: var(--color-text-on-surface);
             border-radius: 8px; overflow: hidden; display: flex; flex-direction: column;
             border: 1px solid var(--color-border);
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.4s ease, background-color 0.4s ease;
             text-decoration: none; box-shadow: var(--card-shadow);
         }
         .news-card:hover { transform: translateY(-5px); box-shadow: var(--card-hover-shadow); }
@@ -164,20 +177,24 @@
         }
         .news-card__content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
         .news-card__category { font-size: 0.8rem; font-weight: bold; color: var(--color-primary); margin-bottom: 10px; text-transform: uppercase; }
-        .news-card__title { font-size: 1.15rem; margin: 0; flex-grow: 1; line-height: 1.4; color: var(--color-text-on-surface); transition: color 0.3s; }
+        .news-card__title { font-size: 1.15rem; margin: 0; flex-grow: 1; line-height: 1.4; color: var(--color-text-on-surface); transition: color 0.4s ease; }
         .news-card__meta {
             display: flex; justify-content: space-between;
             color: var(--color-text-secondary-on-surface); font-size: 0.85em;
             margin-top: 15px; padding-top: 10px; border-top: 1px solid var(--color-border);
-            transition: color 0.3s, border-color 0.3s;
+            transition: color 0.4s ease, border-color 0.4s ease;
         }
     }
 
-    /* SIDEBAR */
+    /*
+    ================================================================
+    SIDEBAR
+    ================================================================
+    */
     .sidebar-widget {
         background: var(--color-surface); padding: 25px; border-radius: 8px; margin-bottom: 40px;
         border: 1px solid var(--color-border); box-shadow: var(--card-shadow);
-        transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+        transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.3s ease;
     }
     .sidebar-widget h3 { margin: 0 0 25px 0; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; color: var(--color-primary); }
     .ranking-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px; }
@@ -189,10 +206,14 @@
     }
     .ranking-list a:hover { background-color: var(--color-surface-hover); transform: translateX(5px); }
     .ranking-list img { width: 50px; min-width: 50px; height: 75px; object-fit: cover; border-radius: 4px; }
-    .rank-info .title { display: block; color: var(--color-text-primary); font-weight: 600; margin-bottom: 5px; transition: color 0.3s;}
-    .rank-info .details { font-size: 0.85em; color: var(--color-text-secondary); display: flex; gap: 15px; align-items: center; transition: color 0.3s;}
+    .rank-info .title { display: block; color: var(--color-text-primary); font-weight: 600; margin-bottom: 5px; transition: color 0.4s ease;}
+    .rank-info .details { font-size: 0.85em; color: var(--color-text-secondary); display: flex; gap: 15px; align-items: center; transition: color 0.4s ease;}
 
-    /* ELEMENTOS DE UI GENÉRICOS */
+    /*
+    ================================================================
+    ELEMENTOS DE UI GENÉRICOS
+    ================================================================
+    */
     .btn {
         padding: 10px 22px; border-radius: 6px; border: 1px solid transparent;
         cursor: pointer; font-weight: 600; transition: all 0.2s ease;
@@ -203,39 +224,39 @@
     .btn--secondary { background-color: transparent; color: var(--color-text-primary); border: 1px solid var(--color-border); }
     .btn--secondary:hover { background-color: var(--color-surface); color: var(--color-text-on-surface); }
     
-    .status-message { padding: 40px 20px; text-align: center; color: var(--color-text-secondary); font-size: 1.1rem; transition: color 0.3s; }
+    .status-message { padding: 40px 20px; text-align: center; color: var(--color-text-secondary); font-size: 1.1rem; transition: color 0.4s ease; }
     .status-message .fa-spinner { color: var(--color-primary); margin-right: 10px; }
     .animated-section { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
     .animated-section.is-visible { opacity: 1; transform: translateY(0); }
 
     /*
     ================================================================
-    ESTRUTURA DE MODAL GENÉRICA
+    ESTRUTURA DE MODAL GENÉRICA E PROFISSIONAL
     ================================================================
     */
     .modal {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background-color: rgba(0, 0, 0, 0.7);
+        background-color: var(--modal-backdrop-color);
         backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
         display: flex; align-items: center; justify-content: center;
         opacity: 0; visibility: hidden;
-        transition: opacity 0.4s ease, visibility 0s 0.4s;
+        transition: opacity 0.4s ease, visibility 0s 0.4s, background-color 0.4s ease;
     }
-    .modal.active { opacity: 1; visibility: visible; transition-delay: 0s; }
+    .modal.is-active { opacity: 1; visibility: visible; transition-delay: 0s; }
     
     .modal__content {
         background: var(--modal-surface);
-        box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
         border-radius: 12px;
-        transform: scale(0.9);
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s;
+        transform: scale(0.95) translateY(20px); opacity: 0;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease, background-color 0.4s ease;
         position: relative;
     }
-    .modal.active .modal__content { transform: scale(1); }
+    .modal.is-active .modal__content { transform: scale(1) translateY(0); opacity: 1; }
     
     .modal__close {
         position: absolute; top: 15px; right: 15px;
-        background: rgba(0,0,0,0.2); border: 1px solid var(--color-border);
+        background: rgba(0,0,0,0.2); border: 1px solid transparent;
         border-radius: 50%; width: 40px; height: 40px;
         font-size: 24px; color: var(--modal-text-secondary); cursor: pointer;
         transition: all 0.3s ease;
@@ -247,12 +268,12 @@
 
     .scrollbar-styled { scrollbar-width: thin; scrollbar-color: var(--color-primary) var(--modal-border); }
     .scrollbar-styled::-webkit-scrollbar { width: 8px; }
-    .scrollbar-styled::-webkit-scrollbar-track { background: var(--modal-border); }
+    .scrollbar-styled::-webkit-scrollbar-track { background: var(--modal-border); transition: background-color 0.4s ease; }
     .scrollbar-styled::-webkit-scrollbar-thumb { background-color: var(--color-primary); border-radius: 4px; }
     
     /*
     ================================================================
-    MODAL-PÁGINA DE NOTÍCIAS (VÍDEO)
+    MODAL-PÁGINA DE NOTÍCIAS (COM FUNDO DINÂMICO)
     ================================================================
     */
     #news-page-modal .modal__content {
@@ -261,58 +282,80 @@
         display: flex; flex-direction: column;
         overflow: hidden;
     }
+
+    .news-page__background {
+        position: absolute; top: 0; left: 0;
+        width: 100%; height: 100%;
+        background-size: cover; background-position: center;
+        transition: background-image 0.5s ease-in-out;
+        z-index: 1;
+    }
+    .news-page__background::after {
+        content: ''; position: absolute; top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(10, 10, 15, 0.85);
+        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        transition: background-color 0.4s ease;
+    }
+    body.light-mode .news-page__background::after { background: rgba(253, 253, 253, 0.85); }
+    
     .news-page__body {
         flex-grow: 1;
         overflow-y: auto;
         padding: 40px 50px;
+        position: relative; z-index: 2;
     }
-    .news-page__header { padding-bottom: 25px; border-bottom: 1px solid var(--color-border); margin-bottom: 30px; transition: border-color 0.3s;}
+    
+    .news-page__content-wrapper {
+        transition: opacity 0.4s ease;
+    }
+    .news-page__content-wrapper.is-loading { opacity: 0.3; pointer-events: none; }
+
+    .news-page__header { padding-bottom: 25px; border-bottom: 1px solid var(--color-border); margin-bottom: 30px; transition: border-color 0.4s ease;}
     .news-page__title {
         font-size: 2.2rem; margin: 0; line-height: 1.3;
-        color: var(--modal-text-primary); transition: color 0.3s;
+        color: var(--modal-text-primary); transition: color 0.4s ease;
     }
     #video-player-container {
         position: relative; padding-bottom: 56.25%; height: 0;
         border-radius: 10px; overflow: hidden; margin-bottom: 40px;
-        background-color: #000;
+        background-color: #000; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
     }
     #video-player-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
-    .news-page__meta-grid {
-        display: grid; grid-template-columns: 1fr auto; gap: 30px;
-        align-items: start;
-    }
+    .news-page__meta-grid { display: grid; grid-template-columns: 1fr; gap: 40px; }
+    @media (min-width: 1024px) { .news-page__meta-grid { grid-template-columns: 1fr 320px; } }
     
     .news-page__section-title {
         font-size: 1.5rem; color: var(--modal-text-primary);
-        margin: 0 0 20px 0; transition: color 0.3s;
+        margin: 0 0 20px 0; transition: color 0.4s ease;
+        padding-bottom: 10px; border-bottom: 1px solid var(--color-border);
     }
 
     /* Formulário de Comentário */
-    .comment-form { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; }
+    .comment-form { display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px; }
     .comment-form textarea {
         width: 100%; min-height: 80px; padding: 12px;
         border: 1px solid var(--color-border); border-radius: 6px;
         background: var(--color-background); color: var(--modal-text-primary);
         font-family: inherit; font-size: 1rem; resize: vertical;
-        transition: all 0.3s;
+        transition: all 0.4s ease;
     }
     .comment-form textarea:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.15); outline: none; }
-    .comment-form__footer { display: flex; justify-content: space-between; align-items: center; }
-    .comment-form__disclaimer { font-size: 0.8rem; color: var(--modal-text-secondary); font-style: italic; }
+    .comment-form__footer { display: flex; justify-content: flex-end; align-items: center; }
     
     /* Lista de Comentários */
-    #comments-list-container { display: flex; flex-direction: column; gap: 25px; }
+    .comments-list-container { display: flex; flex-direction: column; gap: 25px; }
     .comment-card { display: flex; gap: 15px; }
     .comment-author-avatar img { width: 40px; height: 40px; border-radius: 50%; }
-    .comment-author-name { font-weight: 600; color: var(--modal-text-primary); margin-right: 10px; transition: color 0.3s; }
-    .comment-date { font-size: 0.8em; color: var(--modal-text-secondary); transition: color 0.3s; }
-    .comment-text { color: var(--modal-text-secondary); line-height: 1.6; margin-top: 5px; transition: color 0.3s; }
+    .comment-author-name { font-weight: 600; color: var(--modal-text-primary); margin-right: 10px; transition: color 0.4s ease; }
+    .comment-date { font-size: 0.8em; color: var(--modal-text-secondary); transition: color 0.4s ease; }
+    .comment-text { color: var(--modal-text-secondary); line-height: 1.6; margin-top: 5px; transition: color 0.4s ease; }
 
     /* Barra Lateral da Página de Notícias */
     .news-page__sidebar { display: flex; flex-direction: column; gap: 30px; }
-    .sidebar-box { background: var(--color-surface); padding: 20px; border-radius: 8px; border: 1px solid var(--color-border); transition: all 0.3s;}
-    .sidebar-box__title { font-size: 1.1rem; margin: 0 0 15px 0; color: var(--modal-text-primary); transition: color 0.3s;}
+    .sidebar-box { background: var(--color-surface); padding: 20px; border-radius: 8px; border: 1px solid var(--color-border); transition: all 0.4s ease;}
+    .sidebar-box__title { font-size: 1.1rem; margin: 0 0 15px 0; color: var(--modal-text-primary); transition: color 0.4s ease;}
     .social-share-buttons { display: flex; gap: 10px; }
     .social-share-buttons a {
         width: 38px; height: 38px; border-radius: 50%;
@@ -338,30 +381,47 @@
         padding: 30px;
     }
     .category-explorer__header { flex-shrink: 0; }
-    .category-explorer__title { font-size: 1.8rem; margin: 0 0 20px; color: var(--modal-text-primary); transition: color 0.3s; }
+    .category-explorer__title { font-size: 1.8rem; margin: 0 0 20px; color: var(--modal-text-primary); transition: color 0.4s ease; }
     .category-explorer__tags {
         display: flex; flex-wrap: wrap; gap: 10px;
         margin-bottom: 20px; padding-bottom: 20px;
         border-bottom: 1px solid var(--color-border);
-        transition: border-color 0.3s;
+        transition: border-color 0.4s ease;
     }
     .category-tag {
         background-color: var(--color-surface); color: var(--modal-text-secondary);
         padding: 8px 18px; border-radius: 20px; font-size: 0.9em;
         cursor: pointer; border: 1px solid var(--color-border);
-        transition: all 0.2s;
+        transition: all 0.2s ease;
     }
     .category-tag:hover { background-color: var(--color-primary-hover); color: #fff; border-color: var(--color-primary-hover); }
-    .category-tag.active { background-color: var(--color-primary); color: #fff; border-color: var(--color-primary); font-weight: bold; }
+    .category-tag.is-active { background-color: var(--color-primary); color: #fff; border-color: var(--color-primary); font-weight: bold; }
     
     .category-explorer__results-grid {
         flex-grow: 1; overflow-y: auto;
         display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 20px;
     }
-    .category-explorer__results-grid .news-card {
-        min-height: 180px;
+    .category-explorer__results-grid .news-card { min-height: 180px; }
+
+    /*
+    ================================================================
+    FOOTER
+    ================================================================
+    */
+    .main-footer {
+        background-color: var(--color-surface);
+        border-top: 1px solid var(--color-border);
+        padding: 30px 0;
+        margin-top: 50px;
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+        text-align: center;
+        transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
     }
+    .main-footer .container { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+    .main-footer a { color: var(--color-primary); text-decoration: none; font-weight: 600; }
+    .main-footer a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -394,13 +454,13 @@
         <div id="top-animes-widget" class="sidebar-widget animated-section" aria-labelledby="section-title-animes">
             <h3 id="section-title-animes"><i class="fas fa-fire-alt"></i> Top Animes da Temporada</h3>
             <ol class="ranking-list" id="top-anime-list">
-                <li class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando animes...</li>
+                <li class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando...</li>
             </ol>
         </div>
         <div id="top-movies-widget" class="sidebar-widget animated-section" aria-labelledby="section-title-movies">
             <h3 id="section-title-movies"><i class="fas fa-film"></i> Filmes Populares</h3>
             <ol class="ranking-list" id="top-movies-list">
-                <li class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando filmes...</li>
+                <li class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando...</li>
             </ol>
         </div>
     </aside>
@@ -409,53 +469,58 @@
 <!-- MODAL-PÁGINA DE NOTÍCIAS (NOVO E ROBUSTO) -->
 <div id="news-page-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="news-page-title">
     <div class="modal__content">
+        <div class="news-page__background"></div>
         <button class="modal__close" aria-label="Fechar">×</button>
         <div class="news-page__body scrollbar-styled">
-            <header class="news-page__header">
-                <h2 id="news-page-title" class="news-page__title">Carregando notícia...</h2>
-            </header>
-            
-            <div id="video-player-container"></div>
-            
-            <div class="news-page__meta-grid">
-                <main class="news-page__main-content">
-                    <section id="comment-section">
-                        <h3 class="news-page__section-title">Deixe seu Comentário</h3>
-                        <form id="comment-form" class="comment-form">
-                            <textarea id="comment-textarea" placeholder="O que você achou deste vídeo?" required></textarea>
-                            <div class="comment-form__footer">
-                                <span class="comment-form__disclaimer">Seu comentário é temporário e visível apenas para você.</span>
-                                <button type="submit" class="btn btn--primary">
-                                    <i class="fas fa-paper-plane"></i> Comentar
-                                </button>
-                            </div>
-                        </form>
-                    </section>
-                    
-                    <section id="comments-list-section">
-                        <h3 class="news-page__section-title">Comentários do YouTube</h3>
-                        <div id="comments-list-container">
-                             <p class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando comentários...</p>
-                        </div>
-                    </section>
-                </main>
+            <div class="news-page__content-wrapper">
+                <header class="news-page__header">
+                    <h2 id="news-page-title" class="news-page__title">Carregando notícia...</h2>
+                </header>
                 
-                <aside class="news-page__sidebar">
-                    <div class="sidebar-box">
-                        <h4 class="sidebar-box__title">Compartilhe</h4>
-                        <div class="social-share-buttons">
-                            <a href="#" target="_blank" class="social-share-link" data-platform="facebook" title="Compartilhar no Facebook"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#" target="_blank" class="social-share-link" data-platform="twitter" title="Compartilhar no Twitter"><i class="fab fa-twitter"></i></a>
-                            <a href="#" target="_blank" class="social-share-link" data-platform="whatsapp" title="Compartilhar no WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                <div id="video-player-container"></div>
+                
+                <div class="news-page__meta-grid">
+                    <main class="news-page__main-content">
+                        <section id="comment-section">
+                            <h3 class="news-page__section-title">Deixe seu Comentário</h3>
+                            <form id="comment-form" class="comment-form">
+                                <textarea id="comment-textarea" placeholder="O que você achou deste vídeo?" required></textarea>
+                                <div class="comment-form__footer">
+                                    <button type="submit" class="btn btn--primary">
+                                        <i class="fas fa-paper-plane"></i> Comentar
+                                    </button>
+                                </div>
+                            </form>
+                        </section>
+                        
+                        <section id="community-comments-section">
+                            <h3 class="news-page__section-title">Comentários da Comunidade</h3>
+                            <div id="community-comments-list" class="comments-list-container"></div>
+                        </section>
+                        
+                        <section id="youtube-comments-section">
+                            <h3 class="news-page__section-title">Comentários do YouTube</h3>
+                            <div id="youtube-comments-list" class="comments-list-container"></div>
+                        </section>
+                    </main>
+                    
+                    <aside class="news-page__sidebar">
+                        <div class="sidebar-box">
+                            <h4 class="sidebar-box__title">Compartilhe</h4>
+                            <div class="social-share-buttons">
+                                <a href="#" target="_blank" class="social-share-link" data-platform="facebook" title="Compartilhar no Facebook"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#" target="_blank" class="social-share-link" data-platform="twitter" title="Compartilhar no Twitter"><i class="fab fa-twitter"></i></a>
+                                <a href="#" target="_blank" class="social-share-link" data-platform="whatsapp" title="Compartilhar no WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="sidebar-box">
-                        <h4 class="sidebar-box__title">Navegação</h4>
-                        <button id="open-category-explorer" class="btn btn--secondary" style="width:100%;">
-                            <i class="fas fa-compass"></i> Explorar por Categoria
-                        </button>
-                    </div>
-                </aside>
+                        <div class="sidebar-box">
+                            <h4 class="sidebar-box__title">Navegação</h4>
+                            <button id="open-category-explorer" class="btn btn--secondary" style="width:100%;">
+                                <i class="fas fa-compass"></i> Explorar por Categoria
+                            </button>
+                        </div>
+                    </aside>
+                </div>
             </div>
         </div>
     </div>
@@ -468,7 +533,7 @@
         <div class="category-explorer__header">
             <h2 id="category-explorer-title" class="category-explorer__title">Explorar Categorias</h2>
             <div id="category-explorer-tags" class="category-explorer__tags scrollbar-styled">
-                <p class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando categorias...</p>
+                <p class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>
             </div>
         </div>
         <div id="category-explorer-results-grid" class="category-explorer__results-grid scrollbar-styled">
@@ -477,74 +542,139 @@
     </div>
 </div>
 
+
 <!-- FOOTER -->
 <footer class="main-footer">
     <div class="container">
         <p>© 2025 Central Akatsuki. Todos os direitos reservados.</p>
-        <p>Desenvolvido com a força do Sharingan. Dados fornecidos por Jikan, TMDb e YouTube.</p>
+        <p>Desenvolvido com a força do Sharingan. Dados de Jikan, TMDb e YouTube.</p>
     </div>
 </footer>
 
 <script>
+/**
+ * @file Script principal para a Central de Notícias Akatsuki.
+ * @description Gerencia a busca de dados de APIs, interatividade da UI,
+ * sistema de modais, alternância de tema e comentários locais.
+ * @version 2.0.0
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- CONFIGURAÇÕES E CONSTANTES GLOBAIS ---
+    // --- CONFIGURAÇÕES E CONSTANTES GLOBAIS --- //
     const JIKAN_API = 'https://api.jikan.moe/v4';
-    const YOUTUBE_API_KEY = 'SUA_CHAVE_API_DO_YOUTUBE_AQUI'; // INSIRA SUA CHAVE AQUI
+    const TMDB_API = 'https://api.themoviedb.org/3';
+    const TMDB_KEY = 'ebc6c62b1d31f28ab2d155ad4c921657'; // Chave pública de exemplo
+    const YOUTUBE_API_KEY = 'SUA_CHAVE_API_DO_YOUTUBE_AQUI'; // !!! INSIRA SUA CHAVE AQUI !!!
     const YOUTUBE_API_URL = 'https://www.googleapis.com/youtube/v3';
-    const PLACEHOLDER_IMG = 'https://via.placeholder.com/300x450/1c1c1e/a1a1aa?text=Sem+Imagem';
+    const PLACEHOLDER_IMG = 'https://via.placeholder.com/500x281/1c1c1e/a1a1aa?text=Imagem+Indisponível';
+    const IMG_PATH = 'https://image.tmdb.org/t/p/';
 
-    // --- ELEMENTOS DO DOM ---
-    const body = document.body;
-    const newsPageModal = document.getElementById('news-page-modal');
-    const categoryExplorerModal = document.getElementById('category-explorer-modal');
+    // --- SELETORES DE ELEMENTOS DO DOM --- //
+    const DOM = {
+        body: document.body,
+        themeToggleButton: document.getElementById('theme-toggle-btn'),
+        newsContainer: document.getElementById('external-news-container'),
+        topAnimeList: document.getElementById('top-anime-list'),
+        topMovieList: document.getElementById('top-movies-list'),
+        newsPage: {
+            modal: document.getElementById('news-page-modal'),
+            background: document.querySelector('.news-page__background'),
+            contentWrapper: document.querySelector('.news-page__content-wrapper'),
+            title: document.getElementById('news-page-title'),
+            playerContainer: document.getElementById('video-player-container'),
+            commentForm: document.getElementById('comment-form'),
+            communityCommentsList: document.getElementById('community-comments-list'),
+            youtubeCommentsList: document.getElementById('youtube-comments-list'),
+        },
+        categoryExplorer: {
+            modal: document.getElementById('category-explorer-modal'),
+            tagsContainer: document.getElementById('category-explorer-tags'),
+            resultsGrid: document.getElementById('category-explorer-results-grid'),
+            openButton: document.getElementById('open-category-explorer'),
+        }
+    };
 
-    // --- LÓGICA DO ALTERNADOR DE TEMA ---
-    const themeToggleButton = document.getElementById('theme-toggle-btn');
-    const currentTheme = localStorage.getItem('theme');
-    if (currentTheme === 'light') body.classList.add('light-mode');
-    
-    themeToggleButton.addEventListener('click', () => {
-        body.classList.toggle('light-mode');
-        localStorage.setItem('theme', body.classList.contains('light-mode') ? 'light' : 'dark');
-    });
+    // --- GERENCIADOR DE MODAIS PROFISSIONAL --- //
+    const ModalManager = {
+        activeModals: [],
+        open(modalId, data = {}) {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
 
-    // --- FUNÇÃO AUXILIAR DE FETCH ---
-    const fetchData = async (url) => {
-        try {
-            const res = await fetch(url);
-            if (!res.ok) throw new Error(`API Error: ${res.status}`);
-            return await res.json();
-        } catch (error) {
-            console.error(`Falha ao buscar dados de ${url}:`, error);
-            return null;
+            modal.dataset.modalData = JSON.stringify(data);
+            this.activeModals.push(modal);
+            modal.classList.add('is-active');
+            DOM.body.classList.add('modal-open');
+        },
+        close(modal) {
+            if (!modal) return;
+            modal.classList.remove('is-active');
+            this.activeModals = this.activeModals.filter(m => m !== modal);
+            if (this.activeModals.length === 0) {
+                DOM.body.classList.remove('modal-open');
+            }
+            // Limpa player do YouTube ao fechar
+            if (modal.id === 'news-page-modal') {
+                DOM.newsPage.playerContainer.innerHTML = '';
+            }
+        },
+        closeAll() {
+            this.activeModals.forEach(modal => modal.classList.remove('is-active'));
+            this.activeModals = [];
+            DOM.body.classList.remove('modal-open');
+        },
+        getActiveModal() {
+            return this.activeModals[this.activeModals.length - 1];
         }
     };
     
-    // --- LÓGICA GENÉRICA DOS MODAIS ---
-    const openModal = (modal) => {
-        if (!modal) return;
-        modal.classList.add('active');
-        body.classList.add('modal-open');
-    }
-    
-    const closeModal = (modal) => {
-        if (!modal) return;
-        modal.classList.remove('active');
-        if (!document.querySelector('.modal.active')) {
-            body.classList.remove('modal-open');
-        }
-        if (modal.id === 'news-page-modal') {
-            const iframeContainer = modal.querySelector('#video-player-container');
-            if (iframeContainer) iframeContainer.innerHTML = '';
-        }
-    }
-
-    document.querySelectorAll('.modal').forEach(modal => {
-        modal.querySelector('.modal__close').addEventListener('click', () => closeModal(modal));
+    // Event listeners para botões de fechar
+    document.querySelectorAll('.modal__close').forEach(button => {
+        button.addEventListener('click', () => ModalManager.close(button.closest('.modal')));
+    });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') ModalManager.close(ModalManager.getActiveModal());
     });
 
-    // --- FUNÇÃO PARA EXTRAIR ID DO VÍDEO DO YOUTUBE ---
+
+    // --- SISTEMA DE TEMA (MODO CLARO/ESCURO) --- //
+    const ThemeManager = {
+        init() {
+            if (localStorage.getItem('theme') === 'light') {
+                DOM.body.classList.add('light-mode');
+            }
+            DOM.themeToggleButton.addEventListener('click', this.toggle.bind(this));
+        },
+        toggle() {
+            DOM.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', DOM.body.classList.contains('light-mode') ? 'light' : 'dark');
+        }
+    };
+
+    // --- FUNÇÕES DE API E DADOS --- //
+    
+    /**
+     * Busca dados de uma URL de forma segura.
+     * @param {string} url - A URL da API.
+     * @returns {Promise<Object|null>} O objeto JSON ou nulo em caso de erro.
+     */
+    async function fetchData(url) {
+        try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`API Error: ${res.status} em ${url}`);
+            return await res.json();
+        } catch (error) {
+            console.error(`Falha ao buscar dados:`, error);
+            return null;
+        }
+    }
+
+    /**
+     * Extrai o ID do vídeo de uma URL do YouTube.
+     * @param {string} url - A URL do YouTube.
+     * @returns {string|null} O ID do vídeo ou nulo.
+     */
     function extractYouTubeId(url) {
         if (!url) return null;
         const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -552,20 +682,18 @@ document.addEventListener('DOMContentLoaded', () => {
         return (match && match[2].length === 11) ? match[2] : null;
     }
 
-    // --- CARREGAMENTO INICIAL DO CONTEÚDO DA PÁGINA ---
-    async function fetchAndDisplayInitialNews() {
-        const container = document.getElementById('external-news-container');
-        if (!container) return;
-        const newsData = await fetchData(`${JIKAN_API}/watch/promos`);
-        
-        if (!newsData?.data || newsData.data.length === 0) {
-            container.innerHTML = `<p class="status-message">Nenhum destaque encontrado.</p>`;
+    // --- RENDERIZAÇÃO DA UI PRINCIPAL --- //
+
+    /**
+     * Renderiza uma grade de notícias em um container.
+     * @param {HTMLElement} container - O elemento que conterá a grade.
+     * @param {Array<Object>} newsItems - Array de itens de notícia da API.
+     */
+    function renderNewsGrid(container, newsItems) {
+        if (!newsItems || newsItems.length === 0) {
+            container.innerHTML = `<p class="status-message">Nenhum resultado encontrado.</p>`;
             return;
         }
-        renderNewsGrid(container, newsData.data.slice(0, 12));
-    }
-    
-    function renderNewsGrid(container, newsItems) {
         container.innerHTML = newsItems.map(item => {
             const promo = item.entry;
             const imageUrl = promo.images?.jpg?.large_image_url || PLACEHOLDER_IMG;
@@ -573,9 +701,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!videoId) return '';
 
             return `
-                <a href="#" class="news-card open-news-page-modal" data-video-id="${videoId}" data-video-title="${promo.title}">
+                <a href="#" class="news-card open-news-page-modal" 
+                   data-video-id="${videoId}" 
+                   data-video-title="${promo.title}"
+                   data-background-image="${imageUrl}">
                     <div class="news-card__image-container">
-                        <img src="${imageUrl}" alt="Capa de ${promo.title}" loading="lazy" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}';"/>
+                        <img src="${imageUrl}" alt="Capa de ${promo.title}" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}';"/>
                         <div class="news-card__overlay"><span class="news-card__readmore"><i class="fab fa-youtube"></i></span></div>
                     </div>
                     <div class="news-card__content">
@@ -588,142 +719,237 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     }
 
-    // --- LÓGICA DO MODAL-PÁGINA DE NOTÍCIAS ---
-    const newsPageTitleEl = document.getElementById('news-page-title');
-    const playerContainer = document.getElementById('video-player-container');
-    const commentsContainer = document.getElementById('comments-list-container');
-    const commentForm = document.getElementById('comment-form');
+    async function initializeMainPage() {
+        // Destaques da Web
+        const newsData = await fetchData(`${JIKAN_API}/watch/promos`);
+        if (newsData?.data) {
+            renderNewsGrid(DOM.newsContainer, newsData.data.slice(0, 12));
+        } else {
+            DOM.newsContainer.innerHTML = `<p class="status-message">Não foi possível carregar os destaques.</p>`;
+        }
+        // Animes da Temporada
+        const animes = await fetchData(`${JIKAN_API}/top/anime?filter=airing&limit=5`);
+        if(animes?.data) renderSidebarList(DOM.topAnimeList, animes.data, 'anime');
+        // Filmes Populares
+        const movies = await fetchData(`${TMDB_API}/movie/popular?api_key=${TMDB_KEY}&language=pt-BR&page=1`);
+        if(movies?.results) renderSidebarList(DOM.topMovieList, movies.results, 'movie');
+    }
+    
+    function renderSidebarList(container, items, type) {
+        container.innerHTML = items.map(item => {
+            const isAnime = type === 'anime';
+            const title = isAnime ? (item.title_english || item.title) : item.title;
+            const imageUrl = isAnime ? item.images?.jpg?.image_url : `${IMG_PATH}w185${item.poster_path}`;
+            const score = isAnime ? item.score : item.vote_average?.toFixed(1);
+            const detail = isAnime ? `<i class="fas fa-user-friends"></i> ${(item.members || 0).toLocaleString('pt-BR')}` : `<i class="fas fa-calendar-alt"></i> ${item.release_date?.split('-')[0] || 'N/A'}`;
+            // Placeholder para funcionalidade de abrir modal de detalhes (não implementado nesta versão para focar na notícia)
+            return `
+                <li>
+                    <a href="#"> 
+                        <img src="${imageUrl || PLACEHOLDER_IMG}" alt="Capa de ${title}" onerror="this.src='${PLACEHOLDER_IMG}';">
+                        <div class="rank-info">
+                            <span class="title">${title}</span>
+                            <span class="details">
+                                <span><i class="fas fa-star" style="color:#f5c518;"></i> ${score || 'N/A'}</span>
+                                <span>${detail}</span>
+                            </span>
+                        </div>
+                    </a>
+                </li>`;
+        }).join('');
+    }
 
-    async function loadNewsPage(videoId, videoTitle) {
-        openModal(newsPageModal);
 
-        // Resetar estado
-        newsPageTitleEl.textContent = videoTitle;
-        playerContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-        commentsContainer.innerHTML = `<p class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando comentários...</p>`;
-        commentForm.reset();
+    // --- LÓGICA DO MODAL-PÁGINA DE NOTÍCIAS --- //
+    
+    /**
+     * Carrega e exibe a página de notícias.
+     * @param {string} videoId - O ID do vídeo do YouTube.
+     * @param {string} videoTitle - O título do vídeo.
+     * @param {string} backgroundImage - URL da imagem de fundo.
+     */
+    async function loadNewsPage(videoId, videoTitle, backgroundImage) {
+        DOM.newsPage.contentWrapper.classList.add('is-loading');
+
+        // Atualiza a UI
+        DOM.newsPage.background.style.backgroundImage = `url('${backgroundImage}')`;
+        DOM.newsPage.title.textContent = videoTitle;
+        DOM.newsPage.playerContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
         
         updateShareLinks(videoId, videoTitle);
+        
+        // Carrega comentários
+        loadLocalComments(videoId);
         await fetchYouTubeComments(videoId);
+        
+        // Finaliza o carregamento
+        DOM.newsPage.contentWrapper.classList.remove('is-loading');
     }
 
     function updateShareLinks(videoId, videoTitle) {
         const url = `https://www.youtube.com/watch?v=${videoId}`;
         const text = `Confira este vídeo: ${videoTitle}`;
-        newsPageModal.querySelector('.social-share-link[data-platform="facebook"]').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-        newsPageModal.querySelector('.social-share-link[data-platform="twitter"]').href = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
-        newsPageModal.querySelector('.social-share-link[data-platform="whatsapp"]').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + ' ' + url)}`;
+        DOM.newsPage.modal.querySelector('.social-share-link[data-platform="facebook"]').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+        DOM.newsPage.modal.querySelector('.social-share-link[data-platform="twitter"]').href = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+        DOM.newsPage.modal.querySelector('.social-share-link[data-platform="whatsapp"]').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + ' ' + url)}`;
+    }
+    
+    // --- LÓGICA DE COMENTÁRIOS (LOCALSTORAGE + YOUTUBE) --- //
+
+    function getLocalComments(videoId) {
+        try {
+            return JSON.parse(localStorage.getItem(`comments_${videoId}`)) || [];
+        } catch {
+            return [];
+        }
+    }
+
+    function saveLocalComment(videoId, comment) {
+        const comments = getLocalComments(videoId);
+        comments.unshift(comment); // Adiciona no início
+        localStorage.setItem(`comments_${videoId}`, JSON.stringify(comments));
+    }
+
+    function loadLocalComments(videoId) {
+        const comments = getLocalComments(videoId);
+        if (comments.length === 0) {
+            DOM.newsPage.communityCommentsList.innerHTML = `<p class="status-message">Seja o primeiro a comentar!</p>`;
+        } else {
+            DOM.newsPage.communityCommentsList.innerHTML = comments.map(renderComment).join('');
+        }
     }
 
     async function fetchYouTubeComments(videoId) {
-        if (YOUTUBE_API_KEY === 'SUA_CHAVE_API_DO_YOUTUBE_AQUI') {
-            commentsContainer.innerHTML = `<p class="status-message" style="text-align: left;">Para exibir os comentários, uma chave da API do YouTube é necessária no código.</p>`;
+        DOM.newsPage.youtubeCommentsList.innerHTML = `<p class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>`;
+        if (!YOUTUBE_API_KEY || YOUTUBE_API_KEY === 'SUA_CHAVE_API_DO_YOUTUBE_AQUI') {
+            DOM.newsPage.youtubeCommentsList.innerHTML = `<p class="status-message">API de comentários não configurada.</p>`;
             return;
         }
         const url = `${YOUTUBE_API_URL}/commentThreads?part=snippet&videoId=${videoId}&key=${YOUTUBE_API_KEY}&order=relevance&maxResults=20`;
         const data = await fetchData(url);
         
         if (!data?.items || data.items.length === 0) {
-            commentsContainer.innerHTML = `<p class="status-message">Nenhum comentário encontrado.</p>`;
+            DOM.newsPage.youtubeCommentsList.innerHTML = `<p class="status-message">Nenhum comentário encontrado no YouTube.</p>`;
             return;
         }
-        
-        commentsContainer.innerHTML = data.items.map(item => renderComment(item.snippet.topLevelComment.snippet)).join('');
+        DOM.newsPage.youtubeCommentsList.innerHTML = data.items.map(item => renderComment(item.snippet.topLevelComment.snippet)).join('');
     }
 
+    /**
+     * Renderiza um único card de comentário.
+     * @param {Object} comment - O objeto do comentário.
+     * @returns {string} O HTML do card.
+     */
     function renderComment(comment) {
         return `
             <div class="comment-card">
-                <div class="comment-author-avatar"><img src="${comment.authorProfileImageUrl}" alt="${comment.authorDisplayName}"></div>
+                <div class="comment-author-avatar"><img src="${comment.authorProfileImageUrl || 'https://i.pravatar.cc/40?u=anonymous'}" alt="${comment.authorDisplayName}"></div>
                 <div class="comment-body">
-                    <div><span class="comment-author-name">${comment.authorDisplayName}</span><span class="comment-date">${new Date(comment.publishedAt).toLocaleDateString('pt-BR')}</span></div>
+                    <div><span class="comment-author-name">${comment.authorDisplayName}</span><span class="comment-date">${new Date(comment.publishedAt).toLocaleString('pt-BR')}</span></div>
                     <div class="comment-text">${comment.textDisplay}</div>
                 </div>
             </div>`;
     }
 
-    commentForm.addEventListener('submit', (e) => {
+    DOM.newsPage.commentForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const textarea = document.getElementById('comment-textarea');
-        if (!textarea.value.trim()) return;
+        const textarea = e.target.querySelector('textarea');
+        const text = textarea.value.trim();
+        if (!text) return;
 
-        const fakeComment = {
-            authorProfileImageUrl: 'https://i.pravatar.cc/40?u=user',
-            authorDisplayName: 'Você',
+        const videoId = JSON.parse(DOM.newsPage.modal.dataset.modalData).videoId;
+        
+        const newComment = {
+            authorDisplayName: 'Visitante',
+            authorProfileImageUrl: 'https://i.pravatar.cc/40?u=localuser',
             publishedAt: new Date().toISOString(),
-            textDisplay: textarea.value.trim().replace(/\n/g, '<br>')
+            textDisplay: text.replace(/\n/g, '<br>')
         };
-        
-        // Remove mensagem de "nenhum comentário" se existir
-        const statusMessage = commentsContainer.querySelector('.status-message');
-        if (statusMessage) statusMessage.remove();
-        
-        commentsContainer.insertAdjacentHTML('afterbegin', renderComment(fakeComment));
+
+        saveLocalComment(videoId, newComment);
+        loadLocalComments(videoId);
         textarea.value = '';
     });
+    
 
-    // --- LÓGICA DO MODAL EXPLORADOR DE CATEGORIAS ---
-    const categoryTagsContainer = document.getElementById('category-explorer-tags');
-    const categoryResultsGrid = document.getElementById('category-explorer-results-grid');
-
-    document.getElementById('open-category-explorer').addEventListener('click', async () => {
-        openModal(categoryExplorerModal);
-        categoryTagsContainer.innerHTML = `<p class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>`;
-        categoryResultsGrid.innerHTML = `<p class="status-message">Selecione uma categoria.</p>`;
+    // --- LÓGICA DO MODAL EXPLORADOR DE CATEGORIAS --- //
+    
+    async function initializeCategoryExplorer() {
+        DOM.categoryExplorer.tagsContainer.innerHTML = `<p class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>`;
+        DOM.categoryExplorer.resultsGrid.innerHTML = `<p class="status-message">Selecione uma categoria para ver as notícias.</p>`;
         
         const genresData = await fetchData(`${JIKAN_API}/genres/anime`);
         if(genresData?.data) {
-            categoryTagsContainer.innerHTML = genresData.data.map(genre => 
+            DOM.categoryExplorer.tagsContainer.innerHTML = genresData.data.map(genre => 
                 `<button class="category-tag" data-genre-id="${genre.mal_id}">${genre.name}</button>`
             ).join('');
+        } else {
+            DOM.categoryExplorer.tagsContainer.innerHTML = `<p class="status-message">Erro ao carregar categorias.</p>`;
         }
+    }
+
+    DOM.categoryExplorer.openButton.addEventListener('click', () => {
+        ModalManager.open('category-explorer-modal');
+        initializeCategoryExplorer();
     });
 
-    categoryTagsContainer.addEventListener('click', async (e) => {
+    DOM.categoryExplorer.tagsContainer.addEventListener('click', async (e) => {
         const tag = e.target.closest('.category-tag');
         if (!tag) return;
         
         const genreId = tag.dataset.genreId;
-        categoryResultsGrid.innerHTML = `<p class="status-message"><i class="fas fa-spinner fa-spin"></i> Buscando notícias...</p>`;
+        DOM.categoryExplorer.resultsGrid.innerHTML = `<p class="status-message"><i class="fas fa-spinner fa-spin"></i> Buscando...</p>`;
         
-        // Desativa outras tags ativas
-        categoryTagsContainer.querySelectorAll('.active').forEach(t => t.classList.remove('active'));
-        tag.classList.add('active');
+        DOM.categoryExplorer.tagsContainer.querySelectorAll('.is-active').forEach(t => t.classList.remove('is-active'));
+        tag.classList.add('is-active');
         
-        // A API Jikan não permite filtrar /watch/promos por gênero.
-        // Como alternativa, buscamos animes do gênero e filtramos aqueles com vídeo.
-        const newsData = await fetchData(`${JIKAN_API}/anime?genres=${genreId}&limit=24`);
-        const newsWithVideo = newsData?.data.filter(item => item.trailer?.youtube_id) || [];
+        const animeData = await fetchData(`${JIKAN_API}/anime?genres=${genreId}&limit=24`);
+        const newsWithVideo = animeData?.data.filter(item => item.trailer?.youtube_id) || [];
 
-        if(newsWithVideo.length > 0) {
-            const items = newsWithVideo.map(item => ({
-                entry: item,
-                trailer: { url: item.trailer.url }
-            }));
-            renderNewsGrid(categoryResultsGrid, items);
-        } else {
-            categoryResultsGrid.innerHTML = `<p class="status-message">Nenhuma notícia com vídeo encontrada para esta categoria.</p>`;
-        }
+        const items = newsWithVideo.map(item => ({ entry: item, trailer: { url: item.trailer.url } }));
+        renderNewsGrid(DOM.categoryExplorer.resultsGrid, items);
     });
 
-    // --- DELEGAÇÃO DE EVENTOS PRINCIPAL ---
-    body.addEventListener('click', async (e) => {
-        // Abrir Modal de Notícias
+    // --- DELEGAÇÃO DE EVENTOS PRINCIPAL --- //
+    DOM.body.addEventListener('click', async (e) => {
         const openNewsBtn = e.target.closest('.open-news-page-modal');
         if (openNewsBtn) {
             e.preventDefault();
-            const { videoId, videoTitle } = openNewsBtn.dataset;
-            // Se o explorador de categorias estiver aberto, feche-o primeiro
-            if(categoryExplorerModal.classList.contains('active')) {
-                closeModal(categoryExplorerModal);
+            const { videoId, videoTitle, backgroundImage } = openNewsBtn.dataset;
+
+            // Transição fluida entre modais
+            if (ModalManager.getActiveModal()?.id === 'category-explorer-modal') {
+                ModalManager.close(DOM.categoryExplorer.modal);
+                // Aguarda a animação de fechamento antes de atualizar o modal principal
+                setTimeout(async () => {
+                    ModalManager.open('news-page-modal', { videoId, videoTitle, backgroundImage });
+                    await loadNewsPage(videoId, videoTitle, backgroundImage);
+                }, 400); // Mesmo tempo da transição do modal
+            } else {
+                ModalManager.open('news-page-modal', { videoId, videoTitle, backgroundImage });
+                await loadNewsPage(videoId, videoTitle, backgroundImage);
             }
-            await loadNewsPage(videoId, videoTitle);
         }
     });
 
-    // --- INICIALIZAÇÃO GERAL ---
-    fetchAndDisplayInitialNews();
-    // As outras funções de sidebar podem ser adicionadas aqui se necessário
+    // --- INICIALIZAÇÃO GERAL --- //
+    function init() {
+        // Observador de animação para seções
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.animated-section').forEach(section => observer.observe(section));
+
+        ThemeManager.init();
+        initializeMainPage();
+    }
+    
+    init(); // Inicia a aplicação
 });
 </script>
 </body>
