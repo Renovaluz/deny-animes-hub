@@ -2005,3 +2005,170 @@ body {
 }
 
 /* --- FIM DO CÓDIGO CORRIGIDO --- */
+
+/* ================================================================================================== */
+/*      ESTILOS DA NAVBAR V2.0 - RESPONSIVA E MODERNA                                                 */
+/* ================================================================================================== */
+
+/* --- HEADER SOFISTICADO (STICKY E GLASSMORPHISM) --- */
+.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px; /* Altura fixa da navbar */
+    z-index: 1000;
+    background-color: rgba(var(--bg-secondary-rgb), 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color var(--transition-speed-normal), border-color var(--transition-speed-normal);
+}
+
+.site-header .container {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* --- LOGO --- */
+.site-header__logo a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1.25rem;
+    transition: transform 0.2s ease;
+}
+.site-header__logo a:hover {
+    transform: scale(1.05);
+    opacity: 1; /* Override de hover genérico */
+}
+.site-header__logo img {
+    height: 40px;
+}
+
+/* --- NAVEGAÇÃO DESKTOP --- */
+.site-header__nav ul {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    list-style: none;
+}
+.site-header__nav a:not(.btn) {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.5rem 0;
+    position: relative;
+}
+.site-header__nav a:not(.btn)::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background-color: var(--accent-primary);
+    transition: width var(--transition-speed-fast) ease;
+}
+.site-header__nav a:not(.btn):hover,
+.site-header__nav a:not(.btn).active {
+    color: var(--text-primary);
+}
+.site-header__nav a:not(.btn):hover::after,
+.site-header__nav a:not(.btn).active::after {
+    width: 100%;
+}
+
+/* --- MENU HAMBÚRGUER (MOBILE) --- */
+.hamburger-menu {
+    display: none; /* Oculto no desktop */
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    z-index: 1002;
+    padding: 0.5rem;
+}
+
+.page-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0,0,0,0.6);
+    z-index: 998;
+    backdrop-filter: blur(2px);
+}
+
+/* --- BODY WRAPPER E TRANSIÇÕES --- */
+body {
+    padding-top: 70px; /* Evita que o conteúdo comece sob o header fixo */
+}
+body.nav-open {
+    overflow: hidden; /* Impede o scroll do body quando o menu mobile está aberto */
+}
+body.nav-open .page-overlay {
+    display: block;
+}
+
+/* --- ESTILOS RESPONSIVOS PARA NAVBAR --- */
+@media (max-width: 992px) {
+    .site-header__nav {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: clamp(280px, 70vw, 320px); /* Largura flexível */
+        height: 100vh;
+        background-color: var(--bg-secondary);
+        flex-direction: column;
+        padding: calc(70px + 2rem) 2rem 2rem;
+        transform: translateX(100%);
+        transition: transform var(--transition-speed-normal) ease;
+        z-index: 999;
+        border-left: 1px solid var(--border-color);
+        overflow-y: auto;
+    }
+    .site-header__nav.is-active {
+        transform: translateX(0);
+        box-shadow: -10px 0 30px rgba(0,0,0,0.2);
+    }
+    .site-header__nav ul {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        gap: 0.5rem;
+    }
+    .site-header__nav li {
+        width: 100%;
+    }
+    .site-header__nav a {
+        display: block;
+        padding: 1rem;
+        font-size: 1.1rem;
+        border-radius: var(--border-radius-md);
+        width: 100%;
+    }
+    .site-header__nav a:hover,
+    .site-header__nav a.active {
+        background-color: var(--bg-primary);
+    }
+    .site-header__nav a::after {
+        display: none; /* Remove a barra sublinhada no mobile */
+    }
+    .site-header__nav .btn {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .hamburger-menu {
+        display: block;
+    }
+}
