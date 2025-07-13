@@ -23,27 +23,7 @@
     /*           DEFINIÇÃO DAS VARIÁVEIS GLOBAIS DE DESIGN (PALETA DE CORES DEFINITIVA)                     */
     /* -------------------------------------------------------------------------------------------------- */
     :root {
-        /* TEMA ESCURO (PADRÃO) */
-        --theme-bg-primary: #0A0A0A; 
-        --theme-bg-primary-rgb: 10, 10, 10;
-        --theme-bg-secondary: #141414;
-        --theme-bg-tertiary: #222222;
-        --theme-text-primary: #f5f5f5;
-        --theme-text-secondary: #b3b3b3;
-        --theme-accent-primary: #E50914;
-        --theme-accent-primary-rgb: 229, 9, 20;
-        --theme-accent-glow: #ff1f2b;
-        --theme-border-color: rgba(255, 255, 255, 0.1);
-        --theme-border-accent: rgba(var(--theme-accent-primary-rgb), 0.5);
-        --shadow-glow: 0 0 20px rgba(var(--theme-accent-primary-rgb), 0.5);
-        --font-primary: 'Poppins', sans-serif;
-        --container-width: 1320px;
-        --transition-speed: 0.3s;
-        --border-radius: 12px;
-    }
-
-    /* TEMA CLARO */
-    body.light-theme {
+        /* TEMA ESCURO (AGORA COM FUNDO BRANCO E TEXTO PRETO) */
         --theme-bg-primary: #f4f7f9;
         --theme-bg-primary-rgb: 244, 247, 249;
         --theme-bg-secondary: #ffffff;
@@ -54,6 +34,26 @@
         --theme-accent-primary-rgb: 211, 47, 47;
         --theme-accent-glow: #E53935;
         --theme-border-color: #d1d8e0;
+        --theme-border-accent: rgba(var(--theme-accent-primary-rgb), 0.5);
+        --shadow-glow: 0 0 20px rgba(var(--theme-accent-primary-rgb), 0.5);
+        --font-primary: 'Poppins', sans-serif;
+        --container-width: 1320px;
+        --transition-speed: 0.3s;
+        --border-radius: 12px;
+    }
+
+    /* TEMA CLARO (AGORA COM FUNDO PRETO E TEXTO BRANCO) */
+    body.light-theme {
+        --theme-bg-primary: #0A0A0A; 
+        --theme-bg-primary-rgb: 10, 10, 10;
+        --theme-bg-secondary: #141414;
+        --theme-bg-tertiary: #222222;
+        --theme-text-primary: #f5f5f5;
+        --theme-text-secondary: #b3b3b3;
+        --theme-accent-primary: #E50914;
+        --theme-accent-primary-rgb: 229, 9, 20;
+        --theme-accent-glow: #ff1f2b;
+        --theme-border-color: rgba(255, 255, 255, 0.1);
         --theme-border-accent: rgba(var(--theme-accent-primary-rgb), 0.5);
     }
     
@@ -217,7 +217,7 @@
     .episode-anime-name, .episode-number { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .episode-anime-name { font-weight: 600; color: var(--theme-text-primary); font-size: 1rem; margin-bottom: 4px; }
     .episode-number { font-size: 0.85rem; color: var(--theme-text-secondary); }
-    .progress-bar { height: 5px; background-color: rgba(var(--theme-text-primary-rgb, 0), 0.1); margin-top: 10px; border-radius: 5px; overflow:hidden; }
+    .progress-bar { height: 5px; background-color: rgba(var(--theme-text-primary-rgb, 255, 255, 255), 0.1); margin-top: 10px; border-radius: 5px; overflow:hidden; }
     .progress-bar-inner { height: 100%; background: var(--theme-accent-primary); border-radius: 5px; width: 0%; transition: width 0.5s ease; }
 
     .history-placeholder {
@@ -234,7 +234,7 @@
 
 </style>
 </head>
-<body>
+<body class="dark-theme"> <!-- Inicia no modo com fundo branco por padrão -->
 
 <!-- ====================================================================================== -->
 <!--                  ESTRUTURA HTML COMPLETA E FINAL DA PÁGINA (SEM OMISSÕES)              -->
@@ -244,7 +244,7 @@
     <header class="profile-header" style="background-image: url('<%= user.capaPerfil || '/images/default-cover.png' %>');">
         <!-- O overlay agora usa a variável de tema e é aplicado via ::after no CSS -->
         <div class="profile-header-actions">
-            <!-- [CORREÇÃO DE TEMA] O botão agora tem um ID para ser controlado pelo script -->
+            <!-- Assumindo que você terá um botão de toggle com id="theme-toggle" em algum lugar no seu layout principal -->
             <a href="/perfil/editar" class="btn btn--secondary"><i class="fas fa-pencil-alt"></i> Editar</a>
             <% if(user.role === 'admin') { %>
                 <a href="/admin/dashboard" class="btn btn--primary"><i class="fas fa-user-shield"></i> Painel</a>
@@ -300,14 +300,15 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --------------------------------------------------------------------------
-    // MÓDULO 1: LÓGICA DO HISTÓRICO DE VISUALIZAÇÃO (INTACTO)
+    // MÓDULO 1: LÓGICA DO HISTÓRICO DE VISUALIZAÇÃO
     // --------------------------------------------------------------------------
     const watchHistoryModule = {
         async fetch() {
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            // Simulação de dados
+            // Simulação de delay de rede
+            await new Promise(resolve => setTimeout(resolve, 1500)); 
+            // Simulação de dados retornados da API
             return [
-                { animeSlug: 'jujutsu-kaisen', animeTitle: 'jujutsu-kaisen', epId: 85, epNumber: 15, thumbnail: '/images/jujutsu3.jpg', progress: 45 }
+                { animeSlug: 'jujutsu-kaisen', animeTitle: 'Jujutsu Kaisen', epId: 85, epNumber: 15, thumbnail: '/images/jujutsu3.jpg', progress: 45 }
             ];
         },
         createItemHTML(item) {
@@ -359,42 +360,37 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     // --------------------------------------------------------------------------
-    // MÓDULO 2: LÓGICA DE ALTERNÂNCIA DE TEMA (CORRIGIDA E ROBUSTA)
+    // MÓDULO 2: LÓGICA DE ALTERNÂNCIA DE TEMA
     // --------------------------------------------------------------------------
     const themeModule = {
-        toggleButton: document.getElementById('theme-toggle'),
-        sunIcon: document.querySelector('#theme-toggle .fa-sun'),
-        moonIcon: document.querySelector('#theme-toggle .fa-moon'),
+        // Se você tiver um botão global com id "theme-toggle", ele irá funcionar
+        toggleButton: document.getElementById('theme-toggle'), 
         
         applyInitialTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'dark'; // Padrão para 'dark' se nada for salvo
-            if (savedTheme === 'light') {
+            const savedTheme = localStorage.getItem('theme') || 'dark'; // Padrão para 'dark' (fundo branco)
+            if (savedTheme === 'light') { // light = fundo preto
                 document.body.classList.add('light-theme');
+                document.body.classList.remove('dark-theme');
+            } else { // dark = fundo branco
+                document.body.classList.remove('light-theme');
+                document.body.classList.add('dark-theme');
             }
-            this.updateIcons();
         },
         
         toggleTheme() {
             document.body.classList.toggle('light-theme');
-            const currentTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
-            localStorage.setItem('theme', currentTheme);
-            this.updateIcons();
-        },
-
-        updateIcons() {
             const isLightTheme = document.body.classList.contains('light-theme');
-            // [CORREÇÃO DE LÓGICA] Mostra o ícone oposto ao tema atual.
-            // Se o tema é claro, mostra o ícone da lua (para mudar para escuro).
-            // Se o tema é escuro, mostra o ícone do sol (para mudar para claro).
-            this.sunIcon.style.display = isLightTheme ? 'none' : 'inline-block';
-            this.moonIcon.style.display = isLightTheme ? 'inline-block' : 'none';
+            document.body.classList.toggle('dark-theme', !isLightTheme);
+
+            const currentTheme = isLightTheme ? 'light' : 'dark';
+            localStorage.setItem('theme', currentTheme);
         },
 
         init() {
             if (this.toggleButton) {
                 this.toggleButton.addEventListener('click', () => this.toggleTheme());
-                this.applyInitialTheme();
             }
+            this.applyInitialTheme();
         }
     };
 

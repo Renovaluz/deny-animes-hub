@@ -21,7 +21,36 @@
     /*           DEFINIÇÃO DAS VARIÁVEIS GLOBAIS DE DESIGN (PALETA DE CORES DEFINITIVA)                     */
     /* -------------------------------------------------------------------------------------------------- */
     :root {
-        /* TEMA ESCURO (PADRÃO AKATSUKI) */
+        /* TEMA ESCURO (AGORA COM FUNDO BRANCO E TEXTO PRETO) */
+        --theme-bg-primary: #f4f7f9;
+        --theme-bg-primary-rgb: 244, 247, 249;
+        --theme-bg-secondary: #ffffff;
+        --theme-bg-tertiary: #e9eef2;
+        --theme-text-primary: #1c1c1c;
+        --theme-text-primary-rgb: 28, 28, 28;
+        --theme-text-secondary: #555555;
+        --theme-accent-primary: #D32F2F;
+        --theme-accent-primary-rgb: 211, 47, 47;
+        --theme-accent-glow: #E53935;
+        --theme-border-color: #d1d8e0;
+        --theme-success: #2E7D32;
+        --theme-success-border: #4CAF50;
+        --theme-success-glow: rgba(76, 175, 80, 0.4);
+        --theme-error: #C62828;
+        --theme-error-border: #F44336;
+        --theme-error-glow: rgba(244, 67, 54, 0.4);
+        --shadow-color-rgb: 100, 116, 139;
+
+        /* Variáveis de Configuração de Layout */
+        --font-primary: 'Poppins', sans-serif;
+        --container-width: 1200px;
+        --transition-speed: 0.3s;
+        --border-radius: 10px;
+        --border-radius-lg: 16px;
+    }
+
+    /* TEMA CLARO (AGORA COM FUNDO PRETO E TEXTO BRANCO) */
+    body.light-theme {
         --theme-bg-primary: #0A0A0A;
         --theme-bg-primary-rgb: 10, 10, 10;
         --theme-bg-secondary: #151515;
@@ -33,39 +62,7 @@
         --theme-accent-primary-rgb: 229, 9, 20;
         --theme-accent-glow: #ff2c36;
         --theme-border-color: #3a3a3a;
-        --theme-success: #2E7D32;
-        --theme-success-border: #4CAF50;
-        --theme-success-glow: rgba(76, 175, 80, 0.4);
-        --theme-error: #C62828;
-        --theme-error-border: #F44336;
-        --theme-error-glow: rgba(244, 67, 54, 0.4);
         --shadow-color-rgb: 0, 0, 0;
-
-        /* Variáveis de Configuração de Layout */
-        --font-primary: 'Poppins', sans-serif;
-        --container-width: 1200px;
-        --transition-speed: 0.3s;
-        --border-radius: 10px;
-        --border-radius-lg: 16px;
-    }
-
-    /* TEMA CLARO */
-    body.light-theme {
-        --theme-bg-primary: #f4f7f9;
-        --theme-bg-secondary: #ffffff;
-        --theme-bg-tertiary: #e9eef2;
-        --theme-text-primary: #1c1c1c;
-        --theme-text-primary-rgb: 28, 28, 28;
-        --theme-text-secondary: #555555;
-        --theme-accent-primary: #D32F2F;
-        --theme-accent-primary-rgb: 211, 47, 47;
-        --theme-accent-glow: #E53935;
-        --theme-border-color: #d1d8e0;
-        --theme-success: #388E3C;
-        --theme-success-border: #66BB6A;
-        --theme-error: #D32F2F;
-        --theme-error-border: #EF5350;
-        --shadow-color-rgb: 100, 116, 139;
     }
     
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -74,7 +71,8 @@
         font-family: var(--font-primary);
         background-color: var(--theme-bg-primary);
         color: var(--theme-text-primary);
-        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXVדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדה/wAARCAAgACADASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AL/AFQAAA//Z');
+        /* Removido background-image para um visual mais limpo, se desejar, descomente a linha abaixo */
+        /* background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXVדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדהדה/wAARCAAgACADASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AL/AFQAAA//Z'); */
         padding: 2rem 1rem;
         transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
     }
@@ -109,7 +107,7 @@
     .btn-upload {
         background-color: rgba(var(--theme-bg-primary-rgb), 0.6);
         color: var(--theme-text-primary);
-        border: 1px solid rgba(var(--theme-text-primary), 0.3);
+        border: 1px solid rgba(var(--theme-text-primary-rgb), 0.3);
         border-radius: 50%; width: 40px; height: 40px;
         display: inline-flex; align-items: center; justify-content: center;
         cursor: pointer; transition: all var(--transition-speed) ease;
@@ -157,7 +155,7 @@
     #notification-bar.error { background-color: var(--theme-error); border-color: var(--theme-error-border); }
 </style>
 </head>
-<body class="dark-theme">
+<body class="dark-theme"> <!-- Inicia no modo com fundo branco por padrão -->
 
 <!-- ====================================================================================== -->
 <!--                  ESTRUTURA HTML COMPLETA E FINAL DA PÁGINA (SEM OMISSÕES)              -->
@@ -231,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
         avatar: { input: document.getElementById('avatar-input'), preview: document.getElementById('avatar-preview'), button: document.getElementById('avatar-btn') },
         form: { element: document.getElementById('profile-info-form'), nomeInput: document.getElementById('nome'), bioInput: document.getElementById('bio'), saveButton: document.getElementById('save-button') },
         notificationBar: document.getElementById('notification-bar'),
-        themeToggleButton: document.getElementById('theme-toggle'),
+        themeToggleButton: document.getElementById('theme-toggle'), // Assumindo que você tenha um botão com id="theme-toggle" em algum lugar
     };
 
     const showNotification = (message, type = 'success') => {
@@ -288,6 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) { throw new Error(result.message || 'Erro ao salvar as informações.'); }
             showNotification(result.message, 'success');
             if (result.user) {
+                document.querySelector('.profile-info h1').textContent = result.user.nome;
                 ui.form.nomeInput.value = result.user.nome;
                 ui.form.bioInput.value = result.user.bio;
             }
@@ -299,37 +298,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // [NOVO] MÓDULO DE ALTERNÂNCIA DE TEMA
+    // MÓDULO DE ALTERNÂNCIA DE TEMA
     const themeModule = {
-        button: ui.themeToggleButton,
-        icon: ui.themeToggleButton.querySelector('.btn-text i'),
+        // Se você não tiver um botão de toggle, este módulo não fará nada, mas não causará erros.
+        // Se você ADICIONAR um botão com id="theme-toggle", ele funcionará automaticamente.
+        button: ui.themeToggleButton, 
         
         applyInitialTheme() {
+            // Define o tema inicial baseado no localStorage ou no padrão 'dark' (fundo branco)
             const savedTheme = localStorage.getItem('profileEditTheme') || 'dark';
-            if (savedTheme === 'light') {
+            if (savedTheme === 'light') { // light = fundo preto
                 document.body.classList.add('light-theme');
-            } else {
+                document.body.classList.remove('dark-theme');
+            } else { // dark = fundo branco
                 document.body.classList.remove('light-theme');
+                document.body.classList.add('dark-theme');
             }
             this.updateIcon();
         },
         toggleTheme() {
             document.body.classList.toggle('light-theme');
-            const currentTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+            const isLightTheme = document.body.classList.contains('light-theme');
+            document.body.classList.toggle('dark-theme', !isLightTheme);
+            
+            const currentTheme = isLightTheme ? 'light' : 'dark';
             localStorage.setItem('profileEditTheme', currentTheme);
             this.updateIcon();
         },
         updateIcon() {
-            if (this.icon) {
-                const isLightTheme = document.body.classList.contains('light-theme');
-                this.icon.className = isLightTheme ? 'fas fa-moon' : 'fas fa-sun';
+            if (this.button) {
+                const icon = this.button.querySelector('.btn-text i');
+                if (icon) {
+                    const isLightTheme = document.body.classList.contains('light-theme');
+                    icon.className = isLightTheme ? 'fas fa-sun' : 'fas fa-moon';
+                }
             }
         },
         init() {
             if (this.button) {
                 this.button.addEventListener('click', () => this.toggleTheme());
-                this.applyInitialTheme();
             }
+            // Sempre aplica o tema inicial na carga da página
+            this.applyInitialTheme();
         }
     };
 

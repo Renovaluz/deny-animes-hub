@@ -12,7 +12,7 @@
 
     <style>
     /* ================================================================================================== */
-    /*      PAINEL DE ADMIN V7.0 - ARQUITETURA SPA FINAL - DESIGN BY GEMINI                                 */
+    /*      PAINEL DE ADMIN V7.1 - ARQUITETURA SPA FINAL - DESIGN BY GEMINI (CORREÇÕES APLICADAS)         */
     /* ================================================================================================== */
 
     :root {
@@ -68,6 +68,7 @@
         height: 100%;
         z-index: 1000;
         transition: transform var(--transition-speed) ease;
+        transform: translateX(0); /* Visível por padrão em telas maiores */
     }
     .admin-main-content {
         flex-grow: 1;
@@ -106,13 +107,16 @@
     .sidebar-footer { margin-top: auto; display: flex; flex-direction: column; gap: 0.5rem; }
 
     /* --- RESPONSIVIDADE --- */
+    #sidebar-toggle {
+        display: none; /* Escondido por padrão em telas grandes */
+    }
+
     @media (max-width: 1024px) {
         .admin-sidebar { transform: translateX(-100%); }
         .admin-sidebar.open { transform: translateX(0); box-shadow: 10px 0 30px rgba(0,0,0,0.3); }
         .admin-main-content { margin-left: 0; width: 100%; }
-        #sidebar-toggle { display: block; }
+        #sidebar-toggle { display: block; } /* CORREÇÃO: Mostra o botão em telas menores */
     }
-    #sidebar-toggle { display: none; }
 
     /* --- COMPONENTES GERAIS (BOTÕES, TABELAS, FORMS, MODAIS) --- */
     .btn { padding: 0.7rem 1.2rem; border-radius: var(--border-radius); border: 1px solid var(--theme-border-color); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background-color: var(--theme-bg-tertiary); color: var(--theme-text-primary); transition: all var(--transition-speed); text-decoration: none; }
@@ -123,7 +127,7 @@
     
     .loading-spinner, #overlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; z-index: 9999; }
     .loading-spinner i { font-size: 3rem; color: var(--theme-accent-primary); animation: spin 1s linear infinite; }
-    #overlay { background: rgba(0,0,0,0.5); }
+    #overlay { background: rgba(0,0,0,0.5); z-index: 999; } /* z-index menor que o da sidebar */
     #toast-notification { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background-color: var(--theme-bg-secondary); padding: 1rem 1.5rem; border-radius: var(--border-radius); z-index: 10000; transition: bottom 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-weight: 500; border-top: 4px solid; }
     #toast-notification.show { bottom: 2rem; }
     
@@ -137,7 +141,7 @@
     .actions-dropdown { position: relative; }
     .actions-dropdown .dropdown-menu { display: none; position: absolute; top: calc(100% + 5px); right: 0; background-color: var(--theme-bg-tertiary); min-width: 180px; box-shadow: 0 8px 30px rgba(0,0,0,0.6); z-index: 100; border-radius: var(--border-radius); border: 1px solid var(--theme-border-color); padding: 0.5rem; }
     .actions-dropdown .dropdown-menu.show { display: block; animation: fadeInDropdown 0.2s ease-out; }
-    .dropdown-item { color: var(--theme-text-secondary); padding: 0.75rem 1rem; text-decoration: none; display: flex; align-items: center; gap: 0.75rem; border-radius: var(--border-radius); cursor: pointer; background: none; border: none; width: 100%; text-align: left; }
+    .dropdown-item { color: var(--theme-text-secondary); padding: 0.75rem 1rem; text-decoration: none; display: flex; align-items: center; gap: 0.75rem; border-radius: var(--border-radius); cursor: pointer; background: none; border: none; width: 100%; text-align: left; font-family: 'Inter', sans-serif; font-size: 0.9rem;}
     .dropdown-item:hover { background-color: var(--theme-accent-primary); color: white; }
     
     .admin-form-container, .modal-content { background-color: var(--theme-bg-secondary); padding: 2rem; border-radius: var(--border-radius); border: 1px solid var(--theme-border-color); }
@@ -164,6 +168,18 @@
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; }
     .modal-overlay.open { display: flex; animation: fadeIn 0.3s ease; }
     .modal-content { max-width: 500px; width: 90%; animation: slideInUp 0.4s ease-out; }
+
+    /* Estilo para lista de episódios */
+    .episode-manage-list li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--theme-border-color);
+    }
+    .episode-manage-list li:last-child {
+        border-bottom: none;
+    }
     
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     @keyframes fadeInDropdown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
@@ -192,10 +208,11 @@
     </aside>
 
     <div id="overlay"></div>
-    <div class="loading-spinner"><i></i></div>
+    <div class="loading-spinner"><i class="fas fa-spinner"></i></div>
 
     <main class="admin-main-content">
         <header class="main-content-header">
+            <!-- CORREÇÃO: O botão agora existe e será mostrado/escondido pelo CSS -->
             <button id="sidebar-toggle" class="btn"><i class="fas fa-bars"></i></button>
             <h1 id="main-header-title"><i class="fas fa-tachometer-alt fa-fw"></i> Visão Geral</h1>
         </header>
@@ -371,6 +388,7 @@
                 isEditing: false,
                 editingId: null,
                 currentPanel: 'dashboard',
+                currentAnimeSlugForEpisodes: null, // Guarda o slug do anime para recarregar a lista de episódios
                 charts: {}
             },
             // Função de inicialização
@@ -402,7 +420,7 @@
                 e.preventDefault();
                 const targetPanelId = e.currentTarget.dataset.target.replace('panel-', '');
                 this.navigateTo(targetPanelId);
-                if (window.innerWidth < 1024) this.toggleSidebar(false);
+                if (window.innerWidth <= 1024) this.toggleSidebar(false);
             },
             // Navega para uma seção específica do painel
             async navigateTo(panelId) {
@@ -423,8 +441,8 @@
 
                 // Carrega os dados para o painel selecionado
                 switch (panelId) {
-                    case 'animes': await this.renderListView('animes', 'template-anime-form'); break;
-                    case 'posts': await this.renderListView('posts', 'template-post-form'); break;
+                    case 'animes': await this.renderListView('animes'); break;
+                    case 'posts': await this.renderListView('posts'); break;
                     case 'users': await this.renderUsersPanel(); break;
                     case 'comments': await this.renderCommentsPanel(); break;
                 }
@@ -432,22 +450,29 @@
             // Lida com todos os cliques dentro do corpo principal
             handleDelegatedEvents(e) {
                 const target = e.target;
+                
                 // Ações de dropdown
                 const dropdownToggle = target.closest('.actions-toggle');
                 if (dropdownToggle) {
+                    // Fecha todos os outros dropdowns
+                    document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                        if (menu !== dropdownToggle.nextElementSibling) {
+                            menu.classList.remove('show');
+                        }
+                    });
+                    // Abre ou fecha o dropdown clicado
                     const menu = dropdownToggle.closest('.actions-dropdown').querySelector('.dropdown-menu');
                     menu.classList.toggle('show');
                     return;
                 }
+
                 // Botão para mostrar formulário de adição
-                const showFormBtn = target.closest('.btn-show-form');
-                if(showFormBtn) {
+                if(target.closest('.btn-show-form')) {
                     this.renderFormView(this.state.currentPanel, false);
                     return;
                 }
                 // Botão para cancelar um formulário
-                const cancelBtn = target.closest('.btn-cancel');
-                if(cancelBtn) {
+                if(target.closest('.btn-cancel')) {
                     this.navigateTo(this.state.currentPanel);
                     return;
                 }
@@ -455,15 +480,23 @@
                 const editBtn = target.closest('.btn-edit');
                 const deleteBtn = target.closest('.btn-delete');
                 const episodesBtn = target.closest('.btn-episodes');
+                
                 if(editBtn) {
                     const id = editBtn.closest('[data-id]')?.dataset.id || editBtn.closest('[data-slug]')?.dataset.slug;
                     this.renderFormView(this.state.currentPanel, true, id);
                 } else if (deleteBtn) {
                     const id = deleteBtn.closest('[data-id]')?.dataset.id || deleteBtn.closest('[data-slug]')?.dataset.slug;
-                    this.handleDelete(this.state.currentPanel, id);
+                    const isEpisodeDelete = deleteBtn.closest('.episode-manage-list');
+                    // CORREÇÃO: Lógica para apagar episódio
+                    if (isEpisodeDelete) {
+                        this.handleDelete('episodios', id);
+                    } else {
+                        this.handleDelete(this.state.currentPanel, id);
+                    }
                 } else if (episodesBtn) {
                     this.renderEpisodeManager(episodesBtn.closest('[data-slug]').dataset.slug);
                 }
+
                 // Ações específicas de painel (usuários, comentários)
                 this.handleUserActions(e);
                 this.handleCommentActions(e);
@@ -481,18 +514,20 @@
             // Lógica da sidebar responsiva
             toggleSidebar(forceOpen) {
                 const isOpen = this.dom.sidebar.classList.contains('open');
+                let shouldBeOpen;
                 if (typeof forceOpen === 'boolean') {
-                    this.dom.sidebar.classList.toggle('open', forceOpen);
+                    shouldBeOpen = forceOpen;
                 } else {
-                    this.dom.sidebar.classList.toggle('open');
+                    shouldBeOpen = !isOpen;
                 }
-                this.dom.overlay.style.display = this.dom.sidebar.classList.contains('open') ? 'block' : 'none';
+                this.dom.sidebar.classList.toggle('open', shouldBeOpen);
+                this.dom.overlay.style.display = shouldBeOpen ? 'block' : 'none';
             },
             // Funções de feedback visual
             showToast(message, type = 'success') {
                 this.dom.toast.textContent = message;
+                this.dom.toast.className = 'show'; // Limpa classes antigas
                 this.dom.toast.style.borderTopColor = `var(--theme-${type})`;
-                this.dom.toast.classList.add('show');
                 setTimeout(() => this.dom.toast.classList.remove('show'), 4000);
             },
             setLoading(isLoading) {
@@ -508,7 +543,11 @@
                         const jsonData = JSON.parse(textData);
                         if (!response.ok) throw new Error(jsonData.error || `Erro ${response.status}`);
                         return jsonData;
-                    } catch (e) { throw new Error(`Resposta inválida da API: ${textData}`); }
+                    } catch (e) { 
+                        // Se o JSON.parse falhar, mas a requisição foi bem sucedida, pode ser uma resposta vazia (ex: DELETE)
+                        if(response.ok) return { success: true };
+                        throw new Error(`Resposta inválida da API: ${textData}`); 
+                    }
                 } catch (err) {
                     this.showToast(err.message, 'error');
                     console.error('API Error:', err);
@@ -533,8 +572,9 @@
                 }
                 
                 const itemsHtml = result.data.map(item => {
+                    const idAttribute = type === 'animes' ? `data-slug="${item.slug}"` : `data-id="${item.id}" data-slug="${item.slug || ''}"`;
                     if (type === 'animes') {
-                        return `<div class="item-card" data-slug="${item.slug}">
+                        return `<div class="item-card" ${idAttribute}>
                                     <img src="${item.imagemCapa || '/images/default-cover.png'}" class="item-card__image">
                                     <div class="item-card__content"><h3 class="item-card__title">${item.titulo}</h3></div>
                                     <div class="item-card__actions">
@@ -545,7 +585,7 @@
                                 </div>`;
                     }
                     if (type === 'posts') {
-                         return `<div class="item-card" data-id="${item.id}" data-slug="${item.slug}">
+                         return `<div class="item-card" ${idAttribute}>
                                     <img src="${item.imagemDestaque || '/images/default-cover.png'}" class="item-card__image">
                                     <div class="item-card__content"><h3 class="item-card__title">${item.titulo}</h3></div>
                                     <div class="item-card__actions">
@@ -572,7 +612,7 @@
                 
                 if (isEditing) {
                     panel.querySelector('.form-title').textContent = `Editar ${type === 'animes' ? 'Anime' : 'Notícia'}`;
-                    const endpoint = type === 'animes' ? `animes/${id}` : `posts/${id}`; // Use ID para posts
+                    const endpoint = type === 'animes' ? `animes/${id}` : `posts/${id}`;
                     const { data } = await this.apiCall(endpoint);
                     if (data) {
                         for (const key in data) {
@@ -597,7 +637,7 @@
                     uploadFormData.append('capa', formData.get('capa'));
                     this.showToast('Enviando capa...', 'info');
                     const uploadResult = await this.apiCall('upload/capa', { method: 'POST', body: uploadFormData });
-                    if (!uploadResult.success) return; // Erro já mostrado
+                    if (!uploadResult.success) return; 
                     formData.set('imagemCapa', uploadResult.filePath);
                 }
                 formData.delete('capa');
@@ -635,7 +675,8 @@
                                 <td>${user.role}</td>
                                 <td>${new Date(user.createdAt).toLocaleDateString('pt-BR')}</td>
                                 <td><div class="actions-dropdown"><button class="btn btn--small actions-toggle"><i class="fas fa-ellipsis-h"></i></button><div class="dropdown-menu">
-                                    <a href="/perfil/${user.id}" target="_blank" class="dropdown-item"><i class="fas fa-eye fa-fw"></i> Ver Perfil</a>
+                                    <!-- CORREÇÃO: O link para o perfil agora funciona corretamente -->
+                                    <a href="/perfil/${user.id}" target="_blank" class="dropdown-item btn-view-user"><i class="fas fa-eye fa-fw"></i> Ver Perfil</a>
                                     <button class="dropdown-item btn-edit-user"><i class="fas fa-edit fa-fw"></i> Editar</button>
                                     <button class="dropdown-item btn-delete-user"><i class="fas fa-trash fa-fw"></i> Excluir</button>
                                 </div></div></td>
@@ -729,13 +770,20 @@
                 const result = await this.apiCall(`${type}/${id}`, { method: 'DELETE' });
                 if (result.success) {
                     this.showToast('Item deletado com sucesso!');
-                    this.navigateTo(type.replace('-admin', ''));
+                    // CORREÇÃO: Lógica para recarregar a view correta
+                    if (type === 'episodios') {
+                        this.renderEpisodeManager(this.state.currentAnimeSlugForEpisodes); // Recarrega a lista de episódios
+                    } else {
+                        this.navigateTo(type.replace('-admin', '')); // Recarrega o painel atual
+                    }
                 }
             },
             // Gerenciador de episódios
             async renderEpisodeManager(animeSlug) {
+                this.state.currentAnimeSlugForEpisodes = animeSlug; // Armazena o slug
                 const panel = document.getElementById('panel-animes');
                 panel.innerHTML = document.getElementById('template-episode-manager').innerHTML;
+                
                 const { data: anime } = await this.apiCall(`animes/${animeSlug}`);
                 if (!anime) return;
                 
@@ -745,7 +793,8 @@
                 
                 const list = panel.querySelector('.episode-manage-list');
                 const episodes = (anime.episodios || []).sort((a,b) => a.temporada - b.temporada || a.numero - b.numero);
-                list.innerHTML = episodes.length > 0 ? episodes.map(ep => `<li data-id="${ep.id}"><span>T${ep.temporada} E${ep.numero} - ${ep.titulo || 'Sem título'}</span><button class="btn btn-delete btn--small btn--primary"><i class="fas fa-trash"></i></button></li>`).join('') : '<li>Nenhum episódio cadastrado.</li>';
+                // CORREÇÃO: O botão de delete agora tem o `data-id` do episódio
+                list.innerHTML = episodes.length > 0 ? episodes.map(ep => `<li data-id="${ep.id}"><span>T${ep.temporada} E${ep.numero} - ${ep.titulo || 'Sem título'}</span><button class="btn btn-delete btn--small btn--primary" data-id="${ep.id}"><i class="fas fa-trash"></i></button></li>`).join('') : '<li>Nenhum episódio cadastrado.</li>';
                 
                 const typeSelect = form.querySelector('#tipoVideo');
                 typeSelect.onchange = () => {
@@ -776,8 +825,8 @@
             },
             // Inicialização dos gráficos
             initCharts() {
-                this.createChart('newUsersChart', 'Novos Usuários (Últimos 7 Dias)', <%- newUsersData %>);
-                this.createChart('newAnimesChart', 'Novos Animes (Últimos 7 Dias)', <%- newAnimesData %>);
+                this.createChart('newUsersChart', 'Novos Usuários (Últimos 7 Dias)', <%- JSON.stringify(newUsersData) %>);
+                this.createChart('newAnimesChart', 'Novos Animes (Últimos 7 Dias)', <%- JSON.stringify(newAnimesData) %>);
             },
             createChart(canvasId, label, data) {
                 const ctx = document.getElementById(canvasId).getContext('2d');
@@ -785,7 +834,6 @@
                     this.state.charts[canvasId].destroy();
                 }
 
-                // Prepara os dados para o gráfico
                 const labels = [];
                 const dailyCounts = {};
                 for(let i=6; i>=0; i--) {
@@ -795,9 +843,14 @@
                     labels.push(formattedDate);
                     dailyCounts[formattedDate] = 0;
                 }
-                data.forEach(item => {
-                    dailyCounts[item.date] = item.count;
-                });
+                if (Array.isArray(data)) {
+                    data.forEach(item => {
+                        const itemDate = item.date.split('T')[0];
+                        if(dailyCounts.hasOwnProperty(itemDate)) {
+                           dailyCounts[itemDate] = item.count;
+                        }
+                    });
+                }
                 
                 const chartData = labels.map(date => dailyCounts[date]);
 
@@ -817,7 +870,8 @@
                     },
                     options: {
                         scales: {
-                            y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                            y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                            x: { type: 'time', time: { unit: 'day' } }
                         },
                         responsive: true,
                         maintainAspectRatio: false
@@ -830,4 +884,4 @@
     });
     </script>
 </body>
-</html>
+</html>```
