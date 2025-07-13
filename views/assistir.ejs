@@ -60,7 +60,7 @@
 
 <style>
     /* ================================================================================================== */
-    /*      ESTILIZAÇÃO CSS COMPLETA E FINAL - VERSÃO DEUS SHINOBI (CONTROLE TOTAL)                       */
+    /*      ESTILIZAÇÃO CSS COMPLETA - VERSÃO EXPANSÃO DE DOMÍNIO (LAYOUT PERFEITO)                       */
     /* ================================================================================================== */
     
     :root {
@@ -140,10 +140,32 @@
     .comment-content .comment-text { margin-top: 0.5rem; color: var(--text-secondary); line-height: 1.6; white-space: pre-wrap; }
     #load-more-comments { display: none; margin: 2rem auto; }
     .login-prompt { text-align: center; padding: 2rem; background-color: var(--bg-tertiary); border-radius: var(--border-radius); }
-    .player-sidebar { display: flex; flex-direction: column; }
-    @media (min-width: 1200px) { .player-sidebar { height: calc(100vh - 3rem); position: sticky; top: 1.5rem; } }
-    .player-sidebar h3 { padding: 1.25rem 1.5rem; margin: 0; border-bottom: 1px solid var(--border-color); font-size: 1.2rem; font-weight: 700; flex-shrink: 0; }
-    .episode-list-scroll-wrapper { flex-grow: 1; overflow-y: auto; padding: 1rem; }
+    
+    /* --- [CORREÇÃO DEFINITIVA] SIDEBAR DE EPISÓDIOS COM ALTURA TOTAL --- */
+    .player-sidebar {
+        display: flex; /* Essencial para o layout flexível */
+        flex-direction: column;
+    }
+    @media (min-width: 1200px) {
+        .player-sidebar {
+            height: calc(100vh - 3rem); /* Em telas grandes, a sidebar ocupa a altura da viewport menos o padding */
+            position: sticky;
+            top: 1.5rem;
+        }
+    }
+    .player-sidebar h3 {
+        padding: 1.25rem 1.5rem;
+        margin: 0;
+        border-bottom: 1px solid var(--border-color);
+        font-size: 1.2rem;
+        font-weight: 700;
+        flex-shrink: 0; /* Impede que o header encolha */
+    }
+    .episode-list-scroll-wrapper {
+        flex-grow: 1; /* A MÁGICA: A lista agora cresce para ocupar todo o espaço vertical disponível */
+        overflow-y: auto;
+        padding: 1rem;
+    }
     .episode-list { list-style: none; padding: 0; margin: 0; }
     .season-header { font-weight: 600; color: var(--text-secondary); padding: 1rem 0.5rem 0.5rem; margin-top: 1rem; border-bottom: 1px solid var(--border-color-soft); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
     .episode-list > .season-header:first-child { margin-top: 0; }
@@ -153,6 +175,8 @@
     .ep-list-thumbnail { flex-shrink: 0; width: 100px; height: 56px; background-color: #000; border-radius: var(--border-radius); background-size: cover; background-position: center; }
     .ep-list-info { flex-grow: 1; overflow: hidden; min-width: 0; }
     .ep-list-info .ep-list-title { font-weight: 500; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    
+    /* SUGESTÕES E RESPONSIVIDADE (INTACTAS) */
     .suggestions-section { grid-column: 1 / -1; }
     .suggestions-section h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; border-left: 4px solid var(--accent-primary); padding-left: 1rem; }
     .suggestions-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
