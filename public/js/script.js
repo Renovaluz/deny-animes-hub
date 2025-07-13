@@ -3,6 +3,97 @@
 // ==========================================================================
 // Este script é responsável por toda a lógica de interação do usuário, animações, temas e modais.
 document.addEventListener('DOMContentLoaded', () => {
+
+    // =========================================================================
+    // LÓGICA DO MENU HAMBÚRGUER (MOBILE)
+    // =========================================================================
+    const hamburgerBtn = document.getElementById('hamburger-menu');
+    const mainNav = document.getElementById('main-nav');
+    const overlay = document.getElementById('page-overlay');
+    const body = document.body;
+
+    // Verifica se os elementos essenciais existem na página
+    if (hamburgerBtn && mainNav && overlay) {
+        
+        const toggleMenu = () => {
+            const isActive = mainNav.classList.toggle('is-active');
+            body.classList.toggle('nav-open', isActive);
+            
+            // Define o atributo ARIA para acessibilidade
+            hamburgerBtn.setAttribute('aria-expanded', isActive);
+
+            // Muda o ícone do botão para um 'X' quando o menu está aberto
+            const icon = hamburgerBtn.querySelector('i');
+            if (icon) {
+                icon.classList.toggle('fa-bars', !isActive);
+                icon.classList.toggle('fa-times', isActive);
+            }
+        };
+
+        // Adiciona o ouvinte de evento ao botão do hambúrguer
+        hamburgerBtn.addEventListener('click', toggleMenu);
+
+        // Adiciona o ouvinte de evento ao overlay para fechar o menu ao clicar fora
+        overlay.addEventListener('click', toggleMenu);
+    }
+
+
+    // =========================================================================
+    // LÓGICA DO TEMA (ESCURO/CLARO) - Certifique-se de que não está duplicada
+    // =========================================================================
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const htmlElement = document.documentElement;
+
+    if (themeToggleBtn && htmlElement) {
+        // Função para aplicar o tema salvo no carregamento da página
+        const applySavedTheme = () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark'; // Padrão 'dark' se não houver nada salvo
+            htmlElement.setAttribute('data-theme', savedTheme);
+        };
+
+        // Função para alternar o tema e salvar a preferência
+        const toggleTheme = () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        };
+
+        // Adiciona o ouvinte de evento ao botão de tema
+        themeToggleBtn.addEventListener('click', toggleTheme);
+
+        // Aplica o tema salvo assim que o DOM estiver pronto
+        applySavedTheme();
+    }
+    
+    // =========================================================================
+    // ANIMAÇÕES COM INTERSECTION OBSERVER (Opcional, mas recomendado)
+    // =========================================================================
+    const animatedSections = document.querySelectorAll('.animated-section');
+    if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        animatedSections.forEach(section => {
+            observer.observe(section);
+        });
+    } else {
+        // Fallback para navegadores antigos que não suportam IntersectionObserver
+        animatedSections.forEach(section => {
+            section.classList.add('is-visible');
+        });
+    }
+
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
     console.log("%cDenyAnimeHub Script v1.1 Inicializado", "color: #ff3b3b; font-weight: bold;");
 
     // --- Seletores Globais e Estado ---
