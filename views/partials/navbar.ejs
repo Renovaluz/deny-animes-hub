@@ -3,19 +3,35 @@
         <div class="site-header__logo">
             <a href="/">
                 <img src="/images/1.ico" alt="Logo DenyAnimeHub">
-                <span></span>
+                <span>DenyAnimeHub</span>
             </a>
         </div>
         <nav class="site-header__nav">
             <ul>
-                <li><a href="/" class="<%= page_name === 'index' ? 'active' : '' %>">Início</a></li>
-                <li><a href="/noticias" class="<%= page_name === 'noticias' ? 'active' : '' %>">Notícias</a></li>
+                <li>
+                    <a href="/" class="<%= locals.page_name === 'index' ? 'active' : '' %>">Início</a>
+                </li>
+                
+                <!-- [NOVO] Link para a página Todos os Animes -->
+                <li>
+                    <a href="/animes" class="<%= locals.page_name === 'todos-animes' ? 'active' : '' %>">Animes</a>
+                </li>
+
+                <li>
+                    <a href="/noticias" class="<%= locals.page_name === 'noticias' ? 'active' : '' %>">Notícias</a>
+                </li>
                 
                 <% if (userIsLoggedIn) { %>
-                    <li><a href="/perfil" class="<%= page_name === 'perfil' ? 'active' : '' %>">Perfil</a></li>
-                    <li><a href="/auth/logout">Sair</a></li>
+                    <li>
+                        <a href="/perfil" class="<%= locals.page_name === 'perfil' ? 'active' : '' %>">Perfil</a>
+                    </li>
+                    <li>
+                        <a href="/auth/logout">Sair</a>
+                    </li>
                 <% } else { %>
-                    <li><a href="/login" class="<%= page_name === 'login-page' ? 'active' : '' %>">Login</a></li>
+                    <li>
+                        <a href="/login" class="<%= locals.page_name === 'login-page' ? 'active' : '' %>">Login</a>
+                    </li>
                 <% } %>
 
                 <li>
@@ -26,5 +42,6 @@
                 </li>
             </ul>
         </nav>
+        
     </div>
 </header>

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= locals.titulo || 'Todos os Animes' %> | DenyAnimeHub</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="/images/1.ico" type="image/ico">
+
+    <style>
+        /* ================================================================================================== */
+        /*      V5.0 - REVOLUÇÃO VISUAL E UX - DESIGN BY GEMINI                                               */
+        /* ================================================================================================== */
+
+        :root {
+            --accent-color: #E50914;
+            --accent-glow: rgba(229, 9, 20, 0.5);
+            --accent-hover: #ff1f2b;
+
+            --font-primary: 'Poppins', sans-serif;
+            --transition-fast: 0.2s ease;
+            --transition-smooth: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 16px;
+            
+            /* --- Dark Theme (Default) --- */
+            --bg-primary: #0b0a0f;
+            --bg-secondary: #121117;
+            --bg-tertiary: #1a1920;
+            --bg-glass: rgba(18, 17, 23, 0.7);
+            --text-primary: #f0f0f5;
+            --text-secondary: #a0a0b0;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-color: rgba(0, 0, 0, 0.5);
+        }
+
+        html[data-theme='light'] {
+            /* --- Light Theme --- */
+            --bg-primary: #f0f2f5;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e4e6eb;
+            --bg-glass: rgba(255, 255, 255, 0.6);
+            --text-primary: #1c1c1c;
+            --text-secondary: #65676b;
+            --border-color: #ced0d4;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- Reset & Base --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-primary);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            background-image: var(--body-bg-image); /* Definido dinamicamente pelo tema */
+            background-attachment: fixed;
+            background-size: cover;
+            transition: background-color var(--transition-fast), color var(--transition-fast);
+        }
+        html, body {
+            overflow-x: hidden;
+        }
+
+        /* --- Theme-Specific Backgrounds --- */
+        html[data-theme='dark'] body { --body-bg-image: linear-gradient(rgba(11, 10, 15, 0.95), rgba(11, 10, 15, 0.95)), url('/images/akatsuki-background.jpg'); }
+        html[data-theme='light'] body { --body-bg-image: none; }
+
+
+        /* --- Layout & Header --- */
+        .container {
+            width: 100%;
+            max-width: 1700px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+        }
+
+        .page-header {
+            padding: 3rem 0 1rem 0;
+            text-align: center;
+            animation: fadeInDown 0.8s var(--transition-smooth);
+        }
+        .page-header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px var(--accent-glow);
+        }
+        .page-header p {
+            font-size: clamp(1rem, 2vw, 1.1rem);
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* --- Filter Bar (Glassmorphism & Interactive) --- */
+        .filter-bar {
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: var(--border-radius-lg);
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s var(--transition-smooth);
+            transition: background var(--transition-fast), border var(--transition-fast);
+        }
+        #filter-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .filter-group {
+            position: relative;
+        }
+        .filter-group .fa-solid {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 15px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            pointer-events: none; /* Allows clicking through the icon */
+            transition: color var(--transition-fast);
+        }
+        .filter-input, .filter-select {
+            width: 100%;
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.8rem 1rem 0.8rem 2.5rem; /* Padded for icon */
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            font-family: var(--font-primary);
+            appearance: none; -webkit-appearance: none;
+            transition: all var(--transition-fast);
+        }
+        .filter-group:focus-within .fa-solid { color: var(--accent-color); }
+        .filter-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background-color: var(--bg-secondary);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+        .filter-group-select::after {
+            content: '\f078'; /* Font Awesome chevron down */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+        
+        /* --- Anime Grid & Cards --- */
+        .anime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 2rem 1.5rem;
+            animation: fadeInUp 1s var(--transition-smooth) 0.2s backwards;
+        }
+        .anime-card {
+            background-color: var(--bg-secondary);
+            border-radius: var(--border-radius-md);
+            text-decoration: none;
+            color: var(--text-primary);
+            overflow: hidden;
+            box-shadow: 0 8px 30px -10px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            transition: all var(--transition-smooth);
+            position: relative;
+        }
+        .anime-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 12px 40px -10px var(--shadow-color), 0 0 20px -5px var(--accent-glow);
+            border-color: var(--accent-color);
+        }
+
+        .anime-card__poster {
+            aspect-ratio: 3 / 4;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* Gradient overlay for text readability */
+        .anime-card__poster::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+            transition: opacity var(--transition-fast);
+        }
+        /* Play icon overlay */
+        .anime-card__poster::after {
+            content: '\f04b'; /* play icon */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 3.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 0 15px var(--accent-glow);
+            opacity: 0;
+            transform: scale(1.5);
+            transition: all var(--transition-smooth);
+        }
+        .anime-card:hover .anime-card__poster::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .anime-card:hover .anime-card__poster::before { opacity: 0.8; }
+
+        .anime-card__content {
+            padding: 1rem;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 2;
+            transform: translateY(30%); /* Initially hide the meta text */
+            transition: transform var(--transition-smooth);
+        }
+        .anime-card:hover .anime-card__content {
+            transform: translateY(0);
+        }
+
+        .anime-card__title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #fff; /* Always white for readability on gradient */
+        }
+        .anime-card__meta {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+            opacity: 0; /* Initially hidden */
+            transition: opacity var(--transition-smooth);
+        }
+        .anime-card:hover .anime-card__meta {
+            opacity: 1;
+        }
+
+        /* --- No Results Message --- */
+        .no-results {
+            grid-column: 1 / -1; /* Span all columns */
+            text-align: center;
+            padding: 4rem 1rem;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+        }
+
+        /* --- Pagination --- */
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 4rem;
+            padding-bottom: 2rem;
+        }
+        .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            text-decoration: none;
+            background-color: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-weight: 500;
+            transition: all var(--transition-fast);
+        }
+        .page-link:hover {
+            color: #fff;
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px -2px var(--accent-glow);
+        }
+        .page-link.active {
+            color: #fff;
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            font-weight: 700;
+            cursor: default;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+        .page-link.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Nosso Catálogo</h1>
+            <p>Explore um universo infinito de histórias</p>
+        </header>
+
+        <section class="filter-bar">
+            <form id="filter-form" action="/animes" method="GET">
+                <div class="filter-group">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" name="search" id="search" class="filter-input" placeholder="Buscar por título..." value="<%= query.search || '' %>">
+                </div>
+
+                <div class="filter-group filter-group-select">
+                    <i class="fa-solid fa-tags"></i>
+                    <select name="genre" id="genre" class="filter-select">
+                        <option value="">Todos os Gêneros</option>
+                        <% uniqueGenres.forEach(genre => { %>
+                            <option value="<%= genre %>" <%= query.genre === genre ? 'selected' : '' %>>
+                                <%= genre %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="filter-group filter-group-select">
+                    <i class="fa-solid fa-arrow-up-wide-short"></i>
+                    <select name="order" id="order" class="filter-select">
+                        <option value="createdAt_desc" <%= query.order === 'createdAt_desc' ? 'selected' : '' %>>Mais Recentes</option>
+                        <option value="views_desc" <%= query.order === 'views_desc' ? 'selected' : '' %>>Mais Populares</option>
+                        <option value="titulo_asc" <%= query.order === 'titulo_asc' ? 'selected' : '' %>>Ordem A-Z</option>
+                        <option value="titulo_desc" <%= query.order === 'titulo_desc' ? 'selected' : '' %>>Ordem Z-A</option>
+                    </select>
+                </div>
+            </form>
+        </section>
+
+        <main>
+            <div class="anime-grid">
+                <% if (animes.length > 0) { %>
+                    <% animes.forEach(anime => { %>
+                        <a href="/anime/<%= anime.slug %>" class="anime-card">
+                            <div class="anime-card__poster" style="background-image: url('<%= anime.imagemCapa || '/images/default-cover.png' %>')"></div>
+                            <div class="anime-card__content">
+                                <h3 class="anime-card__title"><%= anime.titulo %></h3>
+                                <p class="anime-card__meta"><%= anime.anoLancamento %></p>
+                            </div>
+                        </a>
+                    <% }) %>
+                <% } else { %>
+                    <p class="no-results">Nenhum anime encontrado com os filtros selecionados.</p>
+                <% } %>
+            </div>
+
+            <% if (totalPages > 1) { %>
+                <nav class="pagination-controls" aria-label="Navegação de página">
+                    <a href="<%= paginationUrl %>&page=<%= currentPage - 1 %>" class="page-link <%= currentPage <= 1 ? 'disabled' : '' %>" aria-disabled="<%= currentPage <= 1 %>">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                    
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                        <a href="<%= paginationUrl %>&page=<%= i %>" class="page-link <%= i === currentPage ? 'active' : '' %>" <%= i === currentPage ? 'aria-current="page"' : '' %>>
+                            <%= i %>
+                        </a>
+                    <% } %>
+                    
+                    <a href="<%= paginationUrl %>&page=<%= currentPage + 1 %>" class="page-link <%= currentPage >= totalPages ? 'disabled' : '' %>" aria-disabled="<%= currentPage >= totalPages %>">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </nav>
+            <% } %>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- Auto-submit form on filter change ---
+            const filterForm = document.getElementById('filter-form');
+            const searchInput = document.getElementById('search');
+            const genreSelect = document.getElementById('genre');
+            const orderSelect = document.getElementById('order');
+            
+            // Debounce function to prevent search input from firing on every keystroke
+            let searchTimeout;
+            const debounceSubmit = (delay) => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    filterForm.submit();
+                }, delay);
+            };
+
+            searchInput.addEventListener('input', () => {
+                debounceSubmit(500); // Wait 500ms after user stops typing
+            });
+
+            genreSelect.addEventListener('change', () => {
+                filterForm.submit();
+            });
+
+            orderSelect.addEventListener('change', () => {
+                filterForm.submit();
+            });
+
+            // --- Theme Toggler Logic (assumes a toggle button with id 'theme-toggle' exists elsewhere) ---
+            // This makes the theme consistent across sessions.
+            const themeToggle = document.getElementById('theme-toggle'); // You need to have this button in your layout
+            const html = document.documentElement;
+
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            html.setAttribute('data-theme', savedTheme);
+
+            if (themeToggle) {
+                 themeToggle.addEventListener('click', () => {
+                    const currentTheme = html.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                    html.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

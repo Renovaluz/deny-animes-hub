@@ -295,12 +295,12 @@
             applyTheme();
         }
 
-        const starRatingModule = {
+          const starRatingModule = {
             container: document.querySelector('.star-rating'),
             init() { if (!this.container || !USER_LOGGED_IN) { if(this.container) this.container.style.pointerEvents = 'none'; return; } this.stars = this.container.querySelectorAll('.fa-star'); this.container.addEventListener('mouseover', e => this.handleMouseOver(e)); this.container.addEventListener('mouseout', () => this.updateStars(this.currentUserRating)); this.container.addEventListener('click', e => this.handleClick(e)); this.fetchUserRating(); },
             async fetchUserRating() { this.currentUserRating = 0; /* TODO: buscar rating da API */ this.updateStars(this.currentUserRating); },
             updateStars(rating) { this.stars.forEach(star => { star.classList.toggle('selected', star.dataset.value <= rating); star.classList.remove('hovered'); }); },
-            handleMouseOver(e) { if (e.target.matches('.fa-star') && !this.container.classList.contains('rated')) { const rating = e.target.dataset.value; this.stars.forEach(star => star.classList.toggle('hovered', star.dataset.value <= rating)); } },
+            handleMouseOver(e) { if (e.target.matches('.fa-star') && !this.container.classList.contains('rated')) { const rating = e.target.dataset.value; this.stars.forEach(star => star.classList.toggle('hovered', star.dataset.value <= rating)); } }, // ) expected
             async handleClick(e) { if (e.target.matches('.fa-star') && !this.container.classList.contains('rated')) { this.currentUserRating = e.target.dataset.value; this.container.classList.add('rated'); this.updateStars(this.currentUserRating); try { await fetch('/api/ratings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ animeId: ANIME_ID, rating: this.currentUserRating }) }); } catch (error) { console.error('Erro ao enviar avaliação:', error); } } }
         };
 

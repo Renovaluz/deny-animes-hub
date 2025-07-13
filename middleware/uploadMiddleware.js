@@ -1,12 +1,12 @@
 // ====================================================================================
 //
-//              DenyAnimeHub - Middleware de Upload (Versão Final e Robusta)
+//              DenyAnimeHub - Middleware de Upload (Versão Definitiva Corrigida)
 //
-// Versão:        4.0 (Susanoo Perfeito)
-// Descrição:     Versão definitiva do middleware Multer. Totalmente funcional,
-//                com middlewares especializados e explícitos para cada tipo de
-//                upload (avatar, capa de perfil, etc.), evitando conflitos de
-//                nomes de campos e garantindo 100% de compatibilidade com as rotas.
+// Versão:        5.0 (Rinnegan)
+// Descrição:     Versão final e totalmente corrigida do middleware Multer. Renomeia
+//                os middlewares para corresponder EXATAMENTE ao que é importado no app.js,
+//                resolvendo o erro "got a [object Undefined]". A estrutura está
+//                robusta, com funções de fábrica e middlewares especializados.
 //
 // ====================================================================================
 
@@ -74,57 +74,57 @@ const createFileFilter = (allowedMimeTypesRegex) => {
 
 // --- Filtros de Arquivo Pré-configurados ---
 const imageFileFilter = createFileFilter(/^image\/(jpeg|png|webp|gif)$/);
-const videoFileFilter = createFileFilter(/^video\/(mp4|x-matroska|webm)$/);
+const videoFileFilter = createFileFilter(/^video\/(mp4|mkv|x-matroska|webm)$/); // Adicionado MKV para robustez
 
 // =======================================================================================
 //  MIDDLEWARES DE UPLOAD ESPECIALIZADOS E EXPORTADOS
 // =======================================================================================
 
-// Middleware para processar formulários multipart/form-data (campos de texto + arquivos).
-// Mantido como no seu original para não quebrar outras funcionalidades.
+// Middleware para processar formulários sem arquivos ou com arquivos na memória.
+// Usado para rotas de criação/edição que não têm um campo de upload específico.
 const processForm = multer({
     storage: multer.memoryStorage(),
-    limits: { fileSize: 2 * 1024 * 1024 * 1024 }
+    limits: { fileSize: 2 * 1024 * 1024 * 1024 } // Limite alto, pois não deve salvar arquivos
 }).any();
 
-// Middleware para upload de Capas de Animes/Posts (espera campo 'file').
-// Mantido como no seu original para não quebrar outras funcionalidades.
-const uploadCapa = multer({
+// Middleware para upload de Capas de Animes/Posts.
+// O nome agora corresponde ao que app.js espera.
+const uploadCapaAnime = multer({
     storage: createStorageEngine('capas'),
     fileFilter: imageFileFilter,
     limits: { fileSize: 15 * 1024 * 1024 }
-}).single('file');
+}).single('capa'); // Espera um campo de formulário chamado 'capa'
 
-// Middleware para upload de Vídeos de Episódios (espera campo 'file').
-// Mantido como no seu original.
-const uploadVideo = multer({
+// Middleware para upload de Vídeos de Episódios.
+// O nome agora corresponde ao que app.js espera.
+const uploadVideoEpisodio = multer({
     storage: createStorageEngine('videos'),
     fileFilter: videoFileFilter,
-    limits: { fileSize: 2 * 1024 * 1024 * 1024 }
-}).single('file');
+    limits: { fileSize: 2 * 1024 * 1024 * 1024 } // 2GB
+}).single('video'); // Espera um campo de formulário chamado 'video'
 
-// Middleware para upload de AVATAR de Usuário (espera campo 'avatar').
-// Esta configuração está correta e funcional.
+// Middleware para upload de AVATAR de Usuário.
 const uploadAvatar = multer({
     storage: createStorageEngine('avatars'),
     fileFilter: imageFileFilter,
     limits: { fileSize: 5 * 1024 * 1024 }
 }).single('avatar');
 
-// [NOVO E CORRIGIDO] Middleware para upload de CAPA DE PERFIL de Usuário (espera campo 'capa').
-// Este é o middleware específico que a sua rota de edição de perfil precisa.
+// Middleware para upload de CAPA DE PERFIL de Usuário.
 const uploadCapaPerfil = multer({
     storage: createStorageEngine('capas'), // Reutiliza a pasta 'capas'
     fileFilter: imageFileFilter,
-    limits: { fileSize: 15 * 1024 * 1024 } // Limite de 15MB
-}).single('capa'); // A CORREÇÃO: Espera um campo chamado 'capa', como enviado pelo front-end.
+    limits: { fileSize: 15 * 1024 * 1024 }
+}).single('capa');
 
 
-// Exporta todos os middlewares para serem usados nas rotas.
+// --- EXPORTAÇÃO FINAL E CORRIGIDA ---
+// Exporta todos os middlewares com os nomes EXATOS que o app.js espera.
 module.exports = {
     processForm,
-    uploadCapa,
-    uploadVideo,
+    uploadCapaAnime,        // CORRIGIDO: Agora este nome existe
+    uploadVideoEpisodio,    // CORRIGIDO: Agora este nome existe
     uploadAvatar,
-    uploadCapaPerfil // Exporta o novo middleware corrigido
+    uploadCapaPerfil,
+    uploadCapa: uploadCapaAnime // Adicionando um alias para compatibilidade, caso alguma rota antiga ainda use 'uploadCapa'
 };
