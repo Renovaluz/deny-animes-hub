@@ -1,7 +1,7 @@
 {
   "development": {
-    "username": "seu_usuario_local",
-    "password": "sua_senha_local",
+    "username": "postgres",
+    "password": "ADMIN",
     "database": "denyanimehub_dev",
     "host": "127.0.0.1",
     "dialect": "postgres"

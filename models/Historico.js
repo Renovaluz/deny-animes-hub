@@ -1,36 +1,24 @@
 'use strict';
 const { Model } = require('sequelize');
-
 module.exports = (sequelize, DataTypes) => {
   class Historico extends Model {
     static associate(models) {
-      Historico.belongsTo(models.User, { foreignKey: 'usuarioId', as: 'usuario' });
-      Historico.belongsTo(models.Anime, { foreignKey: 'animeId', as: 'anime' });
+      // [CORREÇÃO]: Padronizando os aliases para minúsculo
+      this.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
+      this.belongsTo(models.Anime, { foreignKey: 'animeId', as: 'anime' });
+      this.belongsTo(models.Episodio, { foreignKey: 'episodioId', as: 'episodio' });
     }
   }
   Historico.init({
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true
-    },
-    ultimoEpisodioAssistido: {
-      type: DataTypes.JSON, // Armazena o objeto { numero, titulo } como JSON
-      allowNull: false
-    }
-    // As chaves estrangeiras `usuarioId` e `animeId` serão adicionadas pelas associações
+    progress: { type: DataTypes.INTEGER, defaultValue: 0 },
+    userId: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false, references: { model: 'users', key: 'id' } },
+    episodioId: { type: DataTypes.INTEGER, primaryKey: true, allowNull: false, references: { model: 'episodios', key: 'id' } },
+    animeId: { type: DataTypes.INTEGER, allowNull: false, references: { model: 'animes', key: 'id' } }
   }, {
     sequelize,
     modelName: 'Historico',
     tableName: 'historicos',
-    timestamps: true,
-    // Índice para garantir que um usuário tenha apenas uma entrada por anime
-    indexes: [
-      {
-        unique: true,
-        fields: ['usuarioId', 'animeId']
-      }
-    ]
+    timestamps: true
   });
   return Historico;
 };

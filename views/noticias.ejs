@@ -3,61 +3,65 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Central de Notícias Akatsuki</title>
-<!-- Font Awesome para ícones -->
+<title>Akatsuki Hub | Central de Mídia Profissional</title>
+
+<!-- Google Fonts: Poppins -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <!-- Estilos Principais -->
 <style>
     /*
     ================================================================
-    TEMA DUAL (ESCURO E CLARO)
-    Revisado para máxima consistência, fluidez e profissionalismo.
+    DESIGN SYSTEM V5: "AKATSUKI ELITE"
+    - Retorno ao tema Akatsuki com execução premium e sofisticada.
+    - Foco em UI/UX, legibilidade e organização estrutural.
+    - Layout responsivo mobile-first com sidebar sticky.
+    - Modal único e inteligente para todos os tipos de conteúdo.
     ================================================================
     */
 
     :root {
         /* MODO ESCURO (PADRÃO) */
-        --color-primary: #E50914; 
+        --font-family-main: 'Poppins', sans-serif;
+        --color-primary: #E50914; /* Vermelho Akatsuki */
         --color-primary-hover: #F40612;
-        --color-background: #0b0b0f;
-        --color-surface: #1c1c1e;
-        --color-surface-hover: #2c2c2e;
-        --color-border: #38383a;
-        --color-text-primary: #f1f1f1;
-        --color-text-secondary: #a1a1aa;
-        --color-text-on-surface: #f8f9fa;
-        --color-text-secondary-on-surface: rgba(248, 249, 250, 0.7);
-        --card-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        --card-hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(229, 9, 20, 0.2);
         
-        --modal-surface: #141418;
-        --modal-border: #2a2a2e;
-        --modal-text-primary: #f1f1f1;
-        --modal-text-secondary: #a1a1aa;
-        --modal-backdrop-color: rgba(0, 0, 0, 0.7);
+        --color-background: #0A0A0A;
+        --color-surface: #141414;
+        --color-surface-light: #1F1F1F;
+        --color-border: rgba(255, 255, 255, 0.1);
+        
+        --color-text-primary: #EAEAEA;
+        --color-text-secondary: #A0A0A0;
+        --color-text-heading: #FFFFFF;
+
+        --shadow-medium: 0 8px 16px rgba(0, 0, 0, 0.3);
+        --shadow-large: 0 15px 30px rgba(0, 0, 0, 0.5);
+        --modal-backdrop-color: rgba(10, 10, 10, 0.7);
     }
 
     body.light-mode {
         /* MODO CLARO */
-        --color-primary: #d90429;
-        --color-primary-hover: #E53935;
-        --color-background: #f4f4f5;
-        --color-surface: #ffffff;
-        --color-surface-hover: #f1f1f1;
-        --color-border: #e2e8f0;
-        --color-text-primary: #18181b;
-        --color-text-secondary: #6c757d;
-        --color-text-on-surface: #18181b;
-        --color-text-secondary-on-surface: #6c757d;
-        --card-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-        --card-hover-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        --color-primary: #D90429;
+        --color-primary-hover: #B90022;
 
-        --modal-surface: #fdfdfd;
-        --modal-border: #e9ecef;
-        --modal-text-primary: #212529;
-        --modal-text-secondary: #6c757d;
-        --modal-backdrop-color: rgba(255, 255, 255, 0.1);
+        --color-background: #F8F9FA;
+        --color-surface: #FFFFFF;
+        --color-surface-light: #F1F3F5;
+        --color-border: #DEE2E6;
+
+        --color-text-primary: #343A40;
+        --color-text-secondary: #6C757D;
+        --color-text-heading: #000000;
+
+        --shadow-medium: 0 8px 16px rgba(0, 0, 0, 0.08);
+        --shadow-large: 0 15px 30px rgba(0, 0, 0, 0.12);
+        --modal-backdrop-color: rgba(248, 249, 250, 0.5);
     }
     
     /* RESET E CONFIGURAÇÕES GLOBAIS */
@@ -65,363 +69,264 @@
     html { scroll-behavior: smooth; }
     
     body {
-        font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        font-family: var(--font-family-main);
         background-color: var(--color-background);
         color: var(--color-text-primary);
         margin: 0;
         padding-top: 70px;
-        transition: background-color 0.4s ease, color 0.4s ease;
+        transition: background-color 0.3s ease, color 0.3s ease;
     }
-
     body.modal-open { overflow: hidden; }
 
     .container {
         width: 100%;
-        max-width: 1320px;
+        max-width: 1400px;
         margin: 0 auto;
-        padding: 0 20px;
+        padding: 0 30px;
     }
 
-    /*
-    ================================================================
-    HEADER E NAVEGAÇÃO
-    ================================================================
-    */
+    /* HEADER E NAVEGAÇÃO */
     .main-header {
         position: fixed; top: 0; left: 0;
         width: 100%; height: 70px;
-        background-color: rgba(11, 11, 15, 0.8);
+        background-color: rgba(10, 10, 10, 0.8);
         backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
         border-bottom: 1px solid var(--color-border);
         z-index: 900;
-        transition: background-color 0.4s ease, border-color 0.4s ease;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
     }
-    body.light-mode .main-header { background-color: rgba(244, 244, 245, 0.8); }
+    body.light-mode .main-header { background-color: rgba(255, 255, 255, 0.8); }
     
-    .main-header .container { display: flex; align-items: center; justify-content: space-between; height: 100%; }
+    .main-header .container { display: flex; align-items: center; justify-content: center; height: 100%; }
     
     .header-logo {
-        font-size: 1.5rem; font-weight: bold;
-        color: var(--color-text-primary); text-decoration: none; transition: color 0.4s ease;
+        font-size: 1.6rem; font-weight: 700;
+        color: var(--color-text-heading); text-decoration: none;
     }
     .header-logo .fa-cloud { color: var(--color-primary); }
-    
-    #theme-toggle-btn {
-        background: var(--color-surface); color: var(--color-text-on-surface);
-        border: 1px solid var(--color-border);
-        width: 40px; height: 40px; border-radius: 50%;
-        cursor: pointer; font-size: 1.2rem;
-        display: flex; align-items: center; justify-content: center;
-        transition: all 0.4s ease;
-    }
-    #theme-toggle-btn:hover { transform: scale(1.1) rotate(15deg); color: var(--color-primary); }
-    .theme-icon.fa-sun { display: none; }
-    body.light-mode .theme-icon.fa-sun { display: block; }
-    body.light-mode .theme-icon.fa-moon { display: none; }
 
-    /*
-    ================================================================
-    LAYOUT PRINCIPAL
-    ================================================================
-    */
+    /* LAYOUT PRINCIPAL */
     .main-layout {
-        display: grid; grid-template-columns: 1fr;
-        gap: 40px; padding-top: 50px; padding-bottom: 50px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 40px 0;
     }
-    @media (min-width: 992px) { .main-layout { grid-template-columns: minmax(0, 2.5fr) minmax(0, 1fr); } }
-    
-    .section-title-main {
-        font-size: 1.8rem; margin-bottom: 25px; padding-bottom: 12px;
+    @media (min-width: 992px) {
+        .main-layout { grid-template-columns: 1fr 340px; }
+    }
+
+    .main-content-area > section:not(:last-child) { margin-bottom: 50px; }
+    .section-title {
+        font-size: 2rem; font-weight: 600; color: var(--color-text-heading);
+        margin: 0 0 25px 0; padding-bottom: 15px;
         border-bottom: 2px solid var(--color-primary);
         display: flex; align-items: center; gap: 12px;
-        color: var(--color-text-primary);
-        transition: color 0.4s ease, border-color 0.4s ease;
-    }
-    
-    /*
-    ================================================================
-    GRID DE NOTÍCIAS
-    ================================================================
-    */
-    .news-grid { display: grid; gap: 15px; }
-    @media (max-width: 767px) {
-        .news-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .news-card { background: transparent; border: 2px solid transparent; border-radius: 8px; box-shadow: none; }
-        .news-card:hover { border-color: var(--color-primary); transform: scale(1.05); }
-        .news-card__image-container { aspect-ratio: 1/1; border-radius: 6px; overflow: hidden; }
-        .news-card__content, .news-card__overlay .news-card__readmore { display: none; }
-        .news-card:hover .news-card__overlay { opacity: 1; background: rgba(0,0,0,0.6); }
-    }
-    @media (min-width: 768px) {
-        .news-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        .news-card {
-            background: var(--color-surface); color: var(--color-text-on-surface);
-            border-radius: 8px; overflow: hidden; display: flex; flex-direction: column;
-            border: 1px solid var(--color-border);
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.4s ease, background-color 0.4s ease;
-            text-decoration: none; box-shadow: var(--card-shadow);
-        }
-        .news-card:hover { transform: translateY(-5px); box-shadow: var(--card-hover-shadow); }
-        .news-card__image-container { position: relative; aspect-ratio: 16/10; }
-        .news-card__image-container img { width: 100%; height: 100%; object-fit: cover; }
-        .news-card__overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.3s ease;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .news-card:hover .news-card__overlay { opacity: 1; }
-        .news-card__readmore {
-            width: 55px; height: 55px; background: var(--color-primary);
-            border-radius: 50%; border: none; color: white; font-size: 1.6rem;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .news-card__content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
-        .news-card__category { font-size: 0.8rem; font-weight: bold; color: var(--color-primary); margin-bottom: 10px; text-transform: uppercase; }
-        .news-card__title { font-size: 1.15rem; margin: 0; flex-grow: 1; line-height: 1.4; color: var(--color-text-on-surface); transition: color 0.4s ease; }
-        .news-card__meta {
-            display: flex; justify-content: space-between;
-            color: var(--color-text-secondary-on-surface); font-size: 0.85em;
-            margin-top: 15px; padding-top: 10px; border-top: 1px solid var(--color-border);
-            transition: color 0.4s ease, border-color 0.4s ease;
-        }
     }
 
-    /*
-    ================================================================
-    SIDEBAR
-    ================================================================
-    */
-    .sidebar-widget {
-        background: var(--color-surface); padding: 25px; border-radius: 8px; margin-bottom: 40px;
-        border: 1px solid var(--color-border); box-shadow: var(--card-shadow);
-        transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.3s ease;
+    /* GRID DE NOTÍCIAS */
+    .news-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 30px;
     }
-    .sidebar-widget h3 { margin: 0 0 25px 0; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; color: var(--color-primary); }
-    .ranking-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px; }
-    .ranking-list a {
-        display: flex; align-items: center; gap: 15px; text-decoration: none;
-        background: var(--color-background); padding: 10px; border-radius: 6px;
-        transition: background-color 0.2s, transform 0.2s, border-color 0.2s;
+    @media (min-width: 768px) { .news-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .news-card {
+        background-color: var(--color-surface);
         border: 1px solid var(--color-border);
+        border-radius: 8px;
+        text-decoration: none;
+        color: inherit;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        display: flex; flex-direction: column;
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     }
-    .ranking-list a:hover { background-color: var(--color-surface-hover); transform: translateX(5px); }
-    .ranking-list img { width: 50px; min-width: 50px; height: 75px; object-fit: cover; border-radius: 4px; }
-    .rank-info .title { display: block; color: var(--color-text-primary); font-weight: 600; margin-bottom: 5px; transition: color 0.4s ease;}
-    .rank-info .details { font-size: 0.85em; color: var(--color-text-secondary); display: flex; gap: 15px; align-items: center; transition: color 0.4s ease;}
+    .news-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-medium); border-color: var(--color-primary); }
 
-    /*
-    ================================================================
-    ELEMENTOS DE UI GENÉRICOS
-    ================================================================
-    */
-    .btn {
-        padding: 10px 22px; border-radius: 6px; border: 1px solid transparent;
-        cursor: pointer; font-weight: 600; transition: all 0.2s ease;
-        display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-size: 0.95rem;
+    .news-card__image-container { position: relative; aspect-ratio: 16 / 9; overflow: hidden; }
+    .news-card__image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+    .news-card:hover .news-card__image { transform: scale(1.05); }
+
+    .news-card__content { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
+    .news-card__category {
+        font-size: 0.75rem; font-weight: 700;
+        color: var(--color-primary);
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
-    .btn--primary { background-color: var(--color-primary); color: white; border-color: var(--color-primary); }
-    .btn--primary:hover { background-color: var(--color-primary-hover); border-color: var(--color-primary-hover); transform: translateY(-2px); }
-    .btn--secondary { background-color: transparent; color: var(--color-text-primary); border: 1px solid var(--color-border); }
-    .btn--secondary:hover { background-color: var(--color-surface); color: var(--color-text-on-surface); }
+    .news-card__title {
+        font-size: 1.25rem; font-weight: 600;
+        color: var(--color-text-heading);
+        line-height: 1.4;
+        margin: 0;
+        flex-grow: 1;
+    }
+    .news-card__excerpt {
+        font-size: 0.9rem;
+        color: var(--color-text-secondary);
+        margin-top: 10px;
+        line-height: 1.6;
+    }
+    .news-card__meta {
+        font-size: 0.8rem;
+        color: var(--color-text-secondary);
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid var(--color-border);
+    }
+    .news-card__meta span { display: inline-flex; align-items: center; gap: 8px; }
+
+    /* SIDEBAR (STICKY E COM SCROLL INTERNO) */
+    .sidebar { position: relative; }
+    .sidebar-inner { position: sticky; top: 90px; }
+    .sidebar-widget {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        padding: 25px;
+        max-height: calc(100vh - 110px);
+        overflow-y: auto;
+    }
     
-    .status-message { padding: 40px 20px; text-align: center; color: var(--color-text-secondary); font-size: 1.1rem; transition: color 0.4s ease; }
-    .status-message .fa-spinner { color: var(--color-primary); margin-right: 10px; }
-    .animated-section { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
-    .animated-section.is-visible { opacity: 1; transform: translateY(0); }
-
-    /*
-    ================================================================
-    ESTRUTURA DE MODAL GENÉRICA E PROFISSIONAL
-    ================================================================
-    */
+    .ranking-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px; }
+    .ranking-item a {
+        display: flex; gap: 15px; align-items: center;
+        padding: 10px; border-radius: 6px;
+        transition: background-color 0.2s ease;
+        text-decoration: none;
+    }
+    .ranking-item a:hover { background-color: var(--color-surface-light); }
+    .ranking-item__img { width: 50px; height: 75px; object-fit: cover; border-radius: 4px; flex-shrink: 0; }
+    .ranking-item__info { flex-grow: 1; }
+    .ranking-item__title { font-weight: 600; color: var(--color-text-primary); margin-bottom: 5px; line-height: 1.3; }
+    .ranking-item__meta { font-size: 0.85rem; color: var(--color-text-secondary); }
+    .ranking-item__meta .fa-star { color: #f5c518; }
+    
+    /* MODAL ÚNICO E INTELIGENTE */
     .modal {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background-color: var(--modal-backdrop-color);
-        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
         display: flex; align-items: center; justify-content: center;
         opacity: 0; visibility: hidden;
-        transition: opacity 0.4s ease, visibility 0s 0.4s, background-color 0.4s ease;
+        transition: opacity 0.4s ease, visibility 0s 0.4s;
+        z-index: 1000;
+        padding: 20px;
     }
     .modal.is-active { opacity: 1; visibility: visible; transition-delay: 0s; }
     
     .modal__content {
-        background: var(--modal-surface);
-        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        background-color: transparent;
         border-radius: 12px;
-        transform: scale(0.95) translateY(20px); opacity: 0;
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease, background-color 0.4s ease;
+        width: 100%; max-width: 1100px;
+        height: 90vh; max-height: 850px;
+        transform: scale(0.95); opacity: 0;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
         position: relative;
+        display: flex;
     }
-    .modal.is-active .modal__content { transform: scale(1) translateY(0); opacity: 1; }
-    
+    .modal.is-active .modal__content { transform: scale(1); opacity: 1; }
+
+    .modal-background {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        object-fit: cover; z-index: 1; border-radius: inherit;
+    }
+    .modal-overlay {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(to top, rgba(10, 10, 10, 0.95) 30%, rgba(10, 10, 10, 0.7) 100%);
+        z-index: 2; border-radius: inherit;
+    }
+    body.light-mode .modal-overlay {
+        background: linear-gradient(to top, rgba(248, 249, 250, 0.95) 30%, rgba(248, 249, 250, 0.7) 100%);
+    }
+
     .modal__close {
         position: absolute; top: 15px; right: 15px;
-        background: rgba(0,0,0,0.2); border: 1px solid transparent;
+        background: rgba(0,0,0,0.3); border: 1px solid transparent;
         border-radius: 50%; width: 40px; height: 40px;
-        font-size: 24px; color: var(--modal-text-secondary); cursor: pointer;
+        font-size: 1rem; color: #fff; cursor: pointer;
         transition: all 0.3s ease;
         display: flex; align-items: center; justify-content: center;
-        z-index: 100;
+        z-index: 4;
     }
-    body.light-mode .modal__close { color: var(--modal-text-secondary); background: rgba(0,0,0,0.05); }
-    .modal__close:hover { background: var(--color-primary); border-color: var(--color-primary); color: #fff; transform: scale(1.1) rotate(90deg); }
+    .modal__close:hover { background: var(--color-primary); transform: scale(1.1) rotate(90deg); }
 
-    .scrollbar-styled { scrollbar-width: thin; scrollbar-color: var(--color-primary) var(--modal-border); }
-    .scrollbar-styled::-webkit-scrollbar { width: 8px; }
-    .scrollbar-styled::-webkit-scrollbar-track { background: var(--modal-border); transition: background-color 0.4s ease; }
-    .scrollbar-styled::-webkit-scrollbar-thumb { background-color: var(--color-primary); border-radius: 4px; }
-    
-    /*
-    ================================================================
-    MODAL-PÁGINA DE NOTÍCIAS (COM FUNDO DINÂMICO)
-    ================================================================
-    */
-    #news-page-modal .modal__content {
-        width: 95vw; max-width: 1400px;
-        height: 95vh;
-        display: flex; flex-direction: column;
-        overflow: hidden;
-    }
-
-    .news-page__background {
-        position: absolute; top: 0; left: 0;
+    .modal-inner-wrapper {
+        position: relative; z-index: 3;
         width: 100%; height: 100%;
-        background-size: cover; background-position: center;
-        transition: background-image 0.5s ease-in-out;
-        z-index: 1;
-    }
-    .news-page__background::after {
-        content: ''; position: absolute; top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: rgba(10, 10, 15, 0.85);
-        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-        transition: background-color 0.4s ease;
-    }
-    body.light-mode .news-page__background::after { background: rgba(253, 253, 253, 0.85); }
-    
-    .news-page__body {
-        flex-grow: 1;
         overflow-y: auto;
-        padding: 40px 50px;
-        position: relative; z-index: 2;
+        padding: 40px;
     }
     
-    .news-page__content-wrapper {
-        transition: opacity 0.4s ease;
+    .modal-header { text-align: center; margin-bottom: 30px; }
+    .modal-header__title {
+        font-size: 2.8rem; font-weight: 700;
+        color: var(--color-text-heading);
+        line-height: 1.2;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
-    .news-page__content-wrapper.is-loading { opacity: 0.3; pointer-events: none; }
-
-    .news-page__header { padding-bottom: 25px; border-bottom: 1px solid var(--color-border); margin-bottom: 30px; transition: border-color 0.4s ease;}
-    .news-page__title {
-        font-size: 2.2rem; margin: 0; line-height: 1.3;
-        color: var(--modal-text-primary); transition: color 0.4s ease;
-    }
-    #video-player-container {
-        position: relative; padding-bottom: 56.25%; height: 0;
-        border-radius: 10px; overflow: hidden; margin-bottom: 40px;
-        background-color: #000; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-    }
-    #video-player-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-
-    .news-page__meta-grid { display: grid; grid-template-columns: 1fr; gap: 40px; }
-    @media (min-width: 1024px) { .news-page__meta-grid { grid-template-columns: 1fr 320px; } }
     
-    .news-page__section-title {
-        font-size: 1.5rem; color: var(--modal-text-primary);
-        margin: 0 0 20px 0; transition: color 0.4s ease;
-        padding-bottom: 10px; border-bottom: 1px solid var(--color-border);
+    #modal-main-content { margin-bottom: 40px; }
+    .video-player-container {
+        position: relative; width: 100%; padding-bottom: 56.25%; height: 0;
+        border-radius: 8px; overflow: hidden;
+        background-color: #000; box-shadow: var(--shadow-large);
     }
-
-    /* Formulário de Comentário */
-    .comment-form { display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px; }
-    .comment-form textarea {
-        width: 100%; min-height: 80px; padding: 12px;
-        border: 1px solid var(--color-border); border-radius: 6px;
-        background: var(--color-background); color: var(--modal-text-primary);
-        font-family: inherit; font-size: 1rem; resize: vertical;
-        transition: all 0.4s ease;
-    }
-    .comment-form textarea:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.15); outline: none; }
-    .comment-form__footer { display: flex; justify-content: flex-end; align-items: center; }
+    .video-player-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
     
-    /* Lista de Comentários */
-    .comments-list-container { display: flex; flex-direction: column; gap: 25px; }
-    .comment-card { display: flex; gap: 15px; }
-    .comment-author-avatar img { width: 40px; height: 40px; border-radius: 50%; }
-    .comment-author-name { font-weight: 600; color: var(--modal-text-primary); margin-right: 10px; transition: color 0.4s ease; }
-    .comment-date { font-size: 0.8em; color: var(--modal-text-secondary); transition: color 0.4s ease; }
-    .comment-text { color: var(--modal-text-secondary); line-height: 1.6; margin-top: 5px; transition: color 0.4s ease; }
-
-    /* Barra Lateral da Página de Notícias */
-    .news-page__sidebar { display: flex; flex-direction: column; gap: 30px; }
-    .sidebar-box { background: var(--color-surface); padding: 20px; border-radius: 8px; border: 1px solid var(--color-border); transition: all 0.4s ease;}
-    .sidebar-box__title { font-size: 1.1rem; margin: 0 0 15px 0; color: var(--modal-text-primary); transition: color 0.4s ease;}
-    .social-share-buttons { display: flex; gap: 10px; }
-    .social-share-buttons a {
-        width: 38px; height: 38px; border-radius: 50%;
-        display: inline-flex; align-items: center; justify-content: center;
-        text-decoration: none; color: #fff; font-size: 1.1rem;
-        transition: transform 0.2s;
-    }
-    .social-share-buttons a:hover { transform: scale(1.1); }
-    .social-share-buttons .fa-facebook-f { background: #1877F2; }
-    .social-share-buttons .fa-twitter { background: #1DA1F2; }
-    .social-share-buttons .fa-whatsapp { background: #25D366; }
-    
-    /*
-    ================================================================
-    MODAL DE EXPLORADOR DE CATEGORIAS
-    ================================================================
-    */
-    #category-explorer-modal { z-index: 1050; } /* Garante que fique sobre o outro modal */
-    #category-explorer-modal .modal__content {
-        width: 90vw; max-width: 900px;
-        height: 90vh;
-        display: flex; flex-direction: column;
+    .article-body-container {
+        background: rgba(0,0,0,0.2);
         padding: 30px;
+        border-radius: 8px;
+        font-size: 1.1rem; line-height: 1.8;
     }
-    .category-explorer__header { flex-shrink: 0; }
-    .category-explorer__title { font-size: 1.8rem; margin: 0 0 20px; color: var(--modal-text-primary); transition: color 0.4s ease; }
-    .category-explorer__tags {
-        display: flex; flex-wrap: wrap; gap: 10px;
-        margin-bottom: 20px; padding-bottom: 20px;
-        border-bottom: 1px solid var(--color-border);
-        transition: border-color 0.4s ease;
+    .article-body-container p { margin: 0 0 1.5em; }
+    
+    .modal-comments-section {
+        border-top: 1px solid var(--color-border);
+        padding-top: 30px;
     }
-    .category-tag {
-        background-color: var(--color-surface); color: var(--modal-text-secondary);
-        padding: 8px 18px; border-radius: 20px; font-size: 0.9em;
-        cursor: pointer; border: 1px solid var(--color-border);
+    .comments-section-title { font-size: 1.5rem; margin: 0 0 20px 0; }
+    .comment-form { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; }
+    .comment-form textarea {
+        width: 100%; min-height: 100px; padding: 15px;
+        border: 1px solid var(--color-border); border-radius: 6px;
+        background-color: var(--color-surface-light); color: var(--color-text-primary);
+        font-family: inherit; font-size: 1rem; resize: vertical;
         transition: all 0.2s ease;
     }
-    .category-tag:hover { background-color: var(--color-primary-hover); color: #fff; border-color: var(--color-primary-hover); }
-    .category-tag.is-active { background-color: var(--color-primary); color: #fff; border-color: var(--color-primary); font-weight: bold; }
+    .comment-form textarea:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2); outline: none; }
+    .comment-form-footer { text-align: right; }
     
-    .category-explorer__results-grid {
-        flex-grow: 1; overflow-y: auto;
-        display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 20px;
-    }
-    .category-explorer__results-grid .news-card { min-height: 180px; }
+    .comments-list { display: flex; flex-direction: column; gap: 20px; }
+    .comment-card { display: flex; gap: 15px; }
+    .comment-card__avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .comment-card__body { flex-grow: 1; }
+    .comment-card__author { font-weight: 600; color: var(--color-text-primary); }
+    .comment-card__date { font-size: 0.8rem; color: var(--color-text-secondary); margin-left: 10px; }
+    .comment-card__text { margin-top: 5px; line-height: 1.6; }
 
-    /*
-    ================================================================
-    FOOTER
-    ================================================================
-    */
+    /* UTILITÁRIOS */
+    .status-message { padding: 40px 20px; text-align: center; color: var(--color-text-secondary); font-size: 1.1rem; }
+    .scrollbar-styled { scrollbar-width: thin; scrollbar-color: var(--color-primary) var(--color-surface-light); }
+    .scrollbar-styled::-webkit-scrollbar { width: 8px; }
+    .scrollbar-styled::-webkit-scrollbar-track { background: transparent; }
+    .scrollbar-styled::-webkit-scrollbar-thumb { background-color: var(--color-primary); border-radius: 4px; }
+
+    /* FOOTER */
     .main-footer {
         background-color: var(--color-surface);
-        border-top: 1px solid var(--color-border);
-        padding: 30px 0;
-        margin-top: 50px;
-        color: var(--color-text-secondary);
-        font-size: 0.9rem;
-        text-align: center;
-        transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+        padding: 30px 0; text-align: center;
+        color: var(--color-text-secondary); font-size: 0.9rem;
     }
-    .main-footer .container { display: flex; flex-direction: column; align-items: center; gap: 15px; }
-    .main-footer a { color: var(--color-primary); text-decoration: none; font-weight: 600; }
-    .main-footer a:hover { text-decoration: underline; }
+    #theme-toggle-btn-footer {
+        background: none; border: none; font-size: 1.2rem;
+        color: var(--color-text-secondary); cursor: pointer; margin-left: 15px;
+        vertical-align: middle;
+    }
 </style>
 </head>
 <body>
@@ -432,525 +337,440 @@
         <a href="#" class="header-logo">
             <i class="fas fa-cloud"></i> Akatsuki Hub
         </a>
-        <button id="theme-toggle-btn" aria-label="Alternar tema">
-            <i class="fas fa-moon theme-icon"></i>
-            <i class="fas fa-sun theme-icon"></i>
-        </button>
     </div>
 </header>
 
 <!-- LAYOUT PRINCIPAL DO CONTEÚDO -->
-<div class="main-layout container" role="main">
+<div class="container main-layout">
     <main class="main-content-area">
-        <section id="external-news" class="animated-section" aria-labelledby="section-title-web">
-            <h2 id="section-title-web" class="section-title-main"><i class="fas fa-globe-americas"></i> Destaques da Web</h2>
-            <div class="news-grid" id="external-news-container">
-                <p class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando destaques da web...</p>
+        <section id="admin-news-section">
+            <h2 class="section-title"><i class="fas fa-user-edit"></i> Artigos do Editor</h2>
+            <div class="news-grid" id="admin-news-grid">
+                <!-- Cards de notícias do admin serão injetados aqui -->
+            </div>
+        </section>
+        <section id="api-news-section">
+            <h2 class="section-title"><i class="fas fa-film"></i> Destaques da Web</h2>
+            <div class="news-grid" id="api-news-grid">
+                <!-- Cards de notícias da API serão injetados aqui -->
             </div>
         </section>
     </main>
     
-    <aside class="sidebar" role="complementary">
-        <div id="top-animes-widget" class="sidebar-widget animated-section" aria-labelledby="section-title-animes">
-            <h3 id="section-title-animes"><i class="fas fa-fire-alt"></i> Top Animes da Temporada</h3>
-            <ol class="ranking-list" id="top-anime-list">
-                <li class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando...</li>
-            </ol>
-        </div>
-        <div id="top-movies-widget" class="sidebar-widget animated-section" aria-labelledby="section-title-movies">
-            <h3 id="section-title-movies"><i class="fas fa-film"></i> Filmes Populares</h3>
-            <ol class="ranking-list" id="top-movies-list">
-                <li class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando...</li>
-            </ol>
+    <aside class="sidebar">
+        <div class="sidebar-inner">
+            <div class="sidebar-widget scrollbar-styled">
+                <section id="top-animes-widget">
+                    <h3 class="section-title"><i class="fas fa-fire-alt"></i> Top Animes</h3>
+                    <ol class="ranking-list" id="top-anime-list"></ol>
+                </section>
+            </div>
         </div>
     </aside>
 </div>
 
-<!-- MODAL-PÁGINA DE NOTÍCIAS (NOVO E ROBUSTO) -->
-<div id="news-page-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="news-page-title">
+<!-- MODAL ÚNICO E INTELIGENTE -->
+<div id="content-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal__content">
-        <div class="news-page__background"></div>
-        <button class="modal__close" aria-label="Fechar">×</button>
-        <div class="news-page__body scrollbar-styled">
-            <div class="news-page__content-wrapper">
-                <header class="news-page__header">
-                    <h2 id="news-page-title" class="news-page__title">Carregando notícia...</h2>
-                </header>
-                
-                <div id="video-player-container"></div>
-                
-                <div class="news-page__meta-grid">
-                    <main class="news-page__main-content">
-                        <section id="comment-section">
-                            <h3 class="news-page__section-title">Deixe seu Comentário</h3>
-                            <form id="comment-form" class="comment-form">
-                                <textarea id="comment-textarea" placeholder="O que você achou deste vídeo?" required></textarea>
-                                <div class="comment-form__footer">
-                                    <button type="submit" class="btn btn--primary">
-                                        <i class="fas fa-paper-plane"></i> Comentar
-                                    </button>
-                                </div>
-                            </form>
-                        </section>
-                        
-                        <section id="community-comments-section">
-                            <h3 class="news-page__section-title">Comentários da Comunidade</h3>
-                            <div id="community-comments-list" class="comments-list-container"></div>
-                        </section>
-                        
-                        <section id="youtube-comments-section">
-                            <h3 class="news-page__section-title">Comentários do YouTube</h3>
-                            <div id="youtube-comments-list" class="comments-list-container"></div>
-                        </section>
-                    </main>
-                    
-                    <aside class="news-page__sidebar">
-                        <div class="sidebar-box">
-                            <h4 class="sidebar-box__title">Compartilhe</h4>
-                            <div class="social-share-buttons">
-                                <a href="#" target="_blank" class="social-share-link" data-platform="facebook" title="Compartilhar no Facebook"><i class="fab fa-facebook-f"></i></a>
-                                <a href="#" target="_blank" class="social-share-link" data-platform="twitter" title="Compartilhar no Twitter"><i class="fab fa-twitter"></i></a>
-                                <a href="#" target="_blank" class="social-share-link" data-platform="whatsapp" title="Compartilhar no WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                            </div>
-                        </div>
-                        <div class="sidebar-box">
-                            <h4 class="sidebar-box__title">Navegação</h4>
-                            <button id="open-category-explorer" class="btn btn--secondary" style="width:100%;">
-                                <i class="fas fa-compass"></i> Explorar por Categoria
-                            </button>
-                        </div>
-                    </aside>
-                </div>
-            </div>
+        <img id="modal-backdrop" src="" alt="Fundo dinâmico" class="modal-background">
+        <div class="modal-overlay"></div>
+        <button class="modal__close" aria-label="Fechar modal">×</button>
+        <div class="modal-inner-wrapper scrollbar-styled">
+            <header class="modal-header">
+                <h2 id="modal-title" class="modal-header__title">Carregando...</h2>
+            </header>
+            <main id="modal-main-content"></main>
+            <section class="modal-comments-section">
+                <h3 class="comments-section-title">Comentários da Comunidade</h3>
+                <form id="comment-form" class="comment-form">
+                    <textarea placeholder="Deixe seu comentário..." required></textarea>
+                    <div class="comment-form-footer">
+                        <button type="submit" class="btn btn--primary"><i class="fas fa-paper-plane"></i> Enviar</button>
+                    </div>
+                </form>
+                <div id="comments-list" class="comments-list"></div>
+            </section>
+            <section id="youtube-comments-section" class="modal-comments-section" style="display:none;">
+                 <h3 class="comments-section-title">Comentários do YouTube</h3>
+                 <div id="youtube-comments-list" class="comments-list"></div>
+            </section>
         </div>
     </div>
 </div>
-
-<!-- MODAL EXPLORADOR DE CATEGORIAS (NOVO) -->
-<div id="category-explorer-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="category-explorer-title">
-    <div class="modal__content">
-        <button class="modal__close" aria-label="Fechar">×</button>
-        <div class="category-explorer__header">
-            <h2 id="category-explorer-title" class="category-explorer__title">Explorar Categorias</h2>
-            <div id="category-explorer-tags" class="category-explorer__tags scrollbar-styled">
-                <p class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>
-            </div>
-        </div>
-        <div id="category-explorer-results-grid" class="category-explorer__results-grid scrollbar-styled">
-            <p class="status-message">Selecione uma categoria para ver as notícias.</p>
-        </div>
-    </div>
-</div>
-
 
 <!-- FOOTER -->
 <footer class="main-footer">
-    <div class="container">
-        <p>© 2025 Central Akatsuki. Todos os direitos reservados.</p>
-        <p>Desenvolvido com a força do Sharingan. Dados de Jikan, TMDb e YouTube.</p>
-    </div>
+    <p>© 2025 Akatsuki Hub.
+        <button id="theme-toggle-btn-footer" aria-label="Alternar tema">
+            <i class="fas fa-moon theme-icon"></i>
+            <i class="fas fa-sun theme-icon"></i>
+        </button>
+    </p>
 </footer>
 
 <script>
 /**
- * @file Script principal para a Central de Notícias Akatsuki.
- * @description Gerencia a busca de dados de APIs, interatividade da UI,
- * sistema de modais, alternância de tema e comentários locais.
- * @version 2.0.0
+ * @file Script principal para o Akatsuki Hub v5.
+ * @description Versão com design "Akatsuki Elite", modal único inteligente,
+ * e arquitetura JS modular para uma experiência robusta e profissional.
+ * @version 5.0.0
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+const App = {
+    // -------------------------------------------------------------------------
+    // 1. CONFIGURAÇÃO E ESTADO
+    // -------------------------------------------------------------------------
+    config: {
+        JIKAN_API: 'https://api.jikan.moe/v4',
+        YOUTUBE_API_KEY: 'SUA_CHAVE_API_DO_YOUTUBE_AQUI',
+        YOUTUBE_API_URL: 'https://www.googleapis.com/youtube/v3',
+        PLACEHOLDER_IMG: 'https://via.placeholder.com/500x281/141414/A0A0A0?text=Indisponível',
+    },
 
-    // --- CONFIGURAÇÕES E CONSTANTES GLOBAIS --- //
-    const JIKAN_API = 'https://api.jikan.moe/v4';
-    const TMDB_API = 'https://api.themoviedb.org/3';
-    const TMDB_KEY = 'ebc6c62b1d31f28ab2d155ad4c921657'; // Chave pública de exemplo
-    const YOUTUBE_API_KEY = 'SUA_CHAVE_API_DO_YOUTUBE_AQUI'; // !!! INSIRA SUA CHAVE AQUI !!!
-    const YOUTUBE_API_URL = 'https://www.googleapis.com/youtube/v3';
-    const PLACEHOLDER_IMG = 'https://via.placeholder.com/500x281/1c1c1e/a1a1aa?text=Imagem+Indisponível';
-    const IMG_PATH = 'https://image.tmdb.org/t/p/';
-
-    // --- SELETORES DE ELEMENTOS DO DOM --- //
-    const DOM = {
-        body: document.body,
-        themeToggleButton: document.getElementById('theme-toggle-btn'),
-        newsContainer: document.getElementById('external-news-container'),
-        topAnimeList: document.getElementById('top-anime-list'),
-        topMovieList: document.getElementById('top-movies-list'),
-        newsPage: {
-            modal: document.getElementById('news-page-modal'),
-            background: document.querySelector('.news-page__background'),
-            contentWrapper: document.querySelector('.news-page__content-wrapper'),
-            title: document.getElementById('news-page-title'),
-            playerContainer: document.getElementById('video-player-container'),
-            commentForm: document.getElementById('comment-form'),
-            communityCommentsList: document.getElementById('community-comments-list'),
-            youtubeCommentsList: document.getElementById('youtube-comments-list'),
-        },
-        categoryExplorer: {
-            modal: document.getElementById('category-explorer-modal'),
-            tagsContainer: document.getElementById('category-explorer-tags'),
-            resultsGrid: document.getElementById('category-explorer-results-grid'),
-            openButton: document.getElementById('open-category-explorer'),
-        }
-    };
-
-    // --- GERENCIADOR DE MODAIS PROFISSIONAL --- //
-    const ModalManager = {
-        activeModals: [],
-        open(modalId, data = {}) {
-            const modal = document.getElementById(modalId);
-            if (!modal) return;
-
-            modal.dataset.modalData = JSON.stringify(data);
-            this.activeModals.push(modal);
-            modal.classList.add('is-active');
-            DOM.body.classList.add('modal-open');
-        },
-        close(modal) {
-            if (!modal) return;
-            modal.classList.remove('is-active');
-            this.activeModals = this.activeModals.filter(m => m !== modal);
-            if (this.activeModals.length === 0) {
-                DOM.body.classList.remove('modal-open');
-            }
-            // Limpa player do YouTube ao fechar
-            if (modal.id === 'news-page-modal') {
-                DOM.newsPage.playerContainer.innerHTML = '';
-            }
-        },
-        closeAll() {
-            this.activeModals.forEach(modal => modal.classList.remove('is-active'));
-            this.activeModals = [];
-            DOM.body.classList.remove('modal-open');
-        },
-        getActiveModal() {
-            return this.activeModals[this.activeModals.length - 1];
-        }
-    };
+    state: {
+        currentContentId: null, // Será 'video_{id}' ou 'article_{id}'
+    },
     
-    // Event listeners para botões de fechar
-    document.querySelectorAll('.modal__close').forEach(button => {
-        button.addEventListener('click', () => ModalManager.close(button.closest('.modal')));
-    });
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') ModalManager.close(ModalManager.getActiveModal());
-    });
+    // Conteúdo estático simulando notícias do admin
+    adminPosts: [{
+        id: 'article_1',
+        type: 'article',
+        category: 'Análise',
+        title: 'A Relevância Contínua de Cowboy Bebop',
+        author: 'O Editor',
+        date: '2025-07-15',
+        image: 'https://images.alphacoders.com/605/605592.png',
+        excerpt: 'Explorando como a mistura de gêneros, personagens profundos e trilha sonora icônica mantém a obra-prima de Shinichirō Watanabe atemporal.',
+        content: `<p>Vinte e sete anos após sua estreia, Cowboy Bebop transcende a nostalgia para se afirmar como uma das obras mais influentes e artisticamente completas da história da animação. Sua genialidade não reside em um único elemento, mas na fusão quase perfeita de faroeste espacial, filme noir, comédia e um jazz melancólico que dá alma à jornada de sua tripulação.</p><p>Cada episódio é uma vinheta, uma história contida que explora temas de existencialismo, solidão e a impossibilidade de escapar do passado. Spike, Jet, Faye e Ed não são heróis; são sobreviventes, cada um carregando um fardo que define suas ações. É essa humanidade falha, essa busca por algo indefinido enquanto se lida com as contas do ontem, que cria uma conexão tão duradoura com o público. A série nos ensina que, às vezes, o importante não é encontrar um final feliz, mas sim viver o momento, mesmo que seja apenas até a próxima caçada. See you, Space Cowboy...</p>`
+    },
+    {
+        id: 'article_2',
+        type: 'article',
+        category: 'Tecnologia',
+        title: 'O Futuro da Animação: IA e a Criatividade Humana',
+        author: 'O Editor',
+        date: '2025-07-14',
+        image: 'https://images2.alphacoders.com/133/1335359.png',
+        excerpt: 'A inteligência artificial generativa está remodelando indústrias. Como a animação pode se beneficiar sem perder sua alma artística?',
+        content: `<p>A ascensão das ferramentas de inteligência artificial generativa de imagem e vídeo provocou um debate acalorado na comunidade artística. Para a indústria da animação, tradicionalmente intensiva em mão de obra, a promessa de otimização é tentadora. A IA pode acelerar processos como a criação de cenários, a interpolação de quadros (in-betweening) e até mesmo a geração de storyboards iniciais.</p><p>No entanto, a preocupação é legítima: onde fica a mão do artista? A beleza da animação muitas vezes reside nas imperfeições deliberadas, no estilo único de um diretor ou de um estúdio. O desafio para o futuro não será substituir os artistas, mas sim criar um pipeline onde a IA atue como uma ferramenta poderosa sob o controle criativo humano. Imagine animadores focando mais na performance dos personagens e na direção de arte, enquanto a IA cuida das tarefas repetitivas. Se bem implementado, este pode ser um salto quântico em produtividade, permitindo que estúdios menores compitam com grandes produções e que novas formas de expressão visual surjam.</p>`
+    }],
+    
+    // -------------------------------------------------------------------------
+    // 2. INICIALIZAÇÃO
+    // -------------------------------------------------------------------------
+    init() {
+        this.cacheDOMElements();
+        this.ThemeManager.init();
+        this.setupEventListeners();
+        this.loadInitialContent();
+    },
 
+    cacheDOMElements() {
+        this.dom = {
+            body: document.body,
+            adminNewsGrid: document.getElementById('admin-news-grid'),
+            apiNewsGrid: document.getElementById('api-news-grid'),
+            topAnimeList: document.getElementById('top-anime-list'),
+            modal: document.getElementById('content-modal'),
+            modalBackdrop: document.getElementById('modal-backdrop'),
+            modalTitle: document.getElementById('modal-title'),
+            modalMainContent: document.getElementById('modal-main-content'),
+            modalCommentsSection: document.querySelector('.modal-comments-section'),
+            commentForm: document.getElementById('comment-form'),
+            commentsList: document.getElementById('comments-list'),
+            youtubeCommentsSection: document.getElementById('youtube-comments-section'),
+            youtubeCommentsList: document.getElementById('youtube-comments-list'),
+            themeToggleButtons: [document.getElementById('theme-toggle-btn-footer')],
+        };
+    },
 
-    // --- SISTEMA DE TEMA (MODO CLARO/ESCURO) --- //
-    const ThemeManager = {
+    // -------------------------------------------------------------------------
+    // 3. GERENCIAMENTO DE EVENTOS
+    // -------------------------------------------------------------------------
+    setupEventListeners() {
+        this.dom.themeToggleButtons.forEach(btn => btn.addEventListener('click', () => this.ThemeManager.toggle()));
+        
+        // Delegação de eventos para abrir modal a partir de qualquer card
+        document.querySelector('.main-content-area').addEventListener('click', e => this.handleCardClick(e));
+        
+        // Fechar Modal
+        this.dom.modal.querySelector('.modal__close').addEventListener('click', () => this.ModalManager.close());
+        this.dom.modal.addEventListener('click', e => {
+            if (e.target === this.dom.modal) this.ModalManager.close();
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && this.dom.modal.classList.contains('is-active')) this.ModalManager.close();
+        });
+        
+        // Formulário de Comentário
+        this.dom.commentForm.addEventListener('submit', e => this.CommentManager.handleSubmit(e));
+    },
+
+    // -------------------------------------------------------------------------
+    // 4. CARREGAMENTO DE CONTEÚDO
+    // -------------------------------------------------------------------------
+    async loadInitialContent() {
+        this.render.setLoadingState(this.dom.adminNewsGrid, true);
+        this.render.setLoadingState(this.dom.apiNewsGrid, true);
+        this.render.setLoadingState(this.dom.topAnimeList, true);
+
+        // Renderiza notícias do admin (estáticas)
+        this.render.setLoadingState(this.dom.adminNewsGrid, false);
+        this.render.newsGrid(this.adminPosts, this.dom.adminNewsGrid);
+
+        // Carrega notícias da API (vídeos)
+        const newsData = await this.Api.getJikanPromos();
+        this.render.setLoadingState(this.dom.apiNewsGrid, false);
+        if (newsData) this.render.newsGrid(newsData.slice(0, 4), this.dom.apiNewsGrid);
+
+        // Carrega Top Animes
+        const animes = await this.Api.getJikanTopAiring();
+        this.render.setLoadingState(this.dom.topAnimeList, false);
+        if(animes) this.render.sidebarList(this.dom.topAnimeList, animes);
+    },
+
+    // -------------------------------------------------------------------------
+    // 5. MANIPULADORES DE EVENTOS
+    // -------------------------------------------------------------------------
+    handleCardClick(event) {
+        const card = event.target.closest('.news-card');
+        if (!card) return;
+        event.preventDefault();
+
+        const { id, type, title, image, excerpt, author, date } = card.dataset;
+        this.state.currentContentId = id;
+
+        if (type === 'video') {
+            this.ModalManager.open({
+                id, type, title, image
+            });
+        } else if (type === 'article') {
+            const articleData = this.adminPosts.find(p => p.id === id);
+            this.ModalManager.open({
+                ...articleData
+            });
+        }
+    },
+
+    // -------------------------------------------------------------------------
+    // 6. GERENCIADORES (MODAL, TEMA, COMENTÁRIOS)
+    // -------------------------------------------------------------------------
+    ModalManager: {
+        open(data) {
+            App.dom.body.classList.add('modal-open');
+            App.dom.modal.classList.add('is-active');
+            
+            App.dom.modalBackdrop.src = data.image || '';
+            App.dom.modalTitle.textContent = data.title || 'Carregando...';
+
+            if (data.type === 'video') {
+                App.render.videoModalLayout(data);
+                App.CommentManager.load(data.id);
+                App.Api.getYouTubeComments(data.id.split('_')[1]); // Passa apenas o ID do vídeo
+            } else if (data.type === 'article') {
+                App.render.articleModalLayout(data);
+                App.CommentManager.load(data.id);
+            }
+        },
+        close() {
+            App.dom.body.classList.remove('modal-open');
+            App.dom.modal.classList.remove('is-active');
+            // Limpa o conteúdo para a próxima abertura
+            App.dom.modalMainContent.innerHTML = '';
+            App.dom.youtubeCommentsSection.style.display = 'none';
+        },
+    },
+
+    ThemeManager: {
         init() {
             if (localStorage.getItem('theme') === 'light') {
-                DOM.body.classList.add('light-mode');
+                App.dom.body.classList.add('light-mode');
             }
-            DOM.themeToggleButton.addEventListener('click', this.toggle.bind(this));
+            this.updateIcons();
         },
         toggle() {
-            DOM.body.classList.toggle('light-mode');
-            localStorage.setItem('theme', DOM.body.classList.contains('light-mode') ? 'light' : 'dark');
-        }
-    };
-
-    // --- FUNÇÕES DE API E DADOS --- //
-    
-    /**
-     * Busca dados de uma URL de forma segura.
-     * @param {string} url - A URL da API.
-     * @returns {Promise<Object|null>} O objeto JSON ou nulo em caso de erro.
-     */
-    async function fetchData(url) {
-        try {
-            const res = await fetch(url);
-            if (!res.ok) throw new Error(`API Error: ${res.status} em ${url}`);
-            return await res.json();
-        } catch (error) {
-            console.error(`Falha ao buscar dados:`, error);
-            return null;
-        }
-    }
-
-    /**
-     * Extrai o ID do vídeo de uma URL do YouTube.
-     * @param {string} url - A URL do YouTube.
-     * @returns {string|null} O ID do vídeo ou nulo.
-     */
-    function extractYouTubeId(url) {
-        if (!url) return null;
-        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-        const match = url.match(regExp);
-        return (match && match[2].length === 11) ? match[2] : null;
-    }
-
-    // --- RENDERIZAÇÃO DA UI PRINCIPAL --- //
-
-    /**
-     * Renderiza uma grade de notícias em um container.
-     * @param {HTMLElement} container - O elemento que conterá a grade.
-     * @param {Array<Object>} newsItems - Array de itens de notícia da API.
-     */
-    function renderNewsGrid(container, newsItems) {
-        if (!newsItems || newsItems.length === 0) {
-            container.innerHTML = `<p class="status-message">Nenhum resultado encontrado.</p>`;
-            return;
-        }
-        container.innerHTML = newsItems.map(item => {
-            const promo = item.entry;
-            const imageUrl = promo.images?.jpg?.large_image_url || PLACEHOLDER_IMG;
-            const videoId = extractYouTubeId(item.trailer.url);
-            if (!videoId) return '';
-
-            return `
-                <a href="#" class="news-card open-news-page-modal" 
-                   data-video-id="${videoId}" 
-                   data-video-title="${promo.title}"
-                   data-background-image="${imageUrl}">
-                    <div class="news-card__image-container">
-                        <img src="${imageUrl}" alt="Capa de ${promo.title}" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}';"/>
-                        <div class="news-card__overlay"><span class="news-card__readmore"><i class="fab fa-youtube"></i></span></div>
-                    </div>
-                    <div class="news-card__content">
-                        <span class="news-card__category">Trailer</span>
-                        <h4 class="news-card__title">${promo.title}</h4>
-                        <div class="news-card__meta"><span><i class="fas fa-play-circle"></i> Assistir agora</span></div>
-                    </div>
-                </a>
-            `;
-        }).join('');
-    }
-
-    async function initializeMainPage() {
-        // Destaques da Web
-        const newsData = await fetchData(`${JIKAN_API}/watch/promos`);
-        if (newsData?.data) {
-            renderNewsGrid(DOM.newsContainer, newsData.data.slice(0, 12));
-        } else {
-            DOM.newsContainer.innerHTML = `<p class="status-message">Não foi possível carregar os destaques.</p>`;
-        }
-        // Animes da Temporada
-        const animes = await fetchData(`${JIKAN_API}/top/anime?filter=airing&limit=5`);
-        if(animes?.data) renderSidebarList(DOM.topAnimeList, animes.data, 'anime');
-        // Filmes Populares
-        const movies = await fetchData(`${TMDB_API}/movie/popular?api_key=${TMDB_KEY}&language=pt-BR&page=1`);
-        if(movies?.results) renderSidebarList(DOM.topMovieList, movies.results, 'movie');
-    }
-    
-    function renderSidebarList(container, items, type) {
-        container.innerHTML = items.map(item => {
-            const isAnime = type === 'anime';
-            const title = isAnime ? (item.title_english || item.title) : item.title;
-            const imageUrl = isAnime ? item.images?.jpg?.image_url : `${IMG_PATH}w185${item.poster_path}`;
-            const score = isAnime ? item.score : item.vote_average?.toFixed(1);
-            const detail = isAnime ? `<i class="fas fa-user-friends"></i> ${(item.members || 0).toLocaleString('pt-BR')}` : `<i class="fas fa-calendar-alt"></i> ${item.release_date?.split('-')[0] || 'N/A'}`;
-            // Placeholder para funcionalidade de abrir modal de detalhes (não implementado nesta versão para focar na notícia)
-            return `
-                <li>
-                    <a href="#"> 
-                        <img src="${imageUrl || PLACEHOLDER_IMG}" alt="Capa de ${title}" onerror="this.src='${PLACEHOLDER_IMG}';">
-                        <div class="rank-info">
-                            <span class="title">${title}</span>
-                            <span class="details">
-                                <span><i class="fas fa-star" style="color:#f5c518;"></i> ${score || 'N/A'}</span>
-                                <span>${detail}</span>
-                            </span>
-                        </div>
-                    </a>
-                </li>`;
-        }).join('');
-    }
-
-
-    // --- LÓGICA DO MODAL-PÁGINA DE NOTÍCIAS --- //
-    
-    /**
-     * Carrega e exibe a página de notícias.
-     * @param {string} videoId - O ID do vídeo do YouTube.
-     * @param {string} videoTitle - O título do vídeo.
-     * @param {string} backgroundImage - URL da imagem de fundo.
-     */
-    async function loadNewsPage(videoId, videoTitle, backgroundImage) {
-        DOM.newsPage.contentWrapper.classList.add('is-loading');
-
-        // Atualiza a UI
-        DOM.newsPage.background.style.backgroundImage = `url('${backgroundImage}')`;
-        DOM.newsPage.title.textContent = videoTitle;
-        DOM.newsPage.playerContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-        
-        updateShareLinks(videoId, videoTitle);
-        
-        // Carrega comentários
-        loadLocalComments(videoId);
-        await fetchYouTubeComments(videoId);
-        
-        // Finaliza o carregamento
-        DOM.newsPage.contentWrapper.classList.remove('is-loading');
-    }
-
-    function updateShareLinks(videoId, videoTitle) {
-        const url = `https://www.youtube.com/watch?v=${videoId}`;
-        const text = `Confira este vídeo: ${videoTitle}`;
-        DOM.newsPage.modal.querySelector('.social-share-link[data-platform="facebook"]').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-        DOM.newsPage.modal.querySelector('.social-share-link[data-platform="twitter"]').href = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
-        DOM.newsPage.modal.querySelector('.social-share-link[data-platform="whatsapp"]').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + ' ' + url)}`;
-    }
-    
-    // --- LÓGICA DE COMENTÁRIOS (LOCALSTORAGE + YOUTUBE) --- //
-
-    function getLocalComments(videoId) {
-        try {
-            return JSON.parse(localStorage.getItem(`comments_${videoId}`)) || [];
-        } catch {
-            return [];
-        }
-    }
-
-    function saveLocalComment(videoId, comment) {
-        const comments = getLocalComments(videoId);
-        comments.unshift(comment); // Adiciona no início
-        localStorage.setItem(`comments_${videoId}`, JSON.stringify(comments));
-    }
-
-    function loadLocalComments(videoId) {
-        const comments = getLocalComments(videoId);
-        if (comments.length === 0) {
-            DOM.newsPage.communityCommentsList.innerHTML = `<p class="status-message">Seja o primeiro a comentar!</p>`;
-        } else {
-            DOM.newsPage.communityCommentsList.innerHTML = comments.map(renderComment).join('');
-        }
-    }
-
-    async function fetchYouTubeComments(videoId) {
-        DOM.newsPage.youtubeCommentsList.innerHTML = `<p class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>`;
-        if (!YOUTUBE_API_KEY || YOUTUBE_API_KEY === 'SUA_CHAVE_API_DO_YOUTUBE_AQUI') {
-            DOM.newsPage.youtubeCommentsList.innerHTML = `<p class="status-message">API de comentários não configurada.</p>`;
-            return;
-        }
-        const url = `${YOUTUBE_API_URL}/commentThreads?part=snippet&videoId=${videoId}&key=${YOUTUBE_API_KEY}&order=relevance&maxResults=20`;
-        const data = await fetchData(url);
-        
-        if (!data?.items || data.items.length === 0) {
-            DOM.newsPage.youtubeCommentsList.innerHTML = `<p class="status-message">Nenhum comentário encontrado no YouTube.</p>`;
-            return;
-        }
-        DOM.newsPage.youtubeCommentsList.innerHTML = data.items.map(item => renderComment(item.snippet.topLevelComment.snippet)).join('');
-    }
-
-    /**
-     * Renderiza um único card de comentário.
-     * @param {Object} comment - O objeto do comentário.
-     * @returns {string} O HTML do card.
-     */
-    function renderComment(comment) {
-        return `
-            <div class="comment-card">
-                <div class="comment-author-avatar"><img src="${comment.authorProfileImageUrl || 'https://i.pravatar.cc/40?u=anonymous'}" alt="${comment.authorDisplayName}"></div>
-                <div class="comment-body">
-                    <div><span class="comment-author-name">${comment.authorDisplayName}</span><span class="comment-date">${new Date(comment.publishedAt).toLocaleString('pt-BR')}</span></div>
-                    <div class="comment-text">${comment.textDisplay}</div>
-                </div>
-            </div>`;
-    }
-
-    DOM.newsPage.commentForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const textarea = e.target.querySelector('textarea');
-        const text = textarea.value.trim();
-        if (!text) return;
-
-        const videoId = JSON.parse(DOM.newsPage.modal.dataset.modalData).videoId;
-        
-        const newComment = {
-            authorDisplayName: 'Visitante',
-            authorProfileImageUrl: 'https://i.pravatar.cc/40?u=localuser',
-            publishedAt: new Date().toISOString(),
-            textDisplay: text.replace(/\n/g, '<br>')
-        };
-
-        saveLocalComment(videoId, newComment);
-        loadLocalComments(videoId);
-        textarea.value = '';
-    });
-    
-
-    // --- LÓGICA DO MODAL EXPLORADOR DE CATEGORIAS --- //
-    
-    async function initializeCategoryExplorer() {
-        DOM.categoryExplorer.tagsContainer.innerHTML = `<p class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>`;
-        DOM.categoryExplorer.resultsGrid.innerHTML = `<p class="status-message">Selecione uma categoria para ver as notícias.</p>`;
-        
-        const genresData = await fetchData(`${JIKAN_API}/genres/anime`);
-        if(genresData?.data) {
-            DOM.categoryExplorer.tagsContainer.innerHTML = genresData.data.map(genre => 
-                `<button class="category-tag" data-genre-id="${genre.mal_id}">${genre.name}</button>`
-            ).join('');
-        } else {
-            DOM.categoryExplorer.tagsContainer.innerHTML = `<p class="status-message">Erro ao carregar categorias.</p>`;
-        }
-    }
-
-    DOM.categoryExplorer.openButton.addEventListener('click', () => {
-        ModalManager.open('category-explorer-modal');
-        initializeCategoryExplorer();
-    });
-
-    DOM.categoryExplorer.tagsContainer.addEventListener('click', async (e) => {
-        const tag = e.target.closest('.category-tag');
-        if (!tag) return;
-        
-        const genreId = tag.dataset.genreId;
-        DOM.categoryExplorer.resultsGrid.innerHTML = `<p class="status-message"><i class="fas fa-spinner fa-spin"></i> Buscando...</p>`;
-        
-        DOM.categoryExplorer.tagsContainer.querySelectorAll('.is-active').forEach(t => t.classList.remove('is-active'));
-        tag.classList.add('is-active');
-        
-        const animeData = await fetchData(`${JIKAN_API}/anime?genres=${genreId}&limit=24`);
-        const newsWithVideo = animeData?.data.filter(item => item.trailer?.youtube_id) || [];
-
-        const items = newsWithVideo.map(item => ({ entry: item, trailer: { url: item.trailer.url } }));
-        renderNewsGrid(DOM.categoryExplorer.resultsGrid, items);
-    });
-
-    // --- DELEGAÇÃO DE EVENTOS PRINCIPAL --- //
-    DOM.body.addEventListener('click', async (e) => {
-        const openNewsBtn = e.target.closest('.open-news-page-modal');
-        if (openNewsBtn) {
-            e.preventDefault();
-            const { videoId, videoTitle, backgroundImage } = openNewsBtn.dataset;
-
-            // Transição fluida entre modais
-            if (ModalManager.getActiveModal()?.id === 'category-explorer-modal') {
-                ModalManager.close(DOM.categoryExplorer.modal);
-                // Aguarda a animação de fechamento antes de atualizar o modal principal
-                setTimeout(async () => {
-                    ModalManager.open('news-page-modal', { videoId, videoTitle, backgroundImage });
-                    await loadNewsPage(videoId, videoTitle, backgroundImage);
-                }, 400); // Mesmo tempo da transição do modal
-            } else {
-                ModalManager.open('news-page-modal', { videoId, videoTitle, backgroundImage });
-                await loadNewsPage(videoId, videoTitle, backgroundImage);
-            }
-        }
-    });
-
-    // --- INICIALIZAÇÃO GERAL --- //
-    function init() {
-        // Observador de animação para seções
-        const observer = new IntersectionObserver((entries, obs) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                    obs.unobserve(entry.target);
+            App.dom.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', App.dom.body.classList.contains('light-mode') ? 'light' : 'dark');
+            this.updateIcons();
+        },
+        updateIcons() {
+            const isLight = App.dom.body.classList.contains('light-mode');
+            App.dom.themeToggleButtons.forEach(btn => {
+                const moon = btn.querySelector('.fa-moon');
+                const sun = btn.querySelector('.fa-sun');
+                if (moon && sun) {
+                    moon.style.display = isLight ? 'none' : 'block';
+                    sun.style.display = isLight ? 'block' : 'none';
                 }
             });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.animated-section').forEach(section => observer.observe(section));
+        }
+    },
 
-        ThemeManager.init();
-        initializeMainPage();
-    }
+    CommentManager: {
+        load(contentId) {
+            const comments = this.get(contentId);
+            App.render.comments(App.dom.commentsList, comments, 'Nenhum comentário da comunidade ainda.');
+        },
+        get(contentId) {
+            try { return JSON.parse(localStorage.getItem(`comments_${contentId}`)) || []; }
+            catch { return []; }
+        },
+        add(contentId, comment) {
+            const comments = this.get(contentId);
+            comments.unshift(comment);
+            localStorage.setItem(`comments_${contentId}`, JSON.stringify(comments));
+        },
+        handleSubmit(event) {
+            event.preventDefault();
+            const textarea = event.target.querySelector('textarea');
+            const text = textarea.value.trim();
+            if (!text || !App.state.currentContentId) return;
+            
+            const newComment = {
+                author: 'Visitante',
+                date: new Date().toISOString(),
+                text: text,
+            };
+
+            this.add(App.state.currentContentId, newComment);
+            this.load(App.state.currentContentId);
+            textarea.value = '';
+        }
+    },
+
+    // -------------------------------------------------------------------------
+    // 7. CHAMADAS DE API
+    // -------------------------------------------------------------------------
+    Api: {
+        async fetch(url) {
+            try {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error(`API Error: ${res.status}`);
+                return await res.json();
+            } catch (error) { console.error(`Falha ao buscar de ${url}:`, error); return null; }
+        },
+        async getJikanPromos() { return (await this.fetch(App.config.JIKAN_API + '/watch/promos'))?.data; },
+        async getJikanTopAiring() { return (await this.fetch(App.config.JIKAN_API + '/top/anime?filter=airing&limit=5'))?.data; },
+        async getYouTubeComments(videoId) {
+            App.dom.youtubeCommentsSection.style.display = 'block';
+            App.dom.youtubeCommentsList.innerHTML = App.render.getLoadingHTML();
+            if (!App.config.YOUTUBE_API_KEY || App.config.YOUTUBE_API_KEY === 'SUA_CHAVE_API_DO_YOUTUBE_AQUI') {
+                App.render.comments(App.dom.youtubeCommentsList, [], 'API do YouTube não configurada.');
+                return;
+            }
+            const url = `${App.config.YOUTUBE_API_URL}/commentThreads?part=snippet&videoId=${videoId}&key=${App.config.YOUTUBE_API_KEY}&order=relevance&maxResults=10`;
+            const data = await this.fetch(url);
+            
+            if (data?.items) {
+                const comments = data.items.map(item => ({
+                    author: item.snippet.topLevelComment.snippet.authorDisplayName,
+                    avatar: item.snippet.topLevelComment.snippet.authorProfileImageUrl,
+                    date: item.snippet.topLevelComment.snippet.publishedAt,
+                    text: item.snippet.topLevelComment.snippet.textDisplay
+                }));
+                 App.render.comments(App.dom.youtubeCommentsList, comments, 'Nenhum comentário no YouTube.');
+            } else {
+                 App.render.comments(App.dom.youtubeCommentsList, [], 'Não foi possível carregar os comentários.');
+            }
+        }
+    },
     
-    init(); // Inicia a aplicação
-});
+    // -------------------------------------------------------------------------
+    // 8. FUNÇÕES DE RENDERIZAÇÃO
+    // -------------------------------------------------------------------------
+    render: {
+        setLoadingState(container, isLoading) {
+            if (isLoading) container.innerHTML = this.getLoadingHTML();
+        },
+        getLoadingHTML() { return '<p class="status-message"><i class="fas fa-spinner fa-spin"></i> Carregando...</p>'; },
+        
+        newsGrid(items, container) {
+            container.innerHTML = items.map(item => {
+                // Adapta para os dois tipos de objeto (API e Admin)
+                const isApi = !!item.entry;
+                const data = isApi ? item.entry : item;
+                const videoId = isApi ? App.Api.fetch.toString.call(App.Api.fetch).split('(')[0].replace('function ', '') + '_' + item.trailer.url.split('v=')[1] : null;
+                const id = isApi ? `video_${videoId}` : data.id;
+                const type = isApi ? 'video' : 'article';
+                const image = isApi ? data.images?.jpg?.large_image_url : data.image;
+                
+                return `
+                    <a href="#" class="news-card" 
+                       data-id="${id}" 
+                       data-type="${type}"
+                       data-title="${data.title}"
+                       data-image="${image || App.config.PLACEHOLDER_IMG}"
+                    >
+                        <div class="news-card__image-container">
+                            <img src="${image || App.config.PLACEHOLDER_IMG}" class="news-card__image" alt="${data.title}" onerror="this.src='${App.config.PLACEHOLDER_IMG}';">
+                        </div>
+                        <div class="news-card__content">
+                            <span class="news-card__category">${isApi ? 'Vídeo' : data.category}</span>
+                            <h3 class="news-card__title">${data.title}</h3>
+                            ${!isApi ? `<p class="news-card__excerpt">${data.excerpt}</p>` : ''}
+                            <div class="news-card__meta">
+                                ${isApi 
+                                    ? `<span><i class="fas fa-play-circle"></i> Abrir Vídeo</span>` 
+                                    : `<span><i class="fas fa-user-edit"></i> ${data.author}</span><span><i class="fas fa-calendar-alt"></i> ${new Date(data.date).toLocaleDateString('pt-BR')}</span>`
+                                }
+                            </div>
+                        </div>
+                    </a>`;
+            }).join('');
+        },
+
+        sidebarList(container, items) {
+            container.innerHTML = items.map(item => `
+                 <li class="ranking-item">
+                    <a href="#">
+                        <img src="${item.images?.jpg?.image_url || App.config.PLACEHOLDER_IMG}" class="ranking-item__img" alt="${item.title}" onerror="this.src='${App.config.PLACEHOLDER_IMG}';">
+                        <div class="ranking-item__info">
+                            <span class="ranking-item__title">${item.title_english || item.title}</span>
+                            <div class="ranking-item__meta">
+                                <span><i class="fas fa-star"></i> ${item.score || 'N/A'}</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            `).join('');
+        },
+
+        videoModalLayout(data) {
+            const videoId = data.id.split('_')[1];
+            App.dom.modalMainContent.innerHTML = `
+                <div class="video-player-container">
+                    <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>`;
+            App.dom.youtubeCommentsSection.style.display = 'block';
+        },
+        
+        articleModalLayout(data) {
+            App.dom.modalMainContent.innerHTML = `<div class="article-body-container">${data.content}</div>`;
+            App.dom.youtubeCommentsSection.style.display = 'none';
+        },
+
+        comments(container, comments, emptyMessage) {
+            if (!comments || comments.length === 0) {
+                container.innerHTML = `<p class="status-message">${emptyMessage}</p>`;
+                return;
+            }
+            container.innerHTML = comments.map(comment => `
+                <div class="comment-card">
+                    <img src="${comment.avatar || 'https://i.pravatar.cc/40?u=generic'}" alt="Avatar" class="comment-card__avatar">
+                    <div class="comment-card__body">
+                        <div>
+                            <span class="comment-card__author">${comment.author}</span>
+                            <span class="comment-card__date">${new Date(comment.date).toLocaleString('pt-BR')}</span>
+                        </div>
+                        <div class="comment-card__text">${comment.text}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    },
+};
+
+document.addEventListener('DOMContentLoaded', () => App.init());
 </script>
 </body>
 </html>
