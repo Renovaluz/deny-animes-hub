@@ -152,6 +152,47 @@ body.light-theme {
     .episode-card a:hover .ep-card-play-icon { opacity: 1; transform: translate(-50%, -50%) scale(1); }
     .ep-card-title { font-size: 0.9rem; font-weight: 600; color: #fff; text-shadow: 0 1px 3px black; text-align: center; }
 
+    /* ================================================================ */
+    /*      NOVA ATUALIZAÇÃO: GRADE 4X4 PARA DISPOSITIVOS MÓVEIS      */
+    /* ================================================================ */
+    @media (max-width: 768px) {
+        .episode-grid {
+            /* Força a grade a ter 4 colunas */
+            grid-template-columns: repeat(4, 1fr);
+            /* Reduz o espaçamento para caber mais cards */
+            gap: 0.5rem;
+        }
+
+        .episode-card a {
+            /* Altera a proporção para 1:1 (quadrado) para um visual de miniatura */
+            aspect-ratio: 1 / 1;
+        }
+
+        .ep-card-overlay {
+            /* Centraliza o conteúdo e ajusta o preenchimento */
+            justify-content: center;
+            padding: 0.5rem;
+        }
+        
+        .ep-card-play-icon {
+            /* Diminui o ícone de play */
+            font-size: 1.5rem;
+        }
+
+        .ep-card-title {
+            /* Reduz o tamanho da fonte para evitar quebra de linha excessiva */
+            font-size: 0.7rem;
+            line-height: 1.2;
+            font-weight: 500;
+            /* Esconde o título do episódio se for muito longo (opcional) */
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Limita o texto a 2 linhas */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    }
+
+
     .comments-section { padding-top: 1.5rem; }
     #comment-form { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 2rem; }
     .comment-form-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
