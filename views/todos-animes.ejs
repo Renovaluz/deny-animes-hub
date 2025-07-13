@@ -13,7 +13,7 @@
 
     <style>
         /* ================================================================================================== */
-        /*      V10.0 - SOLUÇÃO FINAL, COMPLETA E CORRIGIDA - DESIGN BY GEMINI                              */
+        /*      V11.0 - SOLUÇÃO FINAL COM RESPONSIVIDADE MOBILE 3X3 - DESIGN BY GEMINI                      */
         /* ================================================================================================== */
 
         :root { /* As variáveis de tema são herdadas do layout principal */ }
@@ -93,7 +93,6 @@
         .page-header p { font-size: clamp(1rem, 2vw, 1.1rem); color: var(--theme-text-secondary); margin-top: 0.25rem; font-weight: 300; }
         
         .filters-container {
-            /* [CORREÇÃO] A propriedade 'position: sticky' foi REMOVIDA para permitir a rolagem normal. */
             background: var(--theme-bg-primary);
             padding-bottom: 1rem;
         }
@@ -151,6 +150,39 @@
         .btn-full-details { display: inline-flex; align-items: center; gap: 0.75rem; text-decoration: none; background-color: var(--theme-accent-primary); color: #fff; padding: 0.8rem 1.5rem; border-radius: 50px; font-weight: 600; transition: all 0.2s ease; }
         .btn-full-details:hover { background-color: var(--theme-accent-hover); transform: scale(1.05); }
 
+        /* --- [6] RESPONSIVIDADE E AJUSTES MOBILE --- */
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 0 1rem 1rem 1rem; /* Menos padding lateral na página em geral */
+            }
+
+            .carousel-card-wrapper {
+                 flex: 0 0 clamp(120px, 30vw, 150px);
+            }
+
+            /* [ALTERAÇÃO-CHAVE] Força a grade a ter 3 colunas em telas menores */
+            .anime-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.75rem; /* Diminui o espaço entre as miniaturas */
+            }
+
+            /* Ajustes finos para a elegância das miniaturas */
+            .anime-card__title {
+                font-size: 0.75rem; /* Título menor para caber no card pequeno */
+            }
+            .anime-card__content {
+                padding: 0.5rem; /* Menos preenchimento interno */
+            }
+            .anime-card__play-icon {
+                font-size: 1.8rem; /* Ícone de play menor */
+            }
+
+            .page-header h1 { font-size: 1.8rem; }
+            .page-header p { font-size: 0.9rem; }
+            .carousel-header h2 { font-size: 1.2rem; }
+            .modal-title { font-size: 1.5rem; }
+        }
+
     </style>
 </head>
 
@@ -189,7 +221,7 @@
             <div id="filter-controls">
                 <div class="filter-group"><i class="fa-solid fa-magnifying-glass"></i><input id="search-input" type="text" class="filter-input" placeholder="Buscar por título..." value="<%= query.search || '' %>"></div>
                 <div class="filter-group"><i class="fa-solid fa-tags"></i><select id="genre-select" class="filter-select"><option value="">Todos os Gêneros</option><% if (typeof uniqueGenres !== 'undefined' && Array.isArray(uniqueGenres)) { %><% uniqueGenres.forEach(genre => { %><option value="<%= genre %>" <%= query.genre === genre ? 'selected' : '' %>><%= genre %></option><% }) %><% } %></select></div>
-                <div class="filter-group"><i class="fa-solid fa-arrow-up-wide-short"></i><select id="order-select" class="filter-select"><option value="createdAt_desc" <%= query.order === 'createdAt_desc' ? 'selected' : '' %>>Mais Recentes</option><option value="views_desc" <%= query.order === 'views_desc' ? 'selected' : '' %>>Mais Populares</option><option value="titulo_asc" <%= query.order === 'titulo_asc' ? 'selected' : '' %>>Ordem A-Z</option><option value="titulo_desc" <%= query.order === 'titulo_desc' ? 'selected' : '' %>>Ordem Z-A</option></select></div>
+                <div class="filter-group"><i class="fa-solid fa-arrow-up-wide-short"></i><select id="order-select" class="filter-select"><option value="createdAt_desc" <%= query.order === 'createdAt_desc' || !query.order ? 'selected' : '' %>>Mais Recentes</option><option value="views_desc" <%= query.order === 'views_desc' ? 'selected' : '' %>>Mais Populares</option><option value="titulo_asc" <%= query.order === 'titulo_asc' ? 'selected' : '' %>>Ordem A-Z</option><option value="titulo_desc" <%= query.order === 'titulo_desc' ? 'selected' : '' %>>Ordem Z-A</option></select></div>
             </div>
             <nav class="letter-filter" aria-label="Filtrar por letra"><a href="javascript:void(0);" class="letter-link <%= !query.letter ? 'active' : '' %>" data-letter="">#</a><% 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(char => { %><a href="javascript:void(0);" class="letter-link <%= query.letter === char ? 'active' : '' %>" data-letter="<%= char %>"><%= char %></a><% }); %></nav>
         </div>
@@ -281,7 +313,7 @@
             params.set('page', pageVal);
 
             // Redireciona para a nova URL com todos os filtros corretos
-            window.location.href = `${baseUrl}?${params.toString()}`;
+            window.location.href = `${baseUrl}?${params.toString()}#catalog-header`;
         };
 
         // --- INICIALIZAÇÃO DE TODOS OS EVENTOS DE FILTRO ---
