@@ -145,7 +145,7 @@ app.get('/noticias/:slug', async (req, res) => {
     }
 });
 
-app.get('/anime/:slug', async (req, res) => {
+app.get('/anime/:slug', proteger, async (req, res) => {
     try {
         const anime = await db.Anime.findOne({
             where: { slug: req.params.slug },
