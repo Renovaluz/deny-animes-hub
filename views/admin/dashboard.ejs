@@ -7,13 +7,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="icon" href="/images/1.ico" type="image/ico">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="/js/protect.js" defer></script>
+    
     <style>
     /* ================================================================================================== */
-    /*      ESTILIZAÇÃO CSS COMPLETA E FINAL - NÍVEL RINNEGAN REBIRTH                                     */
+    /*      ESTILIZAÇÃO CSS COMPLETA E FINAL - NÍVEL EDO TENSEI: LIBERAÇÃO COMPLETA                       */
     /* ================================================================================================== */
 
-    /* --- ARQUITETURA DE TEMAS --- */
     :root {
         /* TEMA ESCURO (PADRÃO AKATSUKI) */
         --theme-bg-primary: #0B0B0B;
@@ -31,7 +30,6 @@
         --transition-speed: 0.3s;
         --border-radius: 8px;
     }
-    /* TEMA CLARO */
     body.light-theme {
         --theme-bg-primary: #f0f2f5;
         --theme-bg-secondary: #ffffff;
@@ -41,8 +39,14 @@
         --theme-border-color: #d1d8e0;
         --theme-success: #059669;
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    html {
+        scroll-behavior: smooth;
+    }
     body {
         font-family: 'Poppins', sans-serif;
         background-color: var(--theme-bg-primary);
@@ -69,18 +73,68 @@
         z-index: 1000;
         transition: transform var(--transition-speed) ease, background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
     }
-    .sidebar-header { margin-bottom: 2.5rem; text-align: center; }
-    .sidebar-logo { display: flex; align-items: center; justify-content: center; gap: 0.8rem; text-decoration: none; color: var(--theme-text-primary); font-size: 1.6rem; font-weight: 700; }
-    .sidebar-logo img { height: 45px; transition: transform var(--transition-speed) ease; }
-    .sidebar-logo:hover img { transform: rotate(-15deg) scale(1.1); }
-    .admin-nav { flex-grow: 1; overflow-y: auto; }
-    .admin-nav ul { list-style: none; }
-    .admin-nav li { margin-bottom: 0.5rem; }
-    .admin-nav .nav-link { display: flex; align-items: center; gap: 1rem; padding: 1rem; text-decoration: none; color: var(--theme-text-secondary); font-weight: 500; border-radius: var(--border-radius); transition: all var(--transition-speed) ease; }
-    .admin-nav .nav-link:hover { background-color: var(--theme-bg-tertiary); color: var(--theme-text-primary); }
-    .admin-nav .nav-link.active { background-color: var(--theme-accent-primary); color: white; font-weight: 600; }
-    .admin-nav .nav-link .fa-fw { width: 25px; text-align: center; }
-    .sidebar-footer { margin-top: auto; display: flex; flex-direction: column; gap: 0.8rem; flex-shrink: 0; }
+    .sidebar-header {
+        margin-bottom: 2.5rem;
+        text-align: center;
+    }
+    .sidebar-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+        text-decoration: none;
+        color: var(--theme-text-primary);
+        font-size: 1.6rem;
+        font-weight: 700;
+    }
+    .sidebar-logo img {
+        height: 45px;
+        transition: transform var(--transition-speed) ease;
+    }
+    .sidebar-logo:hover img {
+        transform: rotate(-15deg) scale(1.1);
+    }
+    .admin-nav {
+        flex-grow: 1;
+        overflow-y: auto;
+    }
+    .admin-nav ul {
+        list-style: none;
+    }
+    .admin-nav li {
+        margin-bottom: 0.5rem;
+    }
+    .admin-nav .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        text-decoration: none;
+        color: var(--theme-text-secondary);
+        font-weight: 500;
+        border-radius: var(--border-radius);
+        transition: all var(--transition-speed) ease;
+    }
+    .admin-nav .nav-link:hover {
+        background-color: var(--theme-bg-tertiary);
+        color: var(--theme-text-primary);
+    }
+    .admin-nav .nav-link.active {
+        background-color: var(--theme-accent-primary);
+        color: white;
+        font-weight: 600;
+    }
+    .admin-nav .nav-link .fa-fw {
+        width: 25px;
+        text-align: center;
+    }
+    .sidebar-footer {
+        margin-top: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+        flex-shrink: 0;
+    }
 
     /* --- CONTEÚDO PRINCIPAL --- */
     .admin-main-content {
@@ -102,12 +156,43 @@
         justify-content: space-between;
         flex-shrink: 0;
     }
-    .main-content-header h1 { font-size: 1.8rem; display: flex; align-items: center; gap: 1rem; }
-    .sidebar-toggle-btn { display: none; background: none; border: none; color: var(--theme-text-primary); font-size: 1.5rem; cursor: pointer; }
-    .main-content-body { padding: 2rem; overflow-y: auto; flex-grow: 1; position: relative; }
-    .admin-panel { display: none; }
-    .admin-panel.active { display: block; animation: fadeIn 0.5s forwards; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .main-content-header h1 {
+        font-size: 1.8rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    .sidebar-toggle-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--theme-text-primary);
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+    .main-content-body {
+        padding: 2rem;
+        overflow-y: auto;
+        flex-grow: 1;
+        position: relative;
+    }
+    .admin-panel {
+        display: none;
+    }
+    .admin-panel.active {
+        display: block;
+        animation: fadeIn 0.5s forwards;
+    }
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
     /* --- COMPONENTES GERAIS DO PAINEL --- */
     .btn { padding: 0.8rem 1.5rem; border-radius: var(--border-radius); border: 1px solid var(--theme-border-color); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background-color: transparent; color: var(--theme-text-primary); transition: all var(--transition-speed); text-transform: uppercase; letter-spacing: 1px; }
@@ -123,24 +208,25 @@
     #toast-notification.show { opacity: 1; transform: translateX(0); }
     #toast-notification.success { border-left-color: var(--theme-success); }
     #toast-notification.error { border-left-color: var(--theme-error); }
+    
     .table-container { overflow-x: auto; }
-    .users-table { width: 100%; border-collapse: collapse; }
-    .users-table th, .users-table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--theme-border-color); }
-    .users-table thead { background-color: var(--theme-bg-tertiary); }
-    .users-table th { font-weight: 600; text-transform: uppercase; font-size: 0.8rem; color: var(--theme-text-secondary); }
-    .users-table tbody tr:hover { background-color: var(--theme-bg-tertiary); }
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th, .data-table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--theme-border-color); }
+    .data-table thead { background-color: var(--theme-bg-tertiary); }
+    .data-table th { font-weight: 600; text-transform: uppercase; font-size: 0.8rem; color: var(--theme-text-secondary); }
+    .data-table tbody tr:hover { background-color: var(--theme-bg-tertiary); }
     .user-info { display: flex; align-items: center; gap: 1rem; }
     .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
     .user-role-badge { padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; text-transform: capitalize; }
     .user-role-badge.admin { background-color: var(--theme-accent-primary); color: white; }
     .user-role-badge.user { background-color: var(--theme-bg-tertiary); color: var(--theme-text-secondary); }
     .actions-dropdown { position: relative; }
-    .actions-dropdown .dropdown-menu { display: none; position: absolute; top: calc(100% + 5px); right: 0; background-color: var(--theme-bg-secondary); min-width: 200px; box-shadow: 0 8px 30px rgba(0,0,0,0.6); z-index: 100; border-radius: var(--border-radius); border: 1px solid var(--theme-border-color); padding: 0.5rem; }
+    .actions-dropdown .dropdown-menu { display: none; position: absolute; top: calc(100% + 5px); right: 0; background-color: var(--theme-bg-secondary); min-width: 200px; box-shadow: 0 8px 30px rgba(0,0,0,0.6); z-index: 100; border-radius: var(--border-radius); border: 1px solid var(--theme-border-color); padding: 0.5rem; animation: fadeInDropdown 0.2s ease-out; }
+    @keyframes fadeInDropdown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     .actions-dropdown .dropdown-menu.show { display: block; }
     .dropdown-item { color: var(--theme-text-secondary); padding: 0.75rem 1rem; text-decoration: none; display: flex; align-items: center; gap: 0.75rem; transition: all var(--transition-speed); border-radius: var(--border-radius); cursor: pointer; background: none; border: none; width: 100%; text-align: left; font-size: 0.9rem; }
     .dropdown-item:hover { background-color: var(--theme-accent-primary); color: white; }
 
-    /* RESPONSIVIDADE DO PAINEL */
     @media (max-width: 1024px) {
         .admin-sidebar { transform: translateX(-100%); }
         .admin-sidebar.open { transform: translateX(0); box-shadow: 10px 0 30px rgba(0,0,0,0.3); }
@@ -148,7 +234,6 @@
         .sidebar-toggle-btn { display: block; }
     }
     
-    /* PRESERVAÇÃO: Estilos dos formulários e grids de itens intactos */
     .admin-form-container { padding: 2.5rem; background-color: var(--theme-bg-secondary); border-radius: var(--border-radius); max-width: 800px; margin: 1rem auto; border: 1px solid var(--theme-border-color); }
     .form-group { margin-bottom: 1.5rem; }
     .form-group label { display: block; margin-bottom: 0.6rem; font-weight: 500; text-transform: uppercase; font-size: 0.9rem; color: var(--theme-text-secondary); }
@@ -169,22 +254,27 @@
     .stat-card { background: var(--theme-bg-secondary); padding: 1.5rem; border-radius: var(--border-radius); border: 1px solid var(--theme-border-color); text-align: center; border-bottom: 4px solid var(--theme-accent-primary); }
     .stat-card h3 { font-size: 1.2rem; color: var(--theme-text-secondary); margin-bottom: 0.5rem; }
     .stat-card p { font-size: 2.5rem; font-weight: 700; color: var(--theme-text-primary); }
+    
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; animation: fadeIn 0.3s ease; }
+    .modal-overlay.open { display: flex; }
+    .modal-content { background-color: var(--theme-bg-secondary); padding: 2rem; border-radius: var(--border-radius); border: 1px solid var(--theme-border-color); max-width: 500px; width: 90%; animation: slideInUp 0.4s ease-out; }
+    @keyframes slideInUp { from { transform: translateY(30px) scale(0.98); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--theme-border-color); padding-bottom: 1rem; margin-bottom: 1.5rem; }
+    .modal-header h2 { font-size: 1.5rem; }
+    .modal-close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--theme-text-secondary); }
+    .modal-content textarea.textarea { width: 100%; min-height: 120px; }
     </style>
 </head>
 <body class="dark-theme">
     <aside class="admin-sidebar">
-        <div class="sidebar-header">
-            <a href="/admin/dashboard" class="sidebar-logo">
-                <img src="/images/1.ico" alt="Logo Akatsuki">
-                <span>Painel</span>
-            </a>
-        </div>
+        <div class="sidebar-header"><a href="/admin/dashboard" class="sidebar-logo"><img src="/images/1.ico" alt="Logo"><span>Painel</span></a></div>
         <nav class="admin-nav">
             <ul>
                 <li><a class="nav-link active" href="#" data-target="panel-dashboard"><i class="fas fa-tachometer-alt fa-fw"></i> Visão Geral</a></li>
                 <li><a class="nav-link" href="#" data-target="panel-animes"><i class="fas fa-film fa-fw"></i> Animes</a></li>
                 <li><a class="nav-link" href="#" data-target="panel-posts"><i class="fas fa-newspaper fa-fw"></i> Notícias</a></li>
                 <li><a class="nav-link" href="#" data-target="panel-users"><i class="fas fa-users fa-fw"></i> Usuários</a></li>
+                <li><a class="nav-link" href="#" data-target="panel-comments"><i class="fas fa-comments fa-fw"></i> Comentários</a></li>
             </ul>
         </nav>
         <div class="sidebar-footer">
@@ -203,44 +293,27 @@
         </header>
         <div class="main-content-body">
             <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i></div>
-            
-            <div id="panel-dashboard" class="admin-panel active">
-                <div class="stats-grid">
-                    <div class="stat-card"><h3>Animes</h3><p><%= totalAnimes %></p></div>
-                    <div class="stat-card"><h3>Notícias</h3><p><%= totalPosts %></p></div>
-                    <div class="stat-card"><h3>Usuários</h3><p><%= totalUsers %></p></div>
-                </div>
-            </div>
+            <div id="panel-dashboard" class="admin-panel active"><div class="stats-grid"><div class="stat-card"><h3>Animes</h3><p><%= totalAnimes %></p></div><div class="stat-card"><h3>Notícias</h3><p><%= totalPosts %></p></div><div class="stat-card"><h3>Usuários</h3><p><%= totalUsers %></p></div></div></div>
             <div id="panel-animes" class="admin-panel"></div>
             <div id="panel-posts" class="admin-panel"></div>
-            <div id="panel-users" class="admin-panel">
-                <div class="table-container">
-                    <table class="users-table">
-                        <thead><tr><th>Usuário</th><th>Email</th><th>Cargo</th><th>Membro Desde</th><th>Ações</th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
+            <div id="panel-users" class="admin-panel"><div class="table-container"><table class="data-table users-table"><thead><tr><th>Usuário</th><th>Email</th><th>Cargo</th><th>Membro Desde</th><th>Ações</th></tr></thead><tbody></tbody></table></div></div>
+            <div id="panel-comments" class="admin-panel"><div class="table-container"><table class="data-table comments-table"><thead><tr><th>Comentário</th><th>Autor</th><th>Anime</th><th>Data</th><th>Ações</th></tr></thead><tbody></tbody></table></div></div>
         </div>
     </main>
     
     <div id="toast-notification"></div>
-    
-    <!-- ======================================================= -->
-    <!-- |       SEUS TEMPLATES ORIGINAIS - 100% PRESERVADOS   | -->
-    <!-- ======================================================= -->
-    <template id="template-list-view"><div style="margin-bottom: 1.5rem;"><button class="btn-show-form btn btn--primary"><i class="fas fa-plus-circle"></i> Adicionar Novo</button></div><div class="items-grid"></div></template>
-    <template id="template-anime-form"><div class="admin-form-container"><h2 class="form-title">Adicionar Anime</h2><form id="main-form" enctype="multipart/form-data"><input type="hidden" name="currentSlug"><div class="form-group"><label for="titulo">Título</label><input type="text" name="titulo" id="titulo" class="input" required></div><div class="form-group"><label for="sinopse">Sinopse</label><textarea name="sinopse" id="sinopse" class="textarea" rows="5" required></textarea></div><div class="form-group"><label for="anoLancamento">Ano</label><input type="number" name="anoLancamento" id="anoLancamento" class="input" required></div><div class="form-group"><label for="generos">Gêneros (separados por vírgula)</label><input type="text" name="generos" id="generos" class="input" required></div><div class="form-group"><label for="fileCapa">Capa (Upload)</label><input type="file" name="file" id="fileCapa" class="input" accept="image/*"></div><div class="form-group"><label for="classificacao">Nota</label><input type="number" step="0.1" name="classificacao" id="classificacao" class="input"></div><div style="display: flex; gap: 1rem; margin-top: 1.5rem;"><button type="submit" class="btn btn--primary">Salvar</button><button type="button" class="btn-cancel btn">Cancelar</button></div></form></div></template>
-    <template id="template-episode-manager"><div class="admin-form-container"><h2 class="form-title-episodes">Gerenciar Episódios</h2><form id="episode-add-form" enctype="multipart/form-data" style="margin-bottom: 2rem; border-bottom: 1px solid var(--theme-border-color); padding-bottom: 2rem;"><input type="hidden" name="animeId"><h4>Adicionar Novo Episódio</h4><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top:1rem;"><div class="form-group"><label for="temporada">Temporada</label><input type="number" name="temporada" id="temporada" class="input" required value="1"></div><div class="form-group"><label for="numero">Número</label><input type="number" name="numero" id="numero" class="input" required></div></div><div class="form-group"><label for="tituloEp">Título (opcional)</label><input type="text" name="titulo" id="tituloEp" class="input"></div><div class="form-group"><label for="tipoVideo"><i class="fas fa-link"></i> Fonte do Vídeo</label><select name="tipoVideo" id="tipoVideo" class="select"><option value="upload">Upload do Dispositivo</option><option value="gdrive">Link do Google Drive</option><option value="mega">Link do Mega</option><option value="mediafire">Link do MediaFire</option><option value="iframe">Link de iFrame/Embed</option></select></div><div class="form-group" id="ep-url-group"><label for="urlVideo" id="url-label">URL do Vídeo</label><input type="text" name="urlVideo" id="urlVideo" class="input" placeholder="Cole o link de compartilhamento aqui"></div><div class="form-group" id="ep-upload-group" style="display: none;"><label for="fileVideo">Arquivo de Vídeo</label><input type="file" name="file" id="fileVideo" class="input" accept="video/mp4,video/mkv,video/x-matroska"></div><button type="submit" class="btn btn--primary btn--small">Adicionar Episódio</button></form><h4>Episódios Existentes</h4><ul class="episode-manage-list"></ul><button type="button" class="btn-cancel btn" style="margin-top: 1.5rem;"><i class="fas fa-arrow-left"></i> Voltar</button></div></template>
-    <template id="template-post-form"><div class="admin-form-container"><h2 class="form-title">Adicionar Notícia</h2><form id="main-form" enctype="multipart/form-data"><input type="hidden" name="id"><div class="form-group"><label for="tituloNoticia">Título</label><input type="text" name="titulo" id="tituloNoticia" class="input" required></div><div class="form-group"><label for="conteudo">Conteúdo</label><textarea name="conteudo" id="conteudo" class="textarea" rows="10" required></textarea></div><div class="form-group"><label for="imagemDestaque">URL da Imagem de Destaque</label><input type="text" name="imagemDestaque" id="imagemDestaque" class="input"></div><div class="form-group" style="display:flex;align-items:center;gap:10px"><input type="checkbox" name="emDestaque" id="emDestaque" style="width:auto;height:auto"><label for="emDestaque" style="margin:0;">Notícia em Destaque</label></div><div style="display: flex; gap: 1rem; margin-top: 1.5rem;"><button type="submit" class="btn btn--primary">Salvar</button><button type="button" class="btn-cancel btn">Cancelar</button></div></form></div></template>
+    <div id="modal-container"></div>
 
+    <template id="template-list-view"><div style="margin-bottom: 1.5rem;"><button class="btn-show-form btn btn--primary"><i class="fas fa-plus-circle"></i> Adicionar Novo</button></div><div class="items-grid"></div></template>
+    <template id="template-anime-form"><div class="admin-form-container"><h2 class="form-title">Adicionar Anime</h2><form id="main-form"><input type="hidden" name="currentSlug"><div class="form-group"><label for="titulo">Título</label><input type="text" name="titulo" id="titulo" class="input" required></div><div class="form-group"><label for="sinopse">Sinopse</label><textarea name="sinopse" id="sinopse" class="textarea" rows="5" required></textarea></div><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;"><div class="form-group"><label for="anoLancamento">Ano</label><input type="number" name="anoLancamento" id="anoLancamento" class="input" required></div><div class="form-group"><label for="classificacao">Nota</label><input type="number" step="0.1" name="classificacao" id="classificacao" class="input"></div></div><div class="form-group"><label for="generos">Gêneros (separados por vírgula)</label><input type="text" name="generos" id="generos" class="input" required></div><div class="form-group"><label for="estudio">Estúdio</label><input type="text" name="estudio" id="estudio" class="input"></div><div class="form-group"><label for="trailerUrl">URL do Trailer (Embed)</label><input type="url" name="trailerUrl" id="trailerUrl" class="input" placeholder="https://www.youtube.com/embed/..."></div><div class="form-group"><label for="fileCapa">Capa (Upload)</label><input type="file" name="file" id="fileCapa" class="input" accept="image/*"></div><div style="display: flex; gap: 1rem; margin-top: 1.5rem;"><button type="submit" class="btn btn--primary">Salvar</button><button type="button" class="btn-cancel btn">Cancelar</button></div></form></div></template>
+    <template id="template-episode-manager"><div class="admin-form-container"><h2 class="form-title-episodes">Gerenciar Episódios</h2><form id="episode-add-form" style="margin-bottom: 2rem; border-bottom: 1px solid var(--theme-border-color); padding-bottom: 2rem;"><input type="hidden" name="animeId"><h4>Adicionar Novo Episódio</h4><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top:1rem;"><div class="form-group"><label for="temporada">Temporada</label><input type="number" name="temporada" id="temporada" class="input" required value="1"></div><div class="form-group"><label for="numero">Número</label><input type="number" name="numero" id="numero" class="input" required></div></div><div class="form-group"><label for="tituloEp">Título (opcional)</label><input type="text" name="titulo" id="tituloEp" class="input"></div><div class="form-group"><label for="tipoVideo"><i class="fas fa-link"></i> Fonte do Vídeo</label><select name="tipoVideo" id="tipoVideo" class="select"><option value="upload">Upload do Dispositivo</option><option value="gdrive">Link do Google Drive</option><option value="mega">Link do Mega</option><option value="mediafire">Link do MediaFire</option><option value="iframe">Link de iFrame/Embed</option></select></div><div class="form-group" id="ep-url-group"><label for="urlVideo" id="url-label">URL do Vídeo</label><input type="text" name="urlVideo" id="urlVideo" class="input" placeholder="Cole o link de compartilhamento aqui"></div><div class="form-group" id="ep-upload-group" style="display: none;"><label for="fileVideo">Arquivo de Vídeo</label><input type="file" name="file" id="fileVideo" class="input" accept="video/mp4,video/mkv,video/x-matroska"></div><button type="submit" class="btn btn--primary btn--small">Adicionar Episódio</button></form><h4>Episódios Existentes</h4><ul class="episode-manage-list"></ul><button type="button" class="btn-cancel btn" style="margin-top: 1.5rem;"><i class="fas fa-arrow-left"></i> Voltar</button></div></template>
+    <template id="template-post-form"><div class="admin-form-container"><h2 class="form-title">Adicionar Notícia</h2><form id="main-form"><input type="hidden" name="id"><div class="form-group"><label for="tituloNoticia">Título</label><input type="text" name="titulo" id="tituloNoticia" class="input" required></div><div class="form-group"><label for="conteudo">Conteúdo</label><textarea name="conteudo" id="conteudo" class="textarea" rows="10" required></textarea></div><div class="form-group"><label for="imagemDestaque">URL da Imagem de Destaque</label><input type="text" name="imagemDestaque" id="imagemDestaque" class="input"></div><div class="form-group" style="display:flex;align-items:center;gap:10px"><input type="checkbox" name="emDestaque" id="emDestaque" style="width:auto;height:auto"><label for="emDestaque" style="margin:0;">Notícia em Destaque</label></div><div style="display: flex; gap: 1rem; margin-top: 1.5rem;"><button type="submit" class="btn btn--primary">Salvar</button><button type="button" class="btn-cancel btn">Cancelar</button></div></form></div></template>
+    <template id="template-user-edit-modal"><div class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Editar Usuário</h2><button class="modal-close-btn">×</button></div><form id="user-edit-form"><input type="hidden" name="id"><div class="form-group"><label for="user-nome">Nome</label><input type="text" name="nome" id="user-nome" class="input"></div><div class="form-group"><label for="user-email">Email</label><input type="email" name="email" id="user-email" class="input"></div><div class="form-group"><label for="user-role">Cargo</label><select name="role" id="user-role" class="select"><option value="user">User</option><option value="admin">Admin</option></select></div><div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;"><button type="button" class="btn btn-cancel-modal">Cancelar</button><button type="submit" class="btn btn--primary">Salvar</button></div></form></div></div></template>
+    <template id="template-comment-edit-modal"><div class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Editar Comentário</h2><button class="modal-close-btn">×</button></div><form id="comment-edit-form"><input type="hidden" name="id"><div class="form-group"><label for="comment-text">Texto do Comentário</label><textarea name="text" id="comment-text" class="textarea"></textarea></div><div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;"><button type="button" class="btn btn-cancel-modal">Cancelar</button><button type="submit" class="btn btn--primary">Salvar</button></div></form></div></div></template>
+    
     <script>
-    // ================================================================================================== //
-    // |       JAVASCRIPT COMPLETO E FINAL - LÓGICA ORIGINAL RESTAURADA E INTEGRADA AO NOVO DESIGN        | //
-    // ================================================================================================== //
     document.addEventListener('DOMContentLoaded', function() {
         const adminApp = {
-            // DOM SELECTORS: Agora inclui os novos elementos de UI
             dom: {
                 mainContentBody: document.querySelector('.main-content-body'),
                 navLinks: document.querySelectorAll('.admin-nav .nav-link'),
@@ -251,29 +324,35 @@
                 sidebarToggle: document.getElementById('sidebar-toggle'),
                 overlay: document.getElementById('overlay'),
                 themeToggleButton: document.getElementById('theme-toggle-btn'),
+                modalContainer: document.getElementById('modal-container'),
             },
-            // STATE: Preservado
             state: {
-                isEditing: false, editingId: null, currentView: 'list', currentPanel: 'dashboard',
+                isEditing: false,
+                editingId: null,
+                currentPanel: 'dashboard'
             },
-            // INIT: Agora inicializa os novos listeners e o tema
             init() {
                 this.initEventListeners();
                 this.initTheme();
                 const initialPanel = window.location.hash.replace('#', '') || 'dashboard';
                 const initialLink = document.querySelector(`.nav-link[data-target="panel-${initialPanel}"]`);
-                if (initialLink) { initialLink.click(); }
+                if (initialLink) {
+                    initialLink.click();
+                }
             },
-            // EVENT LISTENERS: Centralizados
             initEventListeners() {
                 this.dom.navLinks.forEach(link => link.addEventListener('click', e => this.handleNavClick(e)));
                 this.dom.sidebarToggle.addEventListener('click', () => this.toggleSidebar());
                 this.dom.overlay.addEventListener('click', () => this.toggleSidebar());
                 this.dom.themeToggleButton.addEventListener('click', () => this.toggleTheme());
                 document.getElementById('panel-users').addEventListener('click', e => this.handleUserActions(e));
-                window.addEventListener('click', e => { if (!e.target.closest('.actions-dropdown')) { document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show')); } });
+                document.getElementById('panel-comments').addEventListener('click', e => this.handleCommentActions(e));
+                window.addEventListener('click', e => {
+                    if (!e.target.closest('.actions-dropdown')) {
+                        document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
+                    }
+                });
             },
-            // [NOVO] LÓGICA DE TEMA
             initTheme() {
                 const savedTheme = localStorage.getItem('adminTheme') || 'dark';
                 document.body.className = savedTheme + '-theme';
@@ -283,16 +362,16 @@
                 document.body.className = isDark ? 'light-theme' : 'dark-theme';
                 localStorage.setItem('adminTheme', isDark ? 'light' : 'dark');
             },
-            // [NOVO] LÓGICA DA SIDEBAR RESPONSIVA
             toggleSidebar() {
                 this.dom.sidebar.classList.toggle('open');
                 this.dom.overlay.style.display = this.dom.sidebar.classList.contains('open') ? 'block' : 'none';
             },
-            // NAVEGAÇÃO: Adaptada para o novo design
             async handleNavClick(e) {
                 e.preventDefault();
                 const targetPanelId = e.currentTarget.dataset.target;
-                if (window.innerWidth < 1024) this.toggleSidebar();
+                if (window.innerWidth < 1024 && this.dom.sidebar.classList.contains('open')) {
+                    this.toggleSidebar();
+                }
                 this.dom.navLinks.forEach(l => l.classList.remove('active'));
                 e.currentTarget.classList.add('active');
                 document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
@@ -300,14 +379,53 @@
                 this.dom.headerTitle.innerHTML = e.currentTarget.innerHTML;
                 this.state.currentPanel = targetPanelId.replace('panel-', '');
                 window.location.hash = this.state.currentPanel;
-                
                 switch (this.state.currentPanel) {
                     case 'animes': this.renderListView('animes'); break;
                     case 'posts': this.renderListView('posts'); break;
                     case 'users': this.renderUsersPanel(); break;
+                    case 'comments': this.renderCommentsPanel(); break;
                 }
             },
-            // [NOVO] LÓGICA PARA RENDERIZAR PAINEL DE USUÁRIOS
+            showToast(message, type = 'success') {
+                this.dom.toast.textContent = message;
+                this.dom.toast.className = `show ${type}`;
+                setTimeout(() => {
+                    this.dom.toast.className = this.dom.toast.className.replace('show', '');
+                }, 4000);
+            },
+            setLoading(isLoading) {
+                this.dom.mainContentBody.classList.toggle('loading', isLoading);
+            },
+            async apiCall(endpoint, options = {}) {
+                this.setLoading(true);
+                try {
+                    const response = await fetch(`/api/${endpoint}`, options);
+                    const textResponse = await response.text();
+                    try {
+                        const data = JSON.parse(textResponse);
+                        if (!response.ok) {
+                            throw new Error(data.error || 'Erro na comunicação com a API');
+                        }
+                        return data;
+                    } catch (jsonError) {
+                        console.error("Falha ao analisar JSON:", textResponse);
+                        throw new Error(`A API retornou uma resposta não-JSON (Status: ${response.status}). Verifique o console do servidor.`);
+                    }
+                } catch (err) {
+                    console.error('API Call Error:', err);
+                    this.showToast(err.message, 'error');
+                    return { success: false, error: err.message };
+                } finally {
+                    this.setLoading(false);
+                }
+            },
+            renderView(panelId, templateId) {
+                const panel = document.getElementById(panelId);
+                const template = document.getElementById(templateId);
+                if (panel && template) {
+                    panel.innerHTML = template.innerHTML;
+                }
+            },
             async renderUsersPanel() {
                 const result = await this.apiCall('users');
                 const tableBody = document.querySelector('#panel-users tbody');
@@ -316,7 +434,7 @@
                 if (result.success && result.data.length > 0) {
                     result.data.forEach(user => {
                         const tr = document.createElement('tr');
-                        tr.innerHTML = `<td><div class="user-info"><img src="${user.avatar || '/images/default-avatar.png'}" alt="Avatar" class="user-avatar"><div><strong>${user.nome}</strong><div style="font-size:0.8rem;color:var(--theme-text-secondary);">ID: ${user.id}</div></div></div></td><td>${user.email}</td><td><span class="user-role-badge ${user.role}">${user.role}</span></td><td>${new Date(user.createdAt).toLocaleDateString('pt-BR')}</td><td><div class="actions-dropdown"><button class="btn btn--small actions-toggle"><i class="fas fa-ellipsis-h"></i></button><div class="dropdown-menu"><a href="/perfil/${user.id}" target="_blank" class="dropdown-item"><i class="fas fa-eye fa-fw"></i> Ver Perfil</a><button class="dropdown-item btn-delete-user" data-id="${user.id}"><i class="fas fa-trash fa-fw"></i> Excluir</button></div></div></td>`;
+                        tr.innerHTML = `<td><div class="user-info"><img src="${user.avatar || '/images/default-avatar.png'}" alt="Avatar" class="user-avatar"><div><strong>${user.nome}</strong><div style="font-size:0.8rem;color:var(--theme-text-secondary);">ID: ${user.id}</div></div></div></td><td>${user.email}</td><td><span class="user-role-badge ${user.role}">${user.role}</span></td><td>${new Date(user.createdAt).toLocaleDateString('pt-BR')}</td><td><div class="actions-dropdown"><button class="btn btn--small actions-toggle"><i class="fas fa-ellipsis-h"></i></button><div class="dropdown-menu"><a href="/perfil/${user.id}" target="_blank" class="dropdown-item"><i class="fas fa-eye fa-fw"></i> Ver Perfil</a><button class="dropdown-item btn-edit-user" data-id="${user.id}"><i class="fas fa-edit fa-fw"></i> Editar</button><button class="dropdown-item btn-delete-user" data-id="${user.id}"><i class="fas fa-trash fa-fw"></i> Excluir</button></div></div></td>`;
                         tableBody.appendChild(tr);
                     });
                 } else {
@@ -332,27 +450,322 @@
                 }
                 const deleteBtn = e.target.closest('.btn-delete-user');
                 if (deleteBtn) {
-                    const id = deleteBtn.dataset.id;
-                    this.handleDelete('users', id);
+                    this.handleDelete('users', deleteBtn.dataset.id);
+                }
+                const editBtn = e.target.closest('.btn-edit-user');
+                if (editBtn) {
+                    this.renderUserEditModal(editBtn.dataset.id);
                 }
             },
-
-            // =======================================================
-            // |   SUA LÓGICA ORIGINAL - RESTAURADA 100% INTACTA     |
-            // =======================================================
-            showToast(message, type = 'success') { this.dom.toast.textContent = message; this.dom.toast.className = `show ${type}`; setTimeout(() => { this.dom.toast.className = this.dom.toast.className.replace('show', ''); }, 4000); },
-            setLoading(isLoading) { this.dom.mainContentBody.classList.toggle('loading', isLoading); },
-            async apiCall(endpoint, options = {}) { this.setLoading(true); try { const fetchOptions = { ...options }; if (!(fetchOptions.body instanceof FormData)) { fetchOptions.headers = { 'Content-Type': 'application/json', ...fetchOptions.headers }; if (fetchOptions.body) { fetchOptions.body = JSON.stringify(fetchOptions.body); } } const response = await fetch(`/api/${endpoint}`, fetchOptions); const data = await response.json(); if (!response.ok) { throw new Error(data.error || `Erro ${response.status}: ${response.statusText}`); } return data; } catch (err) { console.error('API Call Error:', err); this.showToast(err.message, 'error'); return { success: false, error: err.message }; } finally { this.setLoading(false); } },
-            renderView(panelId, templateId) { const panel = document.getElementById(panelId); const template = document.getElementById(templateId); if (panel && template) panel.innerHTML = template.innerHTML; },
-            async renderListView(type) { const panelId = `panel-${type}`; this.renderView(panelId, 'template-list-view'); const panel = document.getElementById(panelId); panel.querySelector('.btn-show-form').addEventListener('click', () => this.renderFormView(type, false)); const result = await this.apiCall(type); if (!result.success) return; const grid = panel.querySelector('.items-grid'); grid.innerHTML = ''; if (!result.data || result.data.length === 0) { grid.innerHTML = '<p>Nenhum item encontrado.</p>'; return; } if (type === 'animes') this.populateAnimeGrid(grid, result.data); if (type === 'posts') this.populatePostGrid(grid, result.data); },
-            async renderFormView(type, isEditing, id = null) { this.state.isEditing = isEditing; this.state.editingId = id; const panelId = `panel-${type}`; const panel = document.getElementById(panelId); const formTemplateId = type === 'animes' ? 'template-anime-form' : 'template-post-form'; this.renderView(panelId, formTemplateId); const form = panel.querySelector('#main-form'); const title = panel.querySelector('.form-title'); panel.querySelector('.btn-cancel').addEventListener('click', () => this.renderListView(type)); if (isEditing) { title.textContent = `Editar ${type === 'animes' ? 'Anime' : 'Notícia'}`; const endpoint = type === 'animes' ? `animes/${id}` : `posts/slug/${id}`; const { data } = await this.apiCall(endpoint); if (data) { for (const key in data) { const input = form.querySelector(`[name="${key}"]`); if (input) { if (input.type === 'checkbox') input.checked = data[key]; else input.value = Array.isArray(data[key]) ? data[key].join(', ') : data[key]; } } if (type === 'animes') form.querySelector('[name="currentSlug"]').value = data.slug; if (type === 'posts') form.querySelector('[name="id"]').value = data.id; } } form.addEventListener('submit', (e) => this.handleFormSubmit(e, type)); },
-            populateAnimeGrid(grid, data) { data.forEach(anime => { const card = document.createElement('div'); card.className = 'item-card'; card.dataset.slug = anime.slug; card.innerHTML = `<a href="/anime/${anime.slug}" target="_blank" class="item-card__image-link"><img src="${anime.imagemCapa || '/images/placeholder_poster.png'}" class="item-card__image" alt="Capa de ${anime.titulo}"></a><div class="item-card__content"><h3 class="item-card__title">${anime.titulo}</h3></div><div class="item-card__actions"><button class="btn-edit btn btn--small"><i class="fas fa-edit"></i> Editar</button><button class="btn-episodes btn btn--small"><i class="fas fa-list-ol"></i> Eps</button><button class="btn-delete btn btn--small"><i class="fas fa-trash"></i></button></div>`; card.querySelector('.btn-edit').addEventListener('click', () => this.renderFormView('animes', true, anime.slug)); card.querySelector('.btn-episodes').addEventListener('click', () => this.renderEpisodeManager(anime.slug)); card.querySelector('.btn-delete').addEventListener('click', () => this.handleDelete('animes', anime.slug)); grid.appendChild(card); }); },
-            populatePostGrid(grid, data) { data.forEach(post => { const card = document.createElement('div'); card.className = 'item-card'; card.dataset.slug = post.slug; card.dataset.id = post.id; card.innerHTML = `<a href="/noticias/${post.slug}" target="_blank" class="item-card__image-link"><img src="${post.imagemDestaque || '/images/placeholder_poster.png'}" class="item-card__image" alt="Destaque de ${post.titulo}"></a><div class="item-card__content"><h3 class="item-card__title">${post.titulo}</h3></div><div class="item-card__actions"><button class="btn-edit btn btn--small"><i class="fas fa-edit"></i> Editar</button><button class="btn-delete btn btn--small"><i class="fas fa-trash"></i></button></div>`; card.querySelector('.btn-edit').addEventListener('click', () => this.renderFormView('posts', true, post.slug)); card.querySelector('.btn-delete').addEventListener('click', () => this.handleDelete('posts', post.id)); grid.appendChild(card); }); },
-            async handleFormSubmit(e, type) { e.preventDefault(); const form = e.target; const formObject = Object.fromEntries(new FormData(form).entries()); if (type === 'animes') { const fileInput = form.querySelector('#fileCapa'); if (fileInput && fileInput.files[0]) { const uploadFormData = new FormData(); uploadFormData.append('file', fileInput.files[0]); this.showToast('Enviando capa...', 'info'); const uploadResult = await this.apiCall('upload/capa', { method: 'POST', body: uploadFormData }); if (uploadResult && uploadResult.success) { formObject.imagemCapa = uploadResult.filePath; } else { this.showToast('Falha ao enviar a imagem da capa. Verifique o console.', 'error'); return; } } } let endpoint = type; let method = 'POST'; if (this.state.isEditing) { const id = this.state.editingId; endpoint = `${type}/${id}`; method = 'PUT'; } const result = await this.apiCall(endpoint, { method, body: formObject }); if (result.success) { this.showToast(`${type === 'animes' ? 'Anime' : 'Notícia'} salvo com sucesso!`); this.renderListView(type); } },
-            async handleDelete(type, id) { if (!confirm('Tem certeza que deseja deletar este item? A ação não pode ser desfeita.')) return; const result = await this.apiCall(`${type}/${id}`, { method: 'DELETE' }); if (result.success) { this.showToast('Item deletado com sucesso.'); if (type === 'users') { this.renderUsersPanel(); } else { this.renderListView(type); } } },
-            async renderEpisodeManager(animeSlug) { const panel = document.getElementById('panel-animes'); this.renderView('panel-animes', 'template-episode-manager'); panel.querySelector('.btn-cancel').addEventListener('click', () => this.renderListView('animes')); const { data: anime } = await this.apiCall(`animes/${animeSlug}`); if (!anime) return; panel.querySelector('.form-title-episodes').textContent = `Episódios de: ${anime.titulo}`; const form = panel.querySelector('#episode-add-form'); form.querySelector('[name="animeId"]').value = anime.id; const list = panel.querySelector('.episode-manage-list'); list.innerHTML = ''; const sortedEpisodes = (anime.episodios || []).sort((a,b) => a.temporada - b.temporada || a.numero - b.numero); if (sortedEpisodes.length === 0) { list.innerHTML = '<li>Nenhum episódio cadastrado.</li>'; } else { sortedEpisodes.forEach(ep => { const li = document.createElement('li'); li.dataset.id = ep.id; li.innerHTML = `<span>T${ep.temporada} E${ep.numero} - ${ep.titulo || 'Sem título'}</span><button class="btn-delete-ep btn btn--small btn--primary"><i class="fas fa-trash"></i></button>`; li.querySelector('.btn-delete-ep').addEventListener('click', async () => { if(!confirm('Deletar episódio?')) return; const res = await this.apiCall(`episodios/${ep.id}`, {method: 'DELETE'}); if(res.success) { this.showToast('Episódio deletado'); this.renderEpisodeManager(animeSlug); } }); list.appendChild(li); }); } const typeSelect = form.querySelector('#tipoVideo'); const urlGroup = form.querySelector('#ep-url-group'); const uploadGroup = form.querySelector('#ep-upload-group'); const urlInput = form.querySelector('#urlVideo'); const fileInput = form.querySelector('#fileVideo'); typeSelect.addEventListener('change', () => { const selectedValue = typeSelect.value; if (selectedValue === 'upload') { uploadGroup.style.display = 'block'; urlGroup.style.display = 'none'; fileInput.required = true; urlInput.required = false; } else { uploadGroup.style.display = 'none'; urlGroup.style.display = 'block'; fileInput.required = false; urlInput.required = true; } }); typeSelect.dispatchEvent(new Event('change')); form.addEventListener('submit', async e => { e.preventDefault(); const formData = new FormData(form); const result = await this.apiCall('episodios', { method: 'POST', body: formData }); if(result.success){ this.showToast('Episódio adicionado!'); this.renderEpisodeManager(animeSlug); } }); }
+            async renderUserEditModal(userId) {
+                this.dom.modalContainer.innerHTML = document.getElementById('template-user-edit-modal').innerHTML;
+                const modalOverlay = this.dom.modalContainer.querySelector('.modal-overlay');
+                const form = this.dom.modalContainer.querySelector('#user-edit-form');
+                const result = await this.apiCall(`users/${userId}`);
+                if (!result.success) {
+                    this.dom.modalContainer.innerHTML = '';
+                    return;
+                }
+                for (const key in result.data) {
+                    if (form.elements[key]) {
+                        form.elements[key].value = result.data[key];
+                    }
+                }
+                modalOverlay.classList.add('open');
+                const closeModal = () => {
+                    modalOverlay.classList.remove('open');
+                    setTimeout(() => {
+                        this.dom.modalContainer.innerHTML = '';
+                    }, 300);
+                };
+                this.dom.modalContainer.querySelector('.modal-close-btn').onclick = closeModal;
+                this.dom.modalContainer.querySelector('.btn-cancel-modal').onclick = closeModal;
+                form.onsubmit = async (e) => {
+                    e.preventDefault();
+                    const formData = Object.fromEntries(new FormData(form).entries());
+                    const updateResult = await this.apiCall(`users/${userId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    if (updateResult.success) {
+                        this.showToast('Usuário atualizado!');
+                        closeModal();
+                        this.renderUsersPanel();
+                    }
+                };
+            },
+            async renderCommentsPanel() {
+                const result = await this.apiCall('comments-admin');
+                const tableBody = document.querySelector('#panel-comments tbody');
+                if (!tableBody) return;
+                tableBody.innerHTML = '';
+                if(result.success && result.data.length > 0) {
+                    result.data.forEach(c => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td><div style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${c.text}">${c.text}</div></td><td><div class="user-info"><img src="${c.author.avatar || '/images/default-avatar.png'}" class="user-avatar"><span>${c.author.nome}</span></div></td><td><a href="/anime/${c.anime.slug}" target="_blank">${c.anime.titulo}</a></td><td>${new Date(c.createdAt).toLocaleDateString('pt-BR')}</td><td><div class="actions-dropdown"><button class="btn btn--small actions-toggle"><i class="fas fa-ellipsis-h"></i></button><div class="dropdown-menu"><button class="dropdown-item btn-edit-comment" data-id="${c.id}"><i class="fas fa-edit fa-fw"></i> Editar</button><button class="dropdown-item btn-delete-comment" data-id="${c.id}"><i class="fas fa-trash fa-fw"></i> Excluir</button></div></div></td>`;
+                        tableBody.appendChild(tr);
+                    });
+                } else {
+                    tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Nenhum comentário.</td></tr>`;
+                }
+            },
+            handleCommentActions(e) {
+                const toggle = e.target.closest('.actions-toggle');
+                if (toggle) {
+                    const menu = toggle.closest('.actions-dropdown').querySelector('.dropdown-menu');
+                    document.querySelectorAll('.dropdown-menu.show').forEach(m => m !== menu && m.classList.remove('show'));
+                    menu.classList.toggle('show');
+                }
+                const deleteBtn = e.target.closest('.btn-delete-comment');
+                if(deleteBtn) {
+                    this.handleDelete('comments-admin', deleteBtn.dataset.id);
+                }
+                const editBtn = e.target.closest('.btn-edit-comment');
+                if (editBtn) {
+                    this.renderCommentEditModal(editBtn.dataset.id);
+                }
+            },
+            async renderCommentEditModal(commentId) {
+                this.dom.modalContainer.innerHTML = document.getElementById('template-comment-edit-modal').innerHTML;
+                const modalOverlay = this.dom.modalContainer.querySelector('.modal-overlay');
+                const form = this.dom.modalContainer.querySelector('#comment-edit-form');
+                const result = await this.apiCall(`comments/${commentId}`);
+                if (!result.success) {
+                    this.dom.modalContainer.innerHTML = '';
+                    return;
+                }
+                form.elements.text.value = result.data.text;
+                modalOverlay.classList.add('open');
+                const closeModal = () => {
+                    modalOverlay.classList.remove('open');
+                    setTimeout(() => {
+                        this.dom.modalContainer.innerHTML = '';
+                    }, 300);
+                };
+                this.dom.modalContainer.querySelector('.modal-close-btn').onclick = closeModal;
+                this.dom.modalContainer.querySelector('.btn-cancel-modal').onclick = closeModal;
+                form.onsubmit = async (e) => {
+                    e.preventDefault();
+                    const formData = {
+                        text: form.elements.text.value
+                    };
+                    const updateResult = await this.apiCall(`comments-admin/${commentId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    if (updateResult.success) {
+                        this.showToast('Comentário atualizado!');
+                        closeModal();
+                        this.renderCommentsPanel();
+                    }
+                };
+            },
+            async renderListView(type) {
+                const panelId = `panel-${type}`;
+                this.renderView(panelId, 'template-list-view');
+                const panel = document.getElementById(panelId);
+                panel.querySelector('.btn-show-form').addEventListener('click', () => this.renderFormView(type, false));
+                const result = await this.apiCall(type);
+                if (!result.success) return;
+                const grid = panel.querySelector('.items-grid');
+                grid.innerHTML = '';
+                if (!result.data || result.data.length === 0) {
+                    grid.innerHTML = '<p>Nenhum item encontrado.</p>';
+                    return;
+                }
+                if (type === 'animes') this.populateAnimeGrid(grid, result.data);
+                if (type === 'posts') this.populatePostGrid(grid, result.data);
+            },
+            async renderFormView(type, isEditing, id = null) {
+                this.state.isEditing = isEditing;
+                this.state.editingId = id;
+                const panelId = `panel-${type}`;
+                const formTemplateId = type === 'animes' ? 'template-anime-form' : 'template-post-form';
+                this.renderView(panelId, formTemplateId);
+                const form = document.getElementById(panelId).querySelector('#main-form');
+                const title = document.getElementById(panelId).querySelector('.form-title');
+                document.getElementById(panelId).querySelector('.btn-cancel').addEventListener('click', () => this.renderListView(type));
+                if (isEditing) {
+                    title.textContent = `Editar ${type === 'animes' ? 'Anime' : 'Notícia'}`;
+                    const endpoint = type === 'animes' ? `animes/${id}` : `posts/slug/${id}`;
+                    const { data } = await this.apiCall(endpoint);
+                    if (data) {
+                        for (const key in data) {
+                            const input = form.querySelector(`[name="${key}"]`);
+                            if (input) {
+                                if (input.type === 'checkbox') {
+                                    input.checked = data[key];
+                                } else {
+                                    input.value = Array.isArray(data[key]) ? data[key].join(', ') : data[key];
+                                }
+                            }
+                        }
+                        if (type === 'animes') form.querySelector('[name="currentSlug"]').value = data.slug;
+                        if (type === 'posts') form.querySelector('[name="id"]').value = data.id;
+                    }
+                }
+                form.addEventListener('submit', (e) => this.handleFormSubmit(e, type));
+            },
+            populateAnimeGrid(grid, data) {
+                data.forEach(anime => {
+                    const card = document.createElement('div');
+                    card.className = 'item-card';
+                    card.dataset.slug = anime.slug;
+                    card.innerHTML = `<a href="/anime/${anime.slug}" target="_blank" class="item-card__image-link"><img src="${anime.imagemCapa || '/images/placeholder_poster.png'}" class="item-card__image"></a><div class="item-card__content"><h3 class="item-card__title">${anime.titulo}</h3></div><div class="item-card__actions"><button class="btn-edit btn btn--small"><i class="fas fa-edit"></i></button><button class="btn-episodes btn btn--small"><i class="fas fa-list-ol"></i></button><button class="btn-delete btn btn--small"><i class="fas fa-trash"></i></button></div>`;
+                    card.querySelector('.btn-edit').addEventListener('click', () => this.renderFormView('animes', true, anime.slug));
+                    card.querySelector('.btn-episodes').addEventListener('click', () => this.renderEpisodeManager(anime.slug));
+                    card.querySelector('.btn-delete').addEventListener('click', () => this.handleDelete('animes', anime.slug));
+                    grid.appendChild(card);
+                });
+            },
+            populatePostGrid(grid, data) {
+                data.forEach(post => {
+                    const card = document.createElement('div');
+                    card.className = 'item-card';
+                    card.dataset.slug = post.slug;
+                    card.dataset.id = post.id;
+                    card.innerHTML = `<a href="/noticias/${post.slug}" target="_blank" class="item-card__image-link"><img src="${post.imagemDestaque || '/images/placeholder_poster.png'}" class="item-card__image"></a><div class="item-card__content"><h3 class="item-card__title">${post.titulo}</h3></div><div class="item-card__actions"><button class="btn-edit btn btn--small"><i class="fas fa-edit"></i></button><button class="btn-delete btn btn--small"><i class="fas fa-trash"></i></button></div>`;
+                    card.querySelector('.btn-edit').addEventListener('click', () => this.renderFormView('posts', true, post.slug));
+                    card.querySelector('.btn-delete').addEventListener('click', () => this.handleDelete('posts', post.id));
+                    grid.appendChild(card);
+                });
+            },
+            async handleFormSubmit(e, type) {
+                e.preventDefault();
+                const form = e.target;
+                const formData = new FormData(form);
+                if (type === 'animes') {
+                    const fileInput = form.querySelector('#fileCapa');
+                    if (fileInput && fileInput.files[0]) {
+                        const uploadFormData = new FormData();
+                        uploadFormData.append('file', fileInput.files[0]);
+                        this.showToast('Enviando capa...', 'info');
+                        const uploadResult = await this.apiCall('upload/capa', { method: 'POST', body: uploadFormData });
+                        if (uploadResult && uploadResult.success) {
+                            formData.set('imagemCapa', uploadResult.filePath);
+                        } else {
+                            this.showToast('Falha no upload da capa.', 'error');
+                            return;
+                        }
+                    }
+                    formData.delete('file');
+                }
+                const formObject = Object.fromEntries(formData.entries());
+                let endpoint = type;
+                let method = 'POST';
+                if (this.state.isEditing) {
+                    const id = this.state.editingId;
+                    endpoint = `${type}/${id}`;
+                    method = 'PUT';
+                }
+                const result = await this.apiCall(endpoint, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formObject)
+                });
+                if (result.success) {
+                    this.showToast('Salvo com sucesso!');
+                    this.renderListView(type);
+                }
+            },
+            async handleDelete(type, id) {
+                if (!confirm('Tem certeza? Esta ação não pode ser desfeita.')) return;
+                const result = await this.apiCall(`${type}/${id}`, {
+                    method: 'DELETE'
+                });
+                if (result.success) {
+                    this.showToast('Item deletado.');
+                    const panelMap = {
+                        'users': 'renderUsersPanel',
+                        'comments-admin': 'renderCommentsPanel',
+                        'animes': 'renderListView',
+                        'posts': 'renderListView'
+                    };
+                    const renderFunction = panelMap[type];
+                    if (renderFunction) {
+                        if (type.includes('user') || type.includes('comment')) {
+                            this[renderFunction]();
+                        } else {
+                            this[renderFunction](type);
+                        }
+                    }
+                }
+            },
+            async renderEpisodeManager(animeSlug) {
+                const panel = document.getElementById('panel-animes');
+                this.renderView('panel-animes', 'template-episode-manager');
+                panel.querySelector('.btn-cancel').addEventListener('click', () => this.renderListView('animes'));
+                const {
+                    data: anime
+                } = await this.apiCall(`animes/${animeSlug}`);
+                if (!anime) return;
+                panel.querySelector('.form-title-episodes').textContent = `Episódios de: ${anime.titulo}`;
+                const form = panel.querySelector('#episode-add-form');
+                form.querySelector('[name="animeId"]').value = anime.id;
+                const list = panel.querySelector('.episode-manage-list');
+                list.innerHTML = '';
+                const sortedEpisodes = (anime.episodios || []).sort((a, b) => a.temporada - b.temporada || a.numero - b.numero);
+                if (sortedEpisodes.length === 0) {
+                    list.innerHTML = '<li>Nenhum episódio cadastrado.</li>';
+                } else {
+                    sortedEpisodes.forEach(ep => {
+                        const li = document.createElement('li');
+                        li.dataset.id = ep.id;
+                        li.innerHTML = `<span>T${ep.temporada} E${ep.numero} - ${ep.titulo || 'Sem título'}</span><button class="btn-delete-ep btn btn--small btn--primary"><i class="fas fa-trash"></i></button>`;
+                        li.querySelector('.btn-delete-ep').addEventListener('click', async () => {
+                            if (!confirm('Deletar episódio?')) return;
+                            const res = await this.apiCall(`episodios/${ep.id}`, {
+                                method: 'DELETE'
+                            });
+                            if (res.success) {
+                                this.showToast('Episódio deletado');
+                                this.renderEpisodeManager(animeSlug);
+                            }
+                        });
+                        list.appendChild(li);
+                    });
+                }
+                const typeSelect = form.querySelector('#tipoVideo');
+                const urlGroup = form.querySelector('#ep-url-group');
+                const uploadGroup = form.querySelector('#ep-upload-group');
+                typeSelect.addEventListener('change', () => {
+                    const selectedValue = typeSelect.value;
+                    uploadGroup.style.display = selectedValue === 'upload' ? 'block' : 'none';
+                    urlGroup.style.display = selectedValue !== 'upload' ? 'block' : 'none';
+                    form.querySelector('#fileVideo').required = selectedValue === 'upload';
+                    form.querySelector('#urlVideo').required = selectedValue !== 'upload';
+                });
+                typeSelect.dispatchEvent(new Event('change'));
+                form.addEventListener('submit', async e => {
+                    e.preventDefault();
+                    const formData = new FormData(form);
+                    const selectedType = formData.get('tipoVideo');
+                    let endpoint = 'episodios';
+                    let options = {};
+                    if (selectedType === 'upload') {
+                        // Para upload de arquivo, a rota deve ser diferente e usar FormData
+                        endpoint = 'episodios/upload'; 
+                        options = { method: 'POST', body: formData };
+                    } else {
+                        // Para links, envia como JSON
+                        options = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.fromEntries(formData)) };
+                    }
+                    const result = await this.apiCall(endpoint, options);
+                    if (result.success) {
+                        this.showToast('Episódio adicionado!');
+                        this.renderEpisodeManager(animeSlug);
+                    }
+                });
+            }
         };
-
         adminApp.init();
     });
     </script>

@@ -2,10 +2,11 @@
 //
 //              DenyAnimeHub - Ponto de Entrada Principal (Versão Definitiva Completa)
 //
-// Versão:        28.0 (Criação de Todas as Coisas)
-// Descrição:     Versão final e robusta que integra as novas rotas de API para
-//                comentários e classificações, mantendo 100% do código original
-//                intacto e funcional. Este é o arquivo completo, sem omissões.
+// Versão:        29.0 (Criação de Todas as Coisas)
+// Descrição:     Versão final e robusta que corrige todos os erros de rota,
+//                unifica a lógica e integra todas as funcionalidades, incluindo
+//                gerenciamento de usuários e comentários. Este é o arquivo
+//                completo, sem omissões e com indentação profissional.
 //
 // ====================================================================================
 
@@ -49,10 +50,8 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
-
 app.use(expressLayouts);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -194,7 +193,6 @@ app.get('/admin/dashboard', proteger, admin, async (req, res) => {
     }
 });
 
-
 // --- MÓDULO 5: ROTAS DE API (AÇÕES JSON) ---
 app.use('/auth', authRoutes);
 const apiRouter = express.Router();
@@ -271,24 +269,35 @@ apiRouter.post('/upload/capa', uploadCapa, (req, res) => {
     res.json({ success: true, filePath: `/uploads/capas/${req.file.filename}` });
 });
 
+// CRUD de Animes
 apiRouter.get('/animes', animeApiController.getAllAnimes);
 apiRouter.get('/animes/:slug', animeApiController.getAnimeBySlug);
 apiRouter.post('/animes', processForm, animeApiController.createAnime);
 apiRouter.put('/animes/:slug', processForm, animeApiController.updateAnime);
 apiRouter.delete('/animes/:slug', animeApiController.deleteAnime);
 
+// CRUD de Episódios
 apiRouter.post('/episodios', processForm, episodioApiController.createEpisodio);
 apiRouter.delete('/episodios/:id', episodioApiController.deleteEpisodio);
 
+// CRUD de Notícias
 apiRouter.get('/posts', postApiController.getAllPosts);
 apiRouter.get('/posts/slug/:slug', postApiController.getPostBySlug);
 apiRouter.post('/posts', processForm, postApiController.createPost);
 apiRouter.put('/posts/:id', processForm, postApiController.updatePost);
 apiRouter.delete('/posts/:id', postApiController.deletePost);
 
+// CRUD de Usuários
 apiRouter.get('/users', userApiController.getAllUsers);
+apiRouter.get('/users/:id', userApiController.getSingleUser);
+apiRouter.put('/users/:id', userApiController.updateUserByAdmin);
 apiRouter.delete('/users/:id', userApiController.deleteUserByAdmin);
 
+// CRUD de Comentários (Admin)
+apiRouter.get('/comments-admin', interactionController.getAllCommentsForAdmin);
+apiRouter.get('/comments/:id', interactionController.getSingleComment);
+apiRouter.put('/comments-admin/:id', interactionController.updateComment);
+apiRouter.delete('/comments-admin/:id', interactionController.deleteComment);
 
 // --- MÓDULO 6: TRATAMENTO DE ERROS FINAIS E INICIALIZAÇÃO ---
 app.use((req, res, next) => {

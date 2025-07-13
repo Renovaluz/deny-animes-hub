@@ -1,7 +1,7 @@
 'use strict';
 const jwt = require('jsonwebtoken'); 
 const crypto = require('crypto');
-const { User, sequelize } = require('../models'); // Importa a instância do sequelize para Op
+const { User, sequelize } = require('../models'); // Importa a instância do sequelize para usar Op
 const sendEmail = require('../utils/sendEmail');
 
 // Sua função original, 100% preservada
@@ -91,7 +91,7 @@ exports.logout = (req, res) => {
     res.redirect('/login?sucesso=Você foi desconectado com sucesso!');
 };
 
-// [NOVA FUNÇÃO] Lógica para "Esqueci a Senha"
+// Lógica para "Esqueci a Senha"
 exports.forgotPassword = async (req, res) => {
     try {
         const user = await User.findOne({ where: { email: req.body.email } });
@@ -126,7 +126,7 @@ exports.forgotPassword = async (req, res) => {
     }
 };
 
-// [NOVA FUNÇÃO] Lógica para Redefinir a Senha
+// Lógica para Redefinir a Senha
 exports.resetPassword = async (req, res) => {
     try {
         const { email, token, novaSenha } = req.body;
@@ -150,7 +150,6 @@ exports.resetPassword = async (req, res) => {
         user.resetPasswordExpire = null;
         await user.save();
         
-        // Loga o usuário automaticamente após o reset bem-sucedido
         enviarTokenResponse(user, 200, res);
 
     } catch (error) {
