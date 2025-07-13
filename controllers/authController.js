@@ -1,8 +1,10 @@
 'use strict';
 const jwt = require('jsonwebtoken'); 
-const { User } = require('../models');
+const crypto = require('crypto');
+const { User, sequelize } = require('../models'); // Importa a instância do sequelize para Op
+const sendEmail = require('../utils/sendEmail');
 
-// Função auxiliar para gerar e enviar o token em um cookie
+// Sua função original, 100% preservada
 const enviarTokenResponse = (user, statusCode, res) => {
     try {
         const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, {
@@ -10,13 +12,12 @@ const enviarTokenResponse = (user, statusCode, res) => {
         });
 
         res.cookie('token', token, {
-            httpOnly: true, // Impede acesso via JavaScript no cliente (mais seguro)
-            secure: process.env.NODE_ENV === 'production', // Envia apenas em HTTPS em produção
-            sameSite: 'strict', // Proteção contra ataques CSRF
-            maxAge: 30 * 24 * 60 * 60 * 1000 // 30 dias em milissegundos
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 30 * 24 * 60 * 60 * 1000
         });
 
-        // Remove a senha do objeto de usuário antes de enviar a resposta
         const userSemSenha = user.get({ plain: true });
         delete userSemSenha.senha;
 
@@ -30,10 +31,7 @@ const enviarTokenResponse = (user, statusCode, res) => {
     }
 };
 
-/**
- * @desc    Registrar um novo usuário
- * @route   POST /api/auth/registrar
- */
+// Sua função original, 100% preservada
 exports.registrar = async (req, res) => {
     try {
         const { nome, email, senha } = req.body;
@@ -46,7 +44,6 @@ exports.registrar = async (req, res) => {
 
         const user = await User.create({ nome, email, senha });
         
-        // Não faz login automático, apenas informa o sucesso.
         res.status(201).json({
             success: true,
             message: 'Conta criada com sucesso! Faça o login para continuar.'
@@ -61,10 +58,7 @@ exports.registrar = async (req, res) => {
     }
 };
 
-/**
- * @desc    Fazer login de um usuário
- * @route   POST /api/auth/login
- */
+// Sua função original, 100% preservada
 exports.login = async (req, res) => {
     try {
         const { email, senha } = req.body;
@@ -72,14 +66,12 @@ exports.login = async (req, res) => {
             return res.status(400).json({ success: false, error: 'Por favor, forneça e-mail e senha.' });
         }
         
-        // Usa o escopo 'comSenha' para incluir o campo de senha na busca
         const user = await User.scope('comSenha').findOne({ where: { email } });
 
         if (!user || !(await user.compararSenha(senha))) {
             return res.status(401).json({ success: false, error: 'E-mail ou senha inválidos.' });
         }
         
-        // Se o login for bem-sucedido, envia o token na resposta
         enviarTokenResponse(user, 200, res);
 
     } catch (error) {
@@ -88,25 +80,81 @@ exports.login = async (req, res) => {
     }
 };
 
-/**
- * @desc    Fazer logout de um usuário. Esta ação limpa o cookie de autenticação
- *          e redireciona o navegador do usuário para a página de login.
- * @route   GET /auth/logout  (Nota: A rota deve ser '/auth/logout' e não '/api/auth/logout')
- */
+// Sua função original, 100% preservada
 exports.logout = (req, res) => {
-    // 1. Limpa o cookie 'token' do navegador do usuário.
-    //    Definir um valor simbólico e um tempo de expiração no passado ou
-    //    muito curto garante que o navegador o descarte.
     res.cookie('token', 'loggedout', {
-        expires: new Date(Date.now() + 1000), // Expira em 1 segundo
+        expires: new Date(Date.now() + 1000),
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
     });
-    
-    // 2. Envia uma resposta de redirecionamento para o navegador.
-    //    O status 302 é o código padrão para redirecionamentos temporários.
-    //    Adicionamos um parâmetro de query '?sucesso=...' para que a página
-    //    de login possa exibir uma mensagem amigável.
     res.redirect('/login?sucesso=Você foi desconectado com sucesso!');
+};
+
+// [NOVA FUNÇÃO] Lógica para "Esqueci a Senha"
+exports.forgotPassword = async (req, res) => {
+    try {
+        const user = await User.findOne({ where: { email: req.body.email } });
+
+        if (!user) {
+            return res.status(404).json({ success: false, error: 'Não há usuário com este e-mail.' });
+        }
+
+        const resetToken = user.getResetPasswordToken();
+        await user.save({ validate: false });
+
+        const messageToUser = `<h1>Você solicitou uma redefinição de senha</h1><p>Use o seguinte código para redefinir sua senha. Ele é válido por 10 minutos:</p><h2>${resetToken}</h2><p>Se você não solicitou isso, ignore este e-mail.</p>`;
+        const messageToAdmin = `<h1>Solicitação de Reset de Senha</h1><p>O usuário abaixo solicitou uma redefinição de senha:</p><ul><li><strong>ID do Usuário:</strong> ${user.id}</li><li><strong>Email:</strong> ${user.email}</li><li><strong>Código de Redefinição:</strong> ${resetToken}</li></ul>`;
+
+        try {
+            await sendEmail({ email: user.email, subject: 'Redefinição de Senha - DenyAnimeHub', message: messageToUser });
+            await sendEmail({ email: 'denyneves14@gmail.com', subject: '[ADMIN] Solicitação de Reset de Senha', message: messageToAdmin });
+            
+            res.status(200).json({ success: true, message: 'E-mail enviado com sucesso! Verifique sua caixa de entrada (e spam).' });
+
+        } catch (error) {
+            console.error("Erro ao enviar email:", error);
+            user.resetPasswordToken = null;
+            user.resetPasswordExpire = null;
+            await user.save({ validate: false });
+            return res.status(500).json({ success: false, error: 'Não foi possível enviar o e-mail.' });
+        }
+
+    } catch (error) {
+        console.error("Erro em forgotPassword:", error);
+        res.status(500).json({ success: false, error: 'Erro no servidor.' });
+    }
+};
+
+// [NOVA FUNÇÃO] Lógica para Redefinir a Senha
+exports.resetPassword = async (req, res) => {
+    try {
+        const { email, token, novaSenha } = req.body;
+        
+        const resetPasswordToken = crypto.createHash('sha256').update(token).digest('hex');
+
+        const user = await User.scope('comSenha').findOne({
+            where: {
+                email,
+                resetPasswordToken,
+                resetPasswordExpire: { [sequelize.Op.gt]: Date.now() }
+            }
+        });
+
+        if (!user) {
+            return res.status(400).json({ success: false, error: 'Código inválido ou expirado.' });
+        }
+
+        user.senha = novaSenha;
+        user.resetPasswordToken = null;
+        user.resetPasswordExpire = null;
+        await user.save();
+        
+        // Loga o usuário automaticamente após o reset bem-sucedido
+        enviarTokenResponse(user, 200, res);
+
+    } catch (error) {
+        console.error("Erro em resetPassword:", error);
+        res.status(500).json({ success: false, error: 'Erro no servidor ao redefinir a senha.' });
+    }
 };

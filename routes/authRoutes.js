@@ -1,10 +1,23 @@
-// ARQUIVO: routes/authRoutes.js
+'use strict';
 const express = require('express');
 const router = express.Router();
-const authController = require('../controllers/authController');
 
-router.post('/registrar', authController.registrar); // Ação da API
-router.post('/login', authController.login);       // Ação da API
-router.get('/logout', authController.logout);      // Ação de Redirecionamento
+// [CORREÇÃO] Importando TODAS as funções necessárias do authController
+const { 
+    registrar, 
+    login, 
+    logout, 
+    forgotPassword, 
+    resetPassword 
+} = require('../controllers/authController');
+
+// Rotas originais preservadas
+router.post('/registrar', registrar);
+router.post('/login', login);
+router.get('/logout', logout); // GET porque é um link de navegador
+
+// [NOVO] Novas rotas para recuperação de senha
+router.post('/forgot-password', forgotPassword);
+router.put('/reset-password', resetPassword); // PUT é mais apropriado para atualizar um recurso
 
 module.exports = router;
