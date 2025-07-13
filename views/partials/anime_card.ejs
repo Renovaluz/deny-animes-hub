@@ -1,0 +1,26 @@
+<%# 
+    Arquivo Parcial: /views/partials/anime_card.ejs 
+    Este card é reutilizável e é chamado em vários lugares.
+    Ele espera receber uma variável chamada 'anime'.
+%>
+
+<div class="carousel-card">
+    <a class="anime-card" 
+        href="javascript:void(0);"
+        data-slug="<%= anime.slug %>"
+        data-title="<%= anime.titulo %>"
+        data-synopsis="<%= anime.sinopse %>"
+        data-year="<%= anime.anoLancamento %>"
+        data-trailer="<%= anime.trailerUrl %>"
+        data-cover="<%= anime.imagemCapa || '/images/default-cover.png' %>"
+        aria-label="Ver detalhes de <%= anime.titulo %>">
+        
+        <div class="anime-card__poster" style="background-image: url('<%= anime.imagemCapa || '/images/default-cover.png' %>')">
+            <i class="fa-solid fa-play anime-card__play-icon"></i>
+        </div>
+        
+        <div class="anime-card__content">
+            <h3 class="anime-card__title"><%= anime.titulo %></h3>
+        </div>
+    </a>
+</div>

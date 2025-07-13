@@ -86,18 +86,59 @@ app.get('/', async (req, res) => {
     }
 });
 
+// ==================================================================================================
+//      ROTA '/animes' COMPLETA E ROBUSTA - V10.0 (COM CARROSSÉIS E FILTROS FUNCIONAIS)
+// ==================================================================================================
+
 app.get('/animes', async (req, res) => {
     try {
+        // [1] PARÂMETROS DE FILTRO E PAGINAÇÃO
+        // Pegamos todos os possíveis parâmetros da URL.
         const page = parseInt(req.query.page) || 1;
-        const limit = 24;
+        const { search, genre, order, letter } = req.query;
+        const limit = 24; // Itens por página
         const offset = (page - 1) * limit;
-        const { search, genre, order } = req.query;
 
+        // [2] QUERIES PARA OS CARROSSÉIS (EXECUTADAS EM PARALELO PARA EFICIÊNCIA)
+        // Estes dados são independentes dos filtros principais e sempre aparecem no topo.
+        const [topAnimes, recentAnimes, topDownloads] = await Promise.all([
+            db.Anime.findAll({ 
+                order: [['views', 'DESC']], 
+                limit: 12 
+            }),
+            db.Anime.findAll({ 
+                order: [['createdAt', 'DESC']], 
+                limit: 12 
+            }),
+            // ATENÇÃO: Supondo que você tenha uma coluna 'downloads'. 
+            // Se não tiver, troque 'downloads' por uma coluna existente como 'views' ou 'id'.
+            db.Anime.findAll({ 
+                order: [['views', 'DESC']], // Usando 'views' como exemplo para "downloads". Mude se necessário.
+                limit: 12 
+            })
+        ]);
+
+        // [3] LÓGICA DE FILTRAGEM PARA O CATÁLOGO PRINCIPAL
+        // Construímos a cláusula 'where' baseada nos filtros ativos.
         let whereClause = {};
-        if (search) whereClause.titulo = { [Op.iLike]: `%${search}%` };
-        if (genre) whereClause.generos = { [Op.iLike]: `%"${genre}"%` };
 
-        let orderClause = [['createdAt', 'DESC']];
+        if (search) {
+            // Se houver uma busca, ela tem prioridade sobre o filtro de letra.
+            whereClause.titulo = { [Op.iLike]: `%${search}%` };
+        } else if (letter) {
+            // Se não houver busca, mas houver uma letra, filtramos por ela.
+            whereClause.titulo = { [Op.iLike]: `${letter}%` };
+        }
+
+        if (genre) {
+            // Adiciona o filtro de gênero (funciona em conjunto com os outros).
+            // Esta busca funciona para campos de texto que armazenam JSON.
+            whereClause.generos = { [Op.iLike]: `%"${genre}"%` };
+        }
+
+        // [4] LÓGICA DE ORDENAÇÃO
+        // Define a ordem padrão e a altera se um parâmetro de ordem for fornecido.
+        let orderClause = [['createdAt', 'DESC']]; // Padrão: mais recentes
         if (order) {
             const [field, direction] = order.split('_');
             if (['titulo', 'views', 'createdAt'].includes(field) && ['asc', 'desc'].includes(direction)) {
@@ -105,20 +146,53 @@ app.get('/animes', async (req, res) => {
             }
         }
 
-        const { count, rows: animes } = await db.Anime.findAndCountAll({ where: whereClause, limit, offset, order: orderClause });
-        const allAnimesForGenres = await db.Anime.findAll({ attributes: ['generos'] });
-        const genreSet = new Set(allAnimesForGenres.flatMap(a => { try { return JSON.parse(a.generos) } catch { return [] } }));
-        const uniqueGenres = [...genreSet].sort();
-        const queryParams = new URLSearchParams({ search: search || '', genre: genre || '', order: order || '' }).toString();
-
-        res.render('todos-animes', {
-            titulo: 'Todos os Animes', animes, totalAnimes: count,
-            totalPages: Math.ceil(count / limit), currentPage: page,
-            uniqueGenres, query: req.query, paginationUrl: `/animes?${queryParams}`
+        // [5] QUERY PRINCIPAL NO BANCO DE DADOS
+        // Busca os animes para a página atual, contando o total para a paginação.
+        const { count, rows: animes } = await db.Anime.findAndCountAll({
+            where: whereClause,
+            order: orderClause,
+            limit,
+            offset,
         });
+
+        // [6] BUSCA DE TODOS OS GÊNEROS ÚNICOS PARA O DROPDOWN DE FILTRO
+        // Esta lógica é eficiente pois só busca uma coluna e processa em memória.
+        const allAnimesForGenres = await db.Anime.findAll({ attributes: ['generos'] });
+        const genreSet = new Set(allAnimesForGenres.flatMap(a => {
+            try { return JSON.parse(a.generos) } catch { return [] }
+        }));
+        const uniqueGenres = [...genreSet].sort();
+
+        // [7] RENDERIZAÇÃO DA PÁGINA COM TODOS OS DADOS NECESSÁRIOS
+        // Enviamos tudo que o template 'todos-animes.ejs' precisa para funcionar.
+        res.render('todos-animes', {
+            // Dados para o título e meta tags
+            titulo: 'Todos os Animes',
+
+            // Dados para o catálogo principal e paginação
+            animes: animes,
+            totalAnimes: count,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page,
+            
+            // Dados para os filtros
+            uniqueGenres: uniqueGenres, // Essencial para o <select> de gêneros
+            query: req.query, // Passa todos os parâmetros atuais para o EJS
+
+            // [NOVO E ESSENCIAL] Dados para os carrosséis
+            topAnimes: topAnimes,
+            recentAnimes: recentAnimes,
+            topDownloads: topDownloads
+        });
+
     } catch (error) {
-        console.error("Erro ao carregar a página de todos os animes:", error);
-        res.status(500).render('500', { layout: false, titulo: 'Erro no Servidor', error });
+        // Tratamento de erro robusto
+        console.error("ERRO FATAL AO CARREGAR A PÁGINA DE ANIMES:", error);
+        res.status(500).render('500', { 
+            layout: false, 
+            titulo: 'Erro no Servidor', 
+            error: 'Não foi possível carregar o catálogo de animes. Por favor, tente novamente mais tarde.'
+        });
     }
 });
 
