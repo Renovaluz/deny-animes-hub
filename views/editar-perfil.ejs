@@ -209,6 +209,12 @@
                     </button>
                 </div>
             </form>
+
+            <!-- Em views/editar-perfil.ejs -->
+            <div class="form-group">
+                <input type="checkbox" id="receberNotificacoes" name="receberNotificacoes" <%= user.receberNotificacoes ? 'checked' : '' %>>
+                <label for="receberNotificacoes">Desejo receber notificações de novos animes e episódios por e-mail.</label>
+            </div>
         </main>
         
     </div>

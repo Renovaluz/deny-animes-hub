@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corra Otaku Post Novo no DenyAnimeHub!</title>
+    <style>
+        /* Estilos básicos para garantir a compatibilidade entre clientes de e-mail */
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #0F172A; color: #F1F5F9; }
+        .container { max-width: 600px; margin: 20px auto; background-color: #1E293B; border-radius: 8px; overflow: hidden; border: 1px solid #334155; }
+        .header { background-color: #E50914; padding: 20px; text-align: center; }
+        .header h1 { margin: 0; color: #ffffff; font-size: 24px; }
+        .content { padding: 30px; }
+        .content h2 { color: #F1F5F9; }
+        .content p { color: #94A3B8; line-height: 1.6; }
+        .trailer-container { margin-top: 20px; }
+        .anime-cover { width: 100%; max-width: 100%; height: auto; border-radius: 8px; }
+        .button { display: inline-block; padding: 12px 24px; margin-top: 20px; background-color: #E50914; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold; }
+        .footer { padding: 20px; text-align: center; font-size: 12px; color: #64748B; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>DenyAnimeHub</h1>
+        </div>
+        <div class="content">
+            <!-- Saudação e Mensagem Principal -->
+            <h3><%= tipoNotificacao %>!</h3>
+            <h2><%= anime.titulo %></h2>
+
+            <!-- Imagem de Capa do Anime -->
+            <img src="<%= anime.imagemCapa %>" alt="Capa de <%= anime.titulo %>" class="anime-cover">
+
+            <!-- Detalhes específicos do Episódio (se aplicável) -->
+            <% if (episodio) { %>
+                <h4>Episódio <%= episodio.numero %>: <%= episodio.titulo || 'Novo Episódio' %> já disponível!</h4>
+            <% } %>
+
+            <!-- Sinopse do Anime -->
+            <p><%= anime.sinopse %></p>
+
+            <!-- Trailer (se houver) -->
+            <% if (anime.trailerUrl) { %>
+                <div class="trailer-container">
+                    <h3>Assista ao Trailer</h3>
+                    <p>Não consegue ver o vídeo? <a href="<%= anime.trailerUrl.replace('/embed/', '/watch?v=') %>">Clique aqui</a>.</p>
+                    <a href="<%= anime.trailerUrl.replace('/embed/', '/watch?v=') %>">
+                         <img src="https://img.youtube.com/vi/<%= anime.trailerUrl.split('/embed/')[1] %>/0.jpg" alt="Trailer" style="width:100%;">
+                    </a>
+                </div>
+            <% } %>
+
+            <!-- Botão de Ação -->
+            <a href="<%= urlDestino %>" class="button">Assista Agora</a>
+        </div>
+        <div class="footer">
+            <p>Você está recebendo este e-mail porque se inscreveu para notificações no DenyAnimeHub.</p>
+            <p>© <%= new Date().getFullYear() %> DenyAnimeHub. Todos os direitos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>

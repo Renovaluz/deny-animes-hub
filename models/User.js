@@ -63,6 +63,18 @@ module.exports = (sequelize, DataTypes) => {
     return await bcrypt.compare(senhaInserida, this.senha);
   };
 
+  // Em models/user.js (exemplo de como ficaria)
+module.exports = (sequelize, DataTypes) => {
+  const User = sequelize.define('User', {
+    // ... outros campos como nome, email, senha ...
+    receberNotificacoes: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true // Começa como 'true' para novos usuários, ou 'false' se preferir
+    }
+  });
+  return User;
+};
+
   // Retorna a classe User
   return User;
 };
