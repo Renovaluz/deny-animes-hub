@@ -1,103 +1,68 @@
+// ====================================================================================
+//              DenyAnimeHub - Serviço de Notificação por E-mail (Versão Simplificada)
+// ====================================================================================
+'use strict';
 const db = require('../models');
 const sendEmail = require('../utils/sendEmail');
 const ejs = require('ejs');
 const path = require('path');
 
-// Função principal que dispara as notificações
+/**
+ * Envia notificações por e-mail para TODOS os usuários sobre novos animes ou episódios.
+ * @param {object} anime - A instância do modelo Anime.
+ * @param {object|null} episodio - A instância do modelo Episodio (opcional).
+ */
 const sendNotification = async (anime, episodio = null) => {
+    console.log("--- INICIANDO PROCESSO DE NOTIFICAÇÃO EM MASSA ---");
+    if (!anime || !anime.titulo) {
+        console.error("ERRO DE NOTIFICAÇÃO: Objeto 'anime' inválido ou sem título.");
+        return;
+    }
+    console.log("Anime:", anime.titulo);
+    if (episodio) console.log("Episódio:", episodio.numero);
+
     try {
-        // 1. Busca todos os usuários que optaram por receber notificações
-        const subscribers = await db.User.findAll({
-            where: { receberNotificacoes: true },
-            attributes: ['email'] // Pega apenas o e-mail para ser mais eficiente
+        // [MUDANÇA CRUCIAL] Busca TODOS os usuários, sem filtrar por 'receberNotificacoes'.
+        const allUsers = await db.User.findAll({
+            attributes: ['email']
         });
 
-        if (subscribers.length === 0) {
-            console.log("Nenhum usuário inscrito para notificações.");
+        if (allUsers.length === 0) {
+            console.log("--- PROCESSO DE NOTIFICAÇÃO ENCERRADO (SEM USUÁRIOS REGISTRADOS) ---");
             return;
         }
 
-        const emails = subscribers.map(user => user.email);
-
-        // 2. Define o tipo de notificação e o link de destino
+        const emails = allUsers.map(user => user.email);
         const tipoNotificacao = episodio ? 'Novo Episódio Disponível' : 'Novo Anime Adicionado';
+        
         const urlDestino = episodio
             ? `${process.env.APP_URL}/assistir/${anime.slug}/${episodio.id}`
             : `${process.env.APP_URL}/anime/${anime.slug}`;
+        
+        if (!process.env.APP_URL) {
+            console.error("ERRO GRAVE: A variável de ambiente APP_URL não está definida! As URLs nos e-mails estarão quebradas.");
+        }
 
-        // 3. Renderiza o template EJS para HTML
         const emailHtml = await ejs.renderFile(
             path.join(__dirname, '../views/email/notificacaoAnime.ejs'),
-            {
-                anime,
-                episodio,
-                tipoNotificacao,
-                urlDestino,
-            }
+            { anime, episodio, tipoNotificacao, urlDestino }
         );
 
-        // 4. Envia o e-mail para todos os inscritos
+        console.log(`Preparando para enviar notificação para ${emails.length} e-mails...`);
+
+        // Envia um único e-mail para múltiplos destinatários usando o campo 'bcc' (Cópia Carbono Oculta)
         await sendEmail({
-            to: emails, // Nodemailer aceita um array de e-mails
+            to: process.env.EMAIL_USERNAME, // Envia para sua própria conta como registro
+            bcc: emails, // Coloca todos os usuários em cópia oculta
             subject: `🔥 ${tipoNotificacao}: ${anime.titulo}`,
             html: emailHtml
         });
 
-        console.log(`Notificação enviada com sucesso para ${emails.length} usuários.`);
+        console.log(`--- SUCESSO! Notificação enviada para ${emails.length} usuários. ---`);
 
     } catch (error) {
-        console.error("Erro ao enviar notificação por e-mail:", error);
+        console.error("!!! ERRO NO SERVIÇO DE NOTIFICAÇÃO:", error);
     }
 };
 
 module.exports = { sendNotification };
-
-APP_URL=https://deny-animes-hub.onrender.com/
-
-    // No topo do arquivo
-    const { sendNotification } = require('../services/notificationService');
-
-    // Dentro de `createAnime`
-    exports.createAnime = async (req, res) => {
-        try {
-            // ... (toda a sua lógica de criação do anime)
-            const newAnime = await db.Anime.create({ /* ...dados do anime... */ });
-
-            // Dispara a notificação após o anime ser criado com sucesso
-            // Usamos um 'setImmediate' para não bloquear a resposta da API
-            setImmediate(() => {
-                sendNotification(newAnime.get({ plain: true }));
-            });
-
-            res.status(201).json({ success: true, data: newAnime });
-        } catch (error) {
-            // ... (seu tratamento de erro)
-        }
-    };
-
-
-    // No topo do arquivo
-    const { sendNotification } = require('../services/notificationService');
-
-    // Dentro de `createEpisodioViaLink` ou `createEpisodioComUpload`
-    exports.createEpisodioViaLink = async (req, res) => {
-        try {
-            const { animeId, /* ...outros dados... */ } = req.body;
-            const anime = await db.Anime.findByPk(animeId);
-
-            if (!anime) {
-                return res.status(404).json({ success: false, error: 'Anime não encontrado.' });
-            }
-
-            const newEpisodio = await db.Episodio.create({ /* ...dados do episódio... */ });
-
-            // Dispara a notificação passando o anime e o novo episódio
-            setImmediate(() => {
-                sendNotification(anime.get({ plain: true }), newEpisodio.get({ plain: true }));
-            });
-
-            res.status(201).json({ success: true, data: newEpisodio });
-        } catch (error) {
-            // ... (seu tratamento de erro)
-        }
-    };

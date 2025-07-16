@@ -1,6 +1,8 @@
 'use strict';
-const { Anime } = require('../models');
+const { Anime } = require('../models'); // Corrigido para db.Anime
+const db = require('../models');
 const slugify = require('../utils/slugify');
+const { sendNotification } = require('../services/notificationService'); // Importa o serviço de notificação
 
 // Objeto que conterá todas as funções do controller
 const animeController = {};
@@ -8,7 +10,7 @@ const animeController = {};
 // GET all animes
 animeController.getAllAnimes = async (req, res) => {
     try {
-        const animes = await Anime.findAll({ order: [['createdAt', 'DESC']], include: 'episodios' });
+        const animes = await db.Anime.findAll({ order: [['createdAt', 'DESC']], include: 'episodios' });
         res.status(200).json({ success: true, data: animes });
     } catch (error) {
         console.error("Erro ao buscar animes:", error);
@@ -19,7 +21,7 @@ animeController.getAllAnimes = async (req, res) => {
 // GET single anime by slug
 animeController.getAnimeBySlug = async (req, res) => {
     try {
-        const anime = await Anime.findOne({ where: { slug: req.params.slug }, include: 'episodios' });
+        const anime = await db.Anime.findOne({ where: { slug: req.params.slug }, include: 'episodios' });
         if (!anime) {
             return res.status(404).json({ success: false, error: 'Anime não encontrado.' });
         }
@@ -41,7 +43,7 @@ animeController.createAnime = async (req, res) => {
 
         const slug = slugify(titulo);
 
-        const novoAnime = await Anime.create({
+        const novoAnime = await db.Anime.create({
             titulo,
             slug,
             sinopse,
@@ -52,6 +54,13 @@ animeController.createAnime = async (req, res) => {
             estudio: estudio || null,
             trailerUrl: trailerUrl || null
         });
+
+        // [INTEGRAÇÃO] Envia a notificação após o anime ser criado com sucesso
+        // O .catch() garante que uma falha no envio de email não quebre a resposta principal para o admin
+        sendNotification(novoAnime).catch(emailError => {
+            console.error("Falha assíncrona ao enviar notificação de novo anime:", emailError);
+        });
+
         res.status(201).json({ success: true, data: novoAnime });
     } catch (error) {
         if (error.name === 'SequelizeUniqueConstraintError') {
@@ -62,23 +71,19 @@ animeController.createAnime = async (req, res) => {
     }
 };
 
-// [CORREÇÃO DEFINITIVA] UPDATE an anime
+// UPDATE an anime
 animeController.updateAnime = async (req, res) => {
     try {
-        // Usa o slug dos parâmetros da URL, que é mais confiável para identificar o recurso
         const slugParaAtualizar = req.params.slug;
-
         const { titulo, sinopse, anoLancamento, generos, imagemCapa, classificacao, estudio, trailerUrl } = req.body;
         
-        const anime = await Anime.findOne({ where: { slug: slugParaAtualizar } });
+        const anime = await db.Anime.findOne({ where: { slug: slugParaAtualizar } });
         if (!anime) {
             return res.status(404).json({ success: false, error: 'Anime não encontrado para atualizar.' });
         }
 
-        // Gera um novo slug SOMENTE se o título for alterado
         const novoSlug = titulo ? slugify(titulo) : anime.slug;
 
-        // Atualiza a instância do anime com os novos dados
         await anime.update({
             titulo: titulo || anime.titulo,
             slug: novoSlug,
@@ -96,7 +101,6 @@ animeController.updateAnime = async (req, res) => {
         if (error.name === 'SequelizeUniqueConstraintError') {
             return res.status(409).json({ success: false, error: 'Um anime com este novo título ou slug já existe.' });
         }
-        // Log do erro específico no console do servidor para depuração
         console.error("Erro detalhado ao atualizar anime:", error);
         res.status(500).json({ success: false, error: 'Erro no servidor ao atualizar anime.' });
     }
@@ -105,7 +109,7 @@ animeController.updateAnime = async (req, res) => {
 // DELETE an anime
 animeController.deleteAnime = async (req, res) => {
     try {
-        const anime = await Anime.findOne({ where: { slug: req.params.slug } });
+        const anime = await db.Anime.findOne({ where: { slug: req.params.slug } });
         if (!anime) {
             return res.status(404).json({ success: false, error: 'Anime não encontrado.' });
         }
