@@ -20,12 +20,12 @@
         --theme-bg-secondary: #050d19; /* Slate 800 */
         --theme-bg-tertiary: #000000; /* Slate 700 */
         --theme-text-primary: #F1F5F9; /* Slate 100 */
-        --theme-text-secondary: #010306; /* Slate 400 */
+        --theme-text-secondary: #94A3B8; /* Slate 400 */
         --theme-accent-primary: #E50914; /* Red Akatsuki */
         --theme-accent-primary-rgb: 229, 9, 20;
         --theme-accent-hover: #c20812;
         --theme-border-color: #000000; /* Slate 700 */
-        --theme-success: #10B981; /* Green */
+        --theme-success: #10B981;
         --sidebar-width: 260px;
         --header-height: 70px;
         --transition-speed: 0.3s;
@@ -37,7 +37,7 @@
         --theme-bg-secondary: #FFFFFF;
         --theme-bg-tertiary: #F1F5F9; /* Slate 100 */
         --theme-text-primary: #0a0b0c; /* Slate 800 */
-        --theme-text-secondary: #041227; /* Slate 500 */
+        --theme-text-secondary: #64748B; /* Slate 500 */
         --theme-border-color: #E2E8F0; /* Slate 200 */
     }
 
@@ -68,7 +68,7 @@
         height: 100%;
         z-index: 1000;
         transition: transform var(--transition-speed) ease;
-        transform: translateX(0); /* Visível por padrão em telas maiores */
+        transform: translateX(0);
     }
     .admin-main-content {
         flex-grow: 1;
@@ -101,33 +101,29 @@
     .admin-nav { flex-grow: 1; overflow-y: auto; }
     .admin-nav ul { list-style: none; }
     .admin-nav li { margin-bottom: 0.25rem; }
-    .admin-nav .nav-link { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 1rem; text-decoration: none; color: var(--theme-text-secondary); font-weight: 500; border-radius: var(--border-radius); transition: all 0.2s ease; }
-    .admin-nav .nav-link:hover { background-color: var(--theme-bg-tertiary); color: var(--theme-text-primary); }
+    .admin-nav .nav-link { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 1rem; text-decoration: none; color: var(--theme-text-primary); font-weight: 500; border-radius: var(--border-radius); transition: all 0.2s ease; }
+    .admin-nav .nav-link:hover { background-color: var(--theme-bg-tertiary); }
     .admin-nav .nav-link.active { background-color: var(--theme-accent-primary); color: white; font-weight: 600; box-shadow: 0 4px 10px -4px rgba(var(--theme-accent-primary-rgb), 0.5); }
     .sidebar-footer { margin-top: auto; display: flex; flex-direction: column; gap: 0.5rem; }
 
-    /* --- RESPONSIVIDADE --- */
-    #sidebar-toggle {
-        display: none; /* Escondido por padrão em telas grandes */
-    }
-
+    #sidebar-toggle { display: none; }
     @media (max-width: 1024px) {
         .admin-sidebar { transform: translateX(-100%); }
         .admin-sidebar.open { transform: translateX(0); box-shadow: 10px 0 30px rgba(0,0,0,0.3); }
         .admin-main-content { margin-left: 0; width: 100%; }
-        #sidebar-toggle { display: block; } /* CORREÇÃO: Mostra o botão em telas menores */
+        #sidebar-toggle { display: block; }
     }
 
     /* --- COMPONENTES GERAIS (BOTÕES, TABELAS, FORMS, MODAIS) --- */
     .btn { padding: 0.7rem 1.2rem; border-radius: var(--border-radius); border: 1px solid var(--theme-border-color); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background-color: var(--theme-bg-tertiary); color: var(--theme-text-primary); transition: all var(--transition-speed); text-decoration: none; }
-    .btn:hover { border-color: var(--theme-text-primary); color: var(--theme-text-primary); transform: translateY(-2px); }
+    .btn:hover { border-color: var(--theme-text-primary); transform: translateY(-2px); }
     .btn--primary { background-color: var(--theme-accent-primary); border-color: var(--theme-accent-primary); color: white; }
     .btn--primary:hover { background-color: var(--theme-accent-hover); border-color: var(--theme-accent-hover); color:white; }
     .btn--small { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
     
     .loading-spinner, #overlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; z-index: 9999; }
     .loading-spinner i { font-size: 3rem; color: var(--theme-accent-primary); animation: spin 1s linear infinite; }
-    #overlay { background: rgba(0,0,0,0.5); z-index: 999; } /* z-index menor que o da sidebar */
+    #overlay { background: rgba(0,0,0,0.5); z-index: 999; }
     #toast-notification { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background-color: var(--theme-bg-secondary); padding: 1rem 1.5rem; border-radius: var(--border-radius); z-index: 10000; transition: bottom 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-weight: 500; border-top: 4px solid; }
     #toast-notification.show { bottom: 2rem; }
     
@@ -138,10 +134,11 @@
     .data-table tbody tr:hover { background-color: var(--theme-bg-tertiary); }
     .user-info { display: flex; align-items: center; gap: 1rem; }
     .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--theme-border-color); }
+    
     .actions-dropdown { position: relative; }
     .actions-dropdown .dropdown-menu { display: none; position: absolute; top: calc(100% + 5px); right: 0; background-color: var(--theme-bg-tertiary); min-width: 180px; box-shadow: 0 8px 30px rgba(0,0,0,0.6); z-index: 100; border-radius: var(--border-radius); border: 1px solid var(--theme-border-color); padding: 0.5rem; }
     .actions-dropdown .dropdown-menu.show { display: block; animation: fadeInDropdown 0.2s ease-out; }
-    .dropdown-item { color: var(--theme-text-secondary); padding: 0.75rem 1rem; text-decoration: none; display: flex; align-items: center; gap: 0.75rem; border-radius: var(--border-radius); cursor: pointer; background: none; border: none; width: 100%; text-align: left; font-family: 'Inter', sans-serif; font-size: 0.9rem;}
+    .dropdown-item { color: var(--theme-text-primary); padding: 0.75rem 1rem; text-decoration: none; display: flex; align-items: center; gap: 0.75rem; border-radius: var(--border-radius); cursor: pointer; background: none; border: none; width: 100%; text-align: left; font-family: 'Inter', sans-serif; font-size: 0.9rem;}
     .dropdown-item:hover { background-color: var(--theme-accent-primary); color: white; }
     
     .admin-form-container, .modal-content { background-color: var(--theme-bg-secondary); padding: 2rem; border-radius: var(--border-radius); border: 1px solid var(--theme-border-color); }
@@ -151,10 +148,10 @@
     .input:focus, .textarea:focus, .select:focus { outline: none; border-color: var(--theme-accent-primary); box-shadow: 0 0 0 3px rgba(var(--theme-accent-primary-rgb), 0.3); }
     
     .items-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
-    .item-card { background-color: var(--theme-bg-secondary); border: 1px solid var(--theme-border-color); border-radius: var(--border-radius); overflow: hidden; transition: all 0.3s; }
+    .item-card { background-color: var(--theme-bg-secondary); border: 1px solid var(--theme-border-color); border-radius: var(--border-radius); overflow: hidden; transition: all 0.3s; display: flex; flex-direction: column; }
     .item-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px -5px rgba(0,0,0,0.4); border-color: var(--theme-accent-primary); }
     .item-card__image { width: 100%; aspect-ratio: 3/4; object-fit: cover; }
-    .item-card__content { padding: 1rem; }
+    .item-card__content { padding: 1rem; flex-grow: 1; }
     .item-card__title { font-weight: 600; margin-bottom: 0.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .item-card__actions { display: flex; gap: 0.5rem; padding: 0 1rem 1rem; }
     
@@ -168,18 +165,9 @@
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; }
     .modal-overlay.open { display: flex; animation: fadeIn 0.3s ease; }
     .modal-content { max-width: 500px; width: 90%; animation: slideInUp 0.4s ease-out; }
-
-    /* Estilo para lista de episódios */
-    .episode-manage-list li {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.75rem 1rem;
-        border-bottom: 1px solid var(--theme-border-color);
-    }
-    .episode-manage-list li:last-child {
-        border-bottom: none;
-    }
+    
+    .episode-manage-list li { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; border-bottom: 1px solid var(--theme-border-color); }
+    .episode-manage-list li:last-child { border-bottom: none; }
     
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     @keyframes fadeInDropdown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
@@ -212,7 +200,6 @@
 
     <main class="admin-main-content">
         <header class="main-content-header">
-            <!-- CORREÇÃO: O botão agora existe e será mostrado/escondido pelo CSS -->
             <button id="sidebar-toggle" class="btn"><i class="fas fa-bars"></i></button>
             <h1 id="main-header-title"><i class="fas fa-tachometer-alt fa-fw"></i> Visão Geral</h1>
         </header>
@@ -244,48 +231,6 @@
     <!--      TEMPLATES HTML PARA RENDERIZAÇÃO DINÂMICA (A MÁGICA DA SPA)                                   -->
     <!-- ================================================================================================== -->
     
-    <!-- ... seu HTML e CSS do dashboard ... -->
-
-<!-- Template do Formulário de Anime -->
-<template id="template-anime-form">
-    <div class="admin-form-container">
-        <h2 class="form-title">Adicionar Anime</h2>
-        <form id="main-form" enctype="multipart/form-data">
-            <!-- ... todos os seus campos de input para anime (título, sinopse, etc.) ... -->
-            
-            <!-- [NOVO] Checkbox de Notificação -->
-            <div class="form-group" style="display:flex; align-items:center; gap:10px; border-top: 1px solid var(--theme-border-color); padding-top: 1.5rem; margin-top: 1.5rem;">
-                <input type="checkbox" name="forcarNotificacao" id="forcarNotificacaoAnime" style="width:auto;height:auto">
-                <label for="forcarNotificacaoAnime" style="margin:0; text-transform: none; font-size: 1rem;">Forçar notificação por e-mail para TODOS os usuários?</label>
-            </div>
-
-            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-                <button type="submit" class="btn btn--primary">Salvar</button>
-                <button type="button" class="btn-cancel btn">Cancelar</button>
-            </div>
-        </form>
-    </div>
-</template>
-
-<!-- Template do Gerenciador de Episódios -->
-<template id="template-episode-manager">
-     <div class="admin-form-container">
-        <h2 class="form-title-episodes">Gerenciar Episódios</h2>
-        <form id="episode-add-form" enctype="multipart/form-data" style="margin-bottom: 2rem; border-bottom: 1px solid var(--theme-border-color); padding-bottom: 2rem;">
-            <!-- ... todos os seus campos de input para episódio (temporada, número, etc.) ... -->
-
-            <!-- [NOVO] Checkbox de Notificação -->
-            <div class="form-group" style="display:flex; align-items:center; gap:10px; margin-top: 1.5rem;">
-                <input type="checkbox" name="forcarNotificacao" id="forcarNotificacaoEp" style="width:auto;height:auto">
-                <label for="forcarNotificacaoEp" style="margin:0; text-transform: none; font-size: 1rem;">Forçar notificação por e-mail para TODOS os usuários?</label>
-            </div>
-
-            <button type="submit" class="btn btn--primary btn--small">Adicionar Episódio</button>
-        </form>
-        <!-- ... resto do seu template ... -->
-    </div>
-</template>
-
     <!-- Template para a visão de lista (Animes e Posts) -->
     <template id="template-list-view">
         <div style="margin-bottom: 1.5rem;">
@@ -294,11 +239,11 @@
         <div class="items-grid"></div>
     </template>
     
-    <!-- Template para o formulário de Anime -->
+    <!-- [CORRIGIDO] Template ÚNICO e COMPLETO para o formulário de Anime -->
     <template id="template-anime-form">
         <div class="admin-form-container">
             <h2 class="form-title">Adicionar Anime</h2>
-            <form id="main-form">
+            <form id="main-form" enctype="multipart/form-data">
                 <input type="hidden" name="currentSlug">
                 <div class="form-group"><label for="titulo">Título</label><input type="text" name="titulo" id="titulo" class="input" required></div>
                 <div class="form-group"><label for="sinopse">Sinopse</label><textarea name="sinopse" id="sinopse" class="textarea" rows="5" required></textarea></div>
@@ -310,16 +255,22 @@
                 <div class="form-group"><label for="estudio">Estúdio</label><input type="text" name="estudio" id="estudio" class="input"></div>
                 <div class="form-group"><label for="trailerUrl">URL do Trailer (Embed)</label><input type="url" name="trailerUrl" id="trailerUrl" class="input" placeholder="https://www.youtube.com/embed/..."></div>
                 <div class="form-group"><label for="fileCapa">Capa (Upload)</label><input type="file" name="capa" id="fileCapa" class="input" accept="image/*"></div>
+                
+                <div class="form-group" style="display:flex; align-items:center; gap:10px; border-top: 1px solid var(--theme-border-color); padding-top: 1.5rem; margin-top: 1.5rem;">
+                    <input type="checkbox" name="forcarNotificacao" id="forcarNotificacaoAnime" style="width:auto;height:auto">
+                    <label for="forcarNotificacaoAnime" style="margin:0; font-weight:normal; text-transform: none; font-size: 1rem;">Forçar notificação por e-mail para TODOS os usuários?</label>
+                </div>
+                
                 <div style="display: flex; gap: 1rem; margin-top: 1.5rem;"><button type="submit" class="btn btn--primary">Salvar</button><button type="button" class="btn-cancel btn">Cancelar</button></div>
             </form>
         </div>
     </template>
 
-    <!-- Template para o gerenciador de Episódios -->
+    <!-- [CORRIGIDO] Template ÚNICO e COMPLETO para o gerenciador de Episódios -->
     <template id="template-episode-manager">
         <div class="admin-form-container">
             <h2 class="form-title-episodes">Gerenciar Episódios</h2>
-            <form id="episode-add-form" style="margin-bottom: 2rem; border-bottom: 1px solid var(--theme-border-color); padding-bottom: 2rem;">
+            <form id="episode-add-form" enctype="multipart/form-data" style="margin-bottom: 2rem; border-bottom: 1px solid var(--theme-border-color); padding-bottom: 2rem;">
                 <input type="hidden" name="animeId">
                 <h4>Adicionar Novo Episódio</h4>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top:1rem;">
@@ -339,6 +290,12 @@
                 </div>
                 <div class="form-group" id="ep-url-group"><label for="urlVideo" id="url-label">URL do Vídeo</label><input type="text" name="urlVideo" id="urlVideo" class="input" placeholder="Cole o link de compartilhamento aqui"></div>
                 <div class="form-group" id="ep-upload-group" style="display: none;"><label for="fileVideo">Arquivo de Vídeo</label><input type="file" name="video" id="fileVideo" class="input" accept="video/mp4,video/mkv,video/x-matroska"></div>
+                
+                <div class="form-group" style="display:flex; align-items:center; gap:10px; margin-top: 1.5rem;">
+                    <input type="checkbox" name="forcarNotificacao" id="forcarNotificacaoEp" style="width:auto;height:auto">
+                    <label for="forcarNotificacaoEp" style="margin:0; font-weight:normal; text-transform: none; font-size: 1rem;">Forçar notificação por e-mail para TODOS os usuários?</label>
+                </div>
+                
                 <button type="submit" class="btn btn--primary btn--small">Adicionar Episódio</button>
             </form>
             <h4>Episódios Existentes</h4>
@@ -368,7 +325,7 @@
             <div class="modal-content">
                 <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--theme-border-color); padding-bottom: 1rem; margin-bottom: 1.5rem;">
                     <h2>Editar Usuário</h2>
-                    <button class="modal-close-btn" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--theme-text-secondary);">×</button>
+                    <button class="modal-close-btn" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--theme-text-primary);">×</button>
                 </div>
                 <form id="user-edit-form">
                     <input type="hidden" name="id">
@@ -390,7 +347,7 @@
             <div class="modal-content">
                 <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--theme-border-color); padding-bottom: 1rem; margin-bottom: 1.5rem;">
                     <h2>Editar Comentário</h2>
-                    <button class="modal-close-btn" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--theme-text-secondary);">×</button>
+                    <button class="modal-close-btn" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--theme-text-primary);">×</button>
                 </div>
                 <form id="comment-edit-form">
                     <input type="hidden" name="id">
@@ -410,9 +367,7 @@
     <!-- ================================================================================================== -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Módulo principal que controla toda a aplicação do painel
         const AdminApp = {
-            // Referências para elementos do DOM usados com frequência
             dom: {
                 mainContentBody: document.querySelector('.main-content-body'),
                 navLinks: document.querySelectorAll('.admin-nav .nav-link'),
@@ -425,46 +380,38 @@
                 themeToggleButton: document.getElementById('theme-toggle-btn'),
                 modalContainer: document.getElementById('modal-container'),
             },
-            // Estado da aplicação
             state: {
                 isEditing: false,
                 editingId: null,
                 currentPanel: 'dashboard',
-                currentAnimeSlugForEpisodes: null, // Guarda o slug do anime para recarregar a lista de episódios
+                currentAnimeSlugForEpisodes: null,
                 charts: {}
             },
-            // Função de inicialização
             init() {
                 this.initEventListeners();
                 this.initTheme();
                 this.initCharts();
-                // Verifica a URL para carregar o painel correto no início
                 const initialPanel = window.location.hash.slice(1) || 'dashboard';
                 this.navigateTo(initialPanel);
             },
-            // Configura todos os ouvintes de eventos
             initEventListeners() {
                 this.dom.navLinks.forEach(link => link.addEventListener('click', e => this.handleNavClick(e)));
                 this.dom.sidebarToggle.addEventListener('click', () => this.toggleSidebar());
                 this.dom.overlay.addEventListener('click', () => this.toggleSidebar(false));
                 this.dom.themeToggleButton.addEventListener('click', () => this.toggleTheme());
-                // Listener de eventos delegado para ações nas tabelas e grids
                 this.dom.mainContentBody.addEventListener('click', e => this.handleDelegatedEvents(e));
-                // Fecha menus dropdown se clicar fora
                 window.addEventListener('click', e => {
                     if (!e.target.closest('.actions-dropdown')) {
                         document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
                     }
                 });
             },
-            // Lida com cliques nos links de navegação da sidebar
             handleNavClick(e) {
                 e.preventDefault();
                 const targetPanelId = e.currentTarget.dataset.target.replace('panel-', '');
                 this.navigateTo(targetPanelId);
                 if (window.innerWidth <= 1024) this.toggleSidebar(false);
             },
-            // Navega para uma seção específica do painel
             async navigateTo(panelId) {
                 this.state.currentPanel = panelId;
                 window.location.hash = panelId;
@@ -481,7 +428,6 @@
                     this.dom.headerTitle.innerHTML = targetLink.innerHTML;
                 }
 
-                // Carrega os dados para o painel selecionado
                 switch (panelId) {
                     case 'animes': await this.renderListView('animes'); break;
                     case 'posts': await this.renderListView('posts'); break;
@@ -489,61 +435,42 @@
                     case 'comments': await this.renderCommentsPanel(); break;
                 }
             },
-            // Lida com todos os cliques dentro do corpo principal
             handleDelegatedEvents(e) {
-                const target = e.target;
-                
-                // Ações de dropdown
-                const dropdownToggle = target.closest('.actions-toggle');
+                const dropdownToggle = e.target.closest('.actions-toggle');
                 if (dropdownToggle) {
-                    // Fecha todos os outros dropdowns
                     document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
-                        if (menu !== dropdownToggle.nextElementSibling) {
-                            menu.classList.remove('show');
-                        }
+                        if (menu !== dropdownToggle.nextElementSibling) menu.classList.remove('show');
                     });
-                    // Abre ou fecha o dropdown clicado
-                    const menu = dropdownToggle.closest('.actions-dropdown').querySelector('.dropdown-menu');
-                    menu.classList.toggle('show');
+                    dropdownToggle.closest('.actions-dropdown').querySelector('.dropdown-menu').classList.toggle('show');
                     return;
                 }
-
-                // Botão para mostrar formulário de adição
-                if(target.closest('.btn-show-form')) {
+                if (e.target.closest('.btn-show-form')) {
                     this.renderFormView(this.state.currentPanel, false);
                     return;
                 }
-                // Botão para cancelar um formulário
-                if(target.closest('.btn-cancel')) {
+                if (e.target.closest('.btn-cancel')) {
                     this.navigateTo(this.state.currentPanel);
                     return;
                 }
-                // Botões de editar/deletar/gerenciar
-                const editBtn = target.closest('.btn-edit');
-                const deleteBtn = target.closest('.btn-delete');
-                const episodesBtn = target.closest('.btn-episodes');
+
+                const editBtn = e.target.closest('.btn-edit');
+                const deleteBtn = e.target.closest('.btn-delete');
+                const episodesBtn = e.target.closest('.btn-episodes');
                 
                 if(editBtn) {
                     const id = editBtn.closest('[data-id]')?.dataset.id || editBtn.closest('[data-slug]')?.dataset.slug;
                     this.renderFormView(this.state.currentPanel, true, id);
                 } else if (deleteBtn) {
                     const id = deleteBtn.closest('[data-id]')?.dataset.id || deleteBtn.closest('[data-slug]')?.dataset.slug;
-                    const isEpisodeDelete = deleteBtn.closest('.episode-manage-list');
-                    // CORREÇÃO: Lógica para apagar episódio
-                    if (isEpisodeDelete) {
-                        this.handleDelete('episodios', id);
-                    } else {
-                        this.handleDelete(this.state.currentPanel, id);
-                    }
+                    const isEpisodeDelete = !!deleteBtn.closest('.episode-manage-list');
+                    this.handleDelete(isEpisodeDelete ? 'episodios' : this.state.currentPanel, id);
                 } else if (episodesBtn) {
                     this.renderEpisodeManager(episodesBtn.closest('[data-slug]').dataset.slug);
                 }
 
-                // Ações específicas de painel (usuários, comentários)
                 this.handleUserActions(e);
                 this.handleCommentActions(e);
             },
-            // Lógica de tema
             initTheme() {
                 const savedTheme = localStorage.getItem('adminTheme') || 'dark';
                 document.body.className = savedTheme + '-theme';
@@ -553,29 +480,21 @@
                 document.body.className = isDark ? 'light-theme' : 'dark-theme';
                 localStorage.setItem('adminTheme', isDark ? 'light' : 'dark');
             },
-            // Lógica da sidebar responsiva
             toggleSidebar(forceOpen) {
-                const isOpen = this.dom.sidebar.classList.contains('open');
-                let shouldBeOpen;
-                if (typeof forceOpen === 'boolean') {
-                    shouldBeOpen = forceOpen;
-                } else {
-                    shouldBeOpen = !isOpen;
-                }
+                const shouldBeOpen = typeof forceOpen === 'boolean' ? forceOpen : !this.dom.sidebar.classList.contains('open');
                 this.dom.sidebar.classList.toggle('open', shouldBeOpen);
                 this.dom.overlay.style.display = shouldBeOpen ? 'block' : 'none';
             },
-            // Funções de feedback visual
             showToast(message, type = 'success') {
                 this.dom.toast.textContent = message;
-                this.dom.toast.className = 'show'; // Limpa classes antigas
-                this.dom.toast.style.borderTopColor = `var(--theme-${type})`;
+                this.dom.toast.className = 'toast-notification';
+                this.dom.toast.style.borderTopColor = type === 'success' ? 'var(--theme-success)' : 'var(--theme-accent-primary)';
+                this.dom.toast.classList.add('show');
                 setTimeout(() => this.dom.toast.classList.remove('show'), 4000);
             },
             setLoading(isLoading) {
                 this.dom.spinner.style.display = isLoading ? 'flex' : 'none';
             },
-            // Função centralizada para chamadas à API
             async apiCall(endpoint, options = {}) {
                 this.setLoading(true);
                 try {
@@ -585,20 +504,18 @@
                         const jsonData = JSON.parse(textData);
                         if (!response.ok) throw new Error(jsonData.error || `Erro ${response.status}`);
                         return jsonData;
-                    } catch (e) { 
-                        // Se o JSON.parse falhar, mas a requisição foi bem sucedida, pode ser uma resposta vazia (ex: DELETE)
-                        if(response.ok) return { success: true };
+                    } catch (e) {
+                        if(response.ok && textData === '') return { success: true };
                         throw new Error(`Resposta inválida da API: ${textData}`); 
                     }
                 } catch (err) {
-                    this.showToast(err.message, 'error');
                     console.error('API Error:', err);
+                    this.showToast(err.message, 'error');
                     return { success: false, error: err.message };
                 } finally {
                     this.setLoading(false);
                 }
             },
-            // Lógica para renderizar as visualizações de lista (Animes, Posts)
             async renderListView(type) {
                 const panel = document.getElementById(`panel-${type}`);
                 panel.innerHTML = document.getElementById('template-list-view').innerHTML;
@@ -607,39 +524,27 @@
                 if (!result.success) return;
                 
                 const grid = panel.querySelector('.items-grid');
-                grid.innerHTML = '';
                 if (!result.data || result.data.length === 0) {
                     grid.innerHTML = '<p style="color: var(--theme-text-secondary);">Nenhum item encontrado.</p>';
                     return;
                 }
                 
-                const itemsHtml = result.data.map(item => {
-                    const idAttribute = type === 'animes' ? `data-slug="${item.slug}"` : `data-id="${item.id}" data-slug="${item.slug || ''}"`;
+                grid.innerHTML = result.data.map(item => {
+                    const idAttribute = type === 'animes' ? `data-slug="${item.slug}"` : `data-id="${item.id}"`;
+                    let actions = `<button class="btn-edit btn btn--small"><i class="fas fa-edit"></i></button>
+                                   <button class="btn-delete btn btn--small btn--primary"><i class="fas fa-trash"></i></button>`;
                     if (type === 'animes') {
-                        return `<div class="item-card" ${idAttribute}>
-                                    <img src="${item.imagemCapa || '/images/default-cover.png'}" class="item-card__image">
-                                    <div class="item-card__content"><h3 class="item-card__title">${item.titulo}</h3></div>
-                                    <div class="item-card__actions">
-                                        <button class="btn-edit btn btn--small"><i class="fas fa-edit"></i></button>
-                                        <button class="btn-episodes btn btn--small"><i class="fas fa-list-ol"></i></button>
-                                        <button class="btn-delete btn btn--small btn--primary"><i class="fas fa-trash"></i></button>
-                                    </div>
-                                </div>`;
+                        actions = `<button class="btn-edit btn btn--small"><i class="fas fa-edit"></i></button>
+                                   <button class="btn-episodes btn btn--small"><i class="fas fa-list-ol"></i></button>` + actions;
                     }
-                    if (type === 'posts') {
-                         return `<div class="item-card" ${idAttribute}>
-                                    <img src="${item.imagemDestaque || '/images/default-cover.png'}" class="item-card__image">
-                                    <div class="item-card__content"><h3 class="item-card__title">${item.titulo}</h3></div>
-                                    <div class="item-card__actions">
-                                        <button class="btn-edit btn btn--small"><i class="fas fa-edit"></i></button>
-                                        <button class="btn-delete btn btn--small btn--primary"><i class="fas fa-trash"></i></button>
-                                    </div>
-                                </div>`;
-                    }
+
+                    return `<div class="item-card" ${idAttribute}>
+                                <img src="${item.imagemCapa || item.imagemDestaque || '/images/default-cover.png'}" class="item-card__image">
+                                <div class="item-card__content"><h3 class="item-card__title">${item.titulo}</h3></div>
+                                <div class="item-card__actions">${actions}</div>
+                            </div>`;
                 }).join('');
-                grid.innerHTML = itemsHtml;
             },
-            // Lógica para renderizar a visão de formulário (Adicionar/Editar)
             async renderFormView(type, isEditing, id = null) {
                 this.state.isEditing = isEditing;
                 this.state.editingId = id;
@@ -668,21 +573,23 @@
                     }
                 }
             },
-            // Lida com o envio de formulários de Anime e Post
             async handleFormSubmit(e, type) {
                 e.preventDefault();
                 const form = e.target;
                 const formData = new FormData(form);
 
                 if (type === 'animes' && formData.get('capa')?.size > 0) {
-                    const uploadFormData = new FormData();
-                    uploadFormData.append('capa', formData.get('capa'));
                     this.showToast('Enviando capa...', 'info');
-                    const uploadResult = await this.apiCall('upload/capa', { method: 'POST', body: uploadFormData });
+                    const uploadResult = await this.apiCall('upload/capa', { method: 'POST', body: new FormData(form) });
                     if (!uploadResult.success) return; 
                     formData.set('imagemCapa', uploadResult.filePath);
                 }
                 formData.delete('capa');
+                
+                // Trata o checkbox
+                if (!formData.has('forcarNotificacao')) {
+                     formData.set('forcarNotificacao', 'off');
+                }
 
                 const formObject = Object.fromEntries(formData.entries());
                 const endpoint = this.state.isEditing ? `${type}/${this.state.editingId}` : type;
@@ -698,14 +605,10 @@
                     this.navigateTo(type);
                 }
             },
-            // Lógica para renderizar o painel de usuários
             async renderUsersPanel() {
                 const panel = document.getElementById('panel-users');
                 const result = await this.apiCall('users');
-                if (!result.success) {
-                    panel.innerHTML = '<p>Falha ao carregar usuários.</p>';
-                    return;
-                }
+                if (!result.success) return panel.innerHTML = '<p>Falha ao carregar usuários.</p>';
                 
                 const tableHtml = `<div class="table-container">
                     <table class="data-table">
@@ -714,10 +617,9 @@
                             <tr data-id="${user.id}">
                                 <td><div class="user-info"><img src="${user.avatar || '/images/default-avatar.png'}" alt="Avatar" class="user-avatar"><span>${user.nome}</span></div></td>
                                 <td>${user.email}</td>
-                                <td>${user.role}</td>
+                                <td><span class="role-badge role-${user.role}">${user.role}</span></td>
                                 <td>${new Date(user.createdAt).toLocaleDateString('pt-BR')}</td>
                                 <td><div class="actions-dropdown"><button class="btn btn--small actions-toggle"><i class="fas fa-ellipsis-h"></i></button><div class="dropdown-menu">
-                                    <!-- CORREÇÃO: O link para o perfil agora funciona corretamente -->
                                     <a href="/perfil/${user.id}" target="_blank" class="dropdown-item btn-view-user"><i class="fas fa-eye fa-fw"></i> Ver Perfil</a>
                                     <button class="dropdown-item btn-edit-user"><i class="fas fa-edit fa-fw"></i> Editar</button>
                                     <button class="dropdown-item btn-delete-user"><i class="fas fa-trash fa-fw"></i> Excluir</button>
@@ -727,21 +629,16 @@
                     </table></div>`;
                 panel.innerHTML = result.data.length > 0 ? tableHtml : '<p>Nenhum usuário encontrado.</p>';
             },
-            // Lida com ações de edição/exclusão de usuários
             handleUserActions(e) {
                 const editBtn = e.target.closest('.btn-edit-user');
-                const deleteBtn = e.target.closest('.btn-delete-user');
                 if (editBtn) this.renderModal('user-edit', editBtn.closest('[data-id]').dataset.id);
+                const deleteBtn = e.target.closest('.btn-delete-user');
                 if (deleteBtn) this.handleDelete('users', deleteBtn.closest('[data-id]').dataset.id);
             },
-            // Lógica para renderizar o painel de comentários
             async renderCommentsPanel() {
                  const panel = document.getElementById('panel-comments');
                 const result = await this.apiCall('comments-admin');
-                if (!result.success) {
-                    panel.innerHTML = '<p>Falha ao carregar comentários.</p>';
-                    return;
-                }
+                if (!result.success) return panel.innerHTML = '<p>Falha ao carregar comentários.</p>';
                 
                 const tableHtml = `<div class="table-container">
                     <table class="data-table">
@@ -761,14 +658,12 @@
                     </table></div>`;
                 panel.innerHTML = result.data.length > 0 ? tableHtml : '<p>Nenhum comentário encontrado.</p>';
             },
-            // Lida com ações de edição/exclusão de comentários
             handleCommentActions(e) {
                 const editBtn = e.target.closest('.btn-edit-comment');
-                const deleteBtn = e.target.closest('.btn-delete-comment');
                 if (editBtn) this.renderModal('comment-edit', editBtn.closest('[data-id]').dataset.id);
+                const deleteBtn = e.target.closest('.btn-delete-comment');
                 if (deleteBtn) this.handleDelete('comments-admin', deleteBtn.closest('[data-id]').dataset.id);
             },
-            // Lógica genérica para renderizar modais
             async renderModal(templateId, entityId) {
                 const template = document.getElementById(`template-${templateId}-modal`);
                 this.dom.modalContainer.innerHTML = template.innerHTML;
@@ -780,11 +675,7 @@
 
                 const endpoint = templateId.includes('user') ? `users/${entityId}` : `comments/${entityId}`;
                 const { data } = await this.apiCall(endpoint);
-                if(data) {
-                    Object.keys(data).forEach(key => {
-                        if(form.elements[key]) form.elements[key].value = data[key];
-                    });
-                }
+                if(data) Object.keys(data).forEach(key => { if(form.elements[key]) form.elements[key].value = data[key]; });
                 
                 const closeModal = () => modalOverlay.classList.remove('open');
                 modalOverlay.querySelector('.modal-close-btn').onclick = closeModal;
@@ -794,11 +685,7 @@
                     e.preventDefault();
                     const formData = Object.fromEntries(new FormData(form).entries());
                     const apiEndpoint = templateId.includes('user') ? `users/${entityId}` : `comments-admin/${entityId}`;
-                    const result = await this.apiCall(apiEndpoint, {
-                        method: 'PUT',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify(formData)
-                    });
+                    const result = await this.apiCall(apiEndpoint, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(formData) });
                     if (result.success) {
                         closeModal();
                         this.showToast('Item atualizado com sucesso!');
@@ -806,23 +693,17 @@
                     }
                 };
             },
-            // Lógica para deletar qualquer tipo de item
             async handleDelete(type, id) {
                 if (!confirm('Você tem certeza? Esta ação não pode ser desfeita.')) return;
                 const result = await this.apiCall(`${type}/${id}`, { method: 'DELETE' });
                 if (result.success) {
                     this.showToast('Item deletado com sucesso!');
-                    // CORREÇÃO: Lógica para recarregar a view correta
-                    if (type === 'episodios') {
-                        this.renderEpisodeManager(this.state.currentAnimeSlugForEpisodes); // Recarrega a lista de episódios
-                    } else {
-                        this.navigateTo(type.replace('-admin', '')); // Recarrega o painel atual
-                    }
+                    if (type === 'episodios') this.renderEpisodeManager(this.state.currentAnimeSlugForEpisodes);
+                    else this.navigateTo(type.replace('-admin', ''));
                 }
             },
-            // Gerenciador de episódios
             async renderEpisodeManager(animeSlug) {
-                this.state.currentAnimeSlugForEpisodes = animeSlug; // Armazena o slug
+                this.state.currentAnimeSlugForEpisodes = animeSlug;
                 const panel = document.getElementById('panel-animes');
                 panel.innerHTML = document.getElementById('template-episode-manager').innerHTML;
                 
@@ -835,8 +716,7 @@
                 
                 const list = panel.querySelector('.episode-manage-list');
                 const episodes = (anime.episodios || []).sort((a,b) => a.temporada - b.temporada || a.numero - b.numero);
-                // CORREÇÃO: O botão de delete agora tem o `data-id` do episódio
-                list.innerHTML = episodes.length > 0 ? episodes.map(ep => `<li data-id="${ep.id}"><span>T${ep.temporada} E${ep.numero} - ${ep.titulo || 'Sem título'}</span><button class="btn btn-delete btn--small btn--primary" data-id="${ep.id}"><i class="fas fa-trash"></i></button></li>`).join('') : '<li>Nenhum episódio cadastrado.</li>';
+                list.innerHTML = episodes.length > 0 ? episodes.map(ep => `<li data-id="${ep.id}"><span>T${ep.temporada} E${ep.numero} - ${ep.titulo || 'Sem título'}</span><button class="btn btn-delete btn--small btn--primary"><i class="fas fa-trash"></i></button></li>`).join('') : '<li>Nenhum episódio cadastrado.</li>';
                 
                 const typeSelect = form.querySelector('#tipoVideo');
                 typeSelect.onchange = () => {
@@ -850,7 +730,11 @@
                     e.preventDefault();
                     const formData = new FormData(form);
                     const isUpload = formData.get('tipoVideo') === 'upload';
-                    
+
+                    if (!formData.has('forcarNotificacao')) {
+                        formData.set('forcarNotificacao', 'off');
+                    }
+
                     const endpoint = isUpload ? 'episodios/upload' : 'episodios';
                     const options = {
                         method: 'POST',
@@ -861,40 +745,27 @@
                     const result = await this.apiCall(endpoint, options);
                     if (result.success) {
                         this.showToast('Episódio adicionado!');
-                        this.renderEpisodeManager(animeSlug); // Recarrega
+                        this.renderEpisodeManager(animeSlug);
                     }
                 };
             },
-            // Inicialização dos gráficos
             initCharts() {
                 this.createChart('newUsersChart', 'Novos Usuários (Últimos 7 Dias)', <%- JSON.stringify(newUsersData) %>);
                 this.createChart('newAnimesChart', 'Novos Animes (Últimos 7 Dias)', <%- JSON.stringify(newAnimesData) %>);
             },
             createChart(canvasId, label, data) {
-                const ctx = document.getElementById(canvasId).getContext('2d');
-                if (this.state.charts[canvasId]) {
-                    this.state.charts[canvasId].destroy();
-                }
+                const ctx = document.getElementById(canvasId)?.getContext('2d');
+                if(!ctx) return;
+                if (this.state.charts[canvasId]) this.state.charts[canvasId].destroy();
 
-                const labels = [];
-                const dailyCounts = {};
-                for(let i=6; i>=0; i--) {
+                const labels = Array.from({length: 7}, (_, i) => {
                     const d = new Date();
                     d.setDate(d.getDate() - i);
-                    const formattedDate = d.toISOString().split('T')[0];
-                    labels.push(formattedDate);
-                    dailyCounts[formattedDate] = 0;
-                }
-                if (Array.isArray(data)) {
-                    data.forEach(item => {
-                        const itemDate = item.date.split('T')[0];
-                        if(dailyCounts.hasOwnProperty(itemDate)) {
-                           dailyCounts[itemDate] = item.count;
-                        }
-                    });
-                }
-                
-                const chartData = labels.map(date => dailyCounts[date]);
+                    return d.toISOString().split('T')[0];
+                }).reverse();
+
+                const dataMap = new Map((data || []).map(item => [item.date.split('T')[0], item.count]));
+                const chartData = labels.map(date => dataMap.get(date) || 0);
 
                 this.state.charts[canvasId] = new Chart(ctx, {
                     type: 'line',
@@ -903,8 +774,8 @@
                         datasets: [{
                             label: label,
                             data: chartData,
-                            backgroundColor: 'rgba(229, 9, 20, 0.2)',
-                            borderColor: 'rgba(229, 9, 20, 1)',
+                            backgroundColor: 'rgba(var(--theme-accent-primary-rgb), 0.2)',
+                            borderColor: 'rgba(var(--theme-accent-primary-rgb), 1)',
                             borderWidth: 2,
                             tension: 0.4,
                             fill: true,
@@ -926,4 +797,4 @@
     });
     </script>
 </body>
-</html>```
+</html>
