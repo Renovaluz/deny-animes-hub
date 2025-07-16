@@ -1,6 +1,3 @@
-// ====================================================================================
-//              DenyAnimeHub - Serviço de Notificação por E-mail (Versão Simplificada)
-// ====================================================================================
 'use strict';
 const db = require('../models');
 const sendEmail = require('../utils/sendEmail');
@@ -8,7 +5,7 @@ const ejs = require('ejs');
 const path = require('path');
 
 /**
- * Envia notificações por e-mail para TODOS os usuários sobre novos animes ou episódios.
+ * Envia notificações por e-mail para todos os usuários sobre novos animes ou episódios.
  * @param {object} anime - A instância do modelo Anime.
  * @param {object|null} episodio - A instância do modelo Episodio (opcional).
  */
@@ -18,11 +15,9 @@ const sendNotification = async (anime, episodio = null) => {
         console.error("ERRO DE NOTIFICAÇÃO: Objeto 'anime' inválido ou sem título.");
         return;
     }
-    console.log("Anime:", anime.titulo);
-    if (episodio) console.log("Episódio:", episodio.numero);
 
     try {
-        // [MUDANÇA CRUCIAL] Busca TODOS os usuários, sem filtrar por 'receberNotificacoes'.
+        // Busca TODOS os usuários para notificação
         const allUsers = await db.User.findAll({
             attributes: ['email']
         });
@@ -50,18 +45,20 @@ const sendNotification = async (anime, episodio = null) => {
 
         console.log(`Preparando para enviar notificação para ${emails.length} e-mails...`);
 
-        // Envia um único e-mail para múltiplos destinatários usando o campo 'bcc' (Cópia Carbono Oculta)
+        // [CORREÇÃO DEFINITIVA] Envia um único e-mail para você, com todos os outros usuários em cópia oculta.
+        // Esta é a maneira mais eficiente e segura de enviar e-mails em massa.
         await sendEmail({
-            to: process.env.EMAIL_USERNAME, // Envia para sua própria conta como registro
-            bcc: emails, // Coloca todos os usuários em cópia oculta
+            to: 'denyneves14@gmail.com', // O destinatário principal, para seu controle
+            bcc: emails, // Todos os seus usuários recebem uma cópia sem ver os outros destinatários
             subject: `🔥 ${tipoNotificacao}: ${anime.titulo}`,
             html: emailHtml
         });
 
-        console.log(`--- SUCESSO! Notificação enviada para ${emails.length} usuários. ---`);
+        // O console.log de sucesso já está dentro da função sendEmail.
 
     } catch (error) {
-        console.error("!!! ERRO NO SERVIÇO DE NOTIFICAÇÃO:", error);
+        // O erro detalhado já será logado pela função sendEmail, aqui apenas registramos o contexto.
+        console.error("!!! ERRO NO SERVIÇO DE NOTIFICAÇÃO: Não foi possível completar o envio de e-mails.", error.message);
     }
 };
 
