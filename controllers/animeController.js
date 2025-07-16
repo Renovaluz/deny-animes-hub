@@ -1,8 +1,7 @@
 'use strict';
-const { Anime } = require('../models'); // Corrigido para db.Anime
 const db = require('../models');
 const slugify = require('../utils/slugify');
-const { sendNotification } = require('../services/notificationService'); // Importa o serviço de notificação
+const { sendNotification } = require('../services/notificationService'); // Importa o serviço
 
 // Objeto que conterá todas as funções do controller
 const animeController = {};
@@ -91,9 +90,9 @@ animeController.updateAnime = async (req, res) => {
             anoLancamento: anoLancamento || anime.anoLancamento,
             generos: generos || anime.generos,
             imagemCapa: imagemCapa || anime.imagemCapa,
-            classificacao: classificacao, // Permite null
-            estudio: estudio,           // Permite null
-            trailerUrl: trailerUrl        // Permite null
+            classificacao: classificacao,
+            estudio: estudio,
+            trailerUrl: trailerUrl
         });
 
         res.status(200).json({ success: true, data: anime });

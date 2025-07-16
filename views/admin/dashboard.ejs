@@ -244,6 +244,48 @@
     <!--      TEMPLATES HTML PARA RENDERIZAÇÃO DINÂMICA (A MÁGICA DA SPA)                                   -->
     <!-- ================================================================================================== -->
     
+    <!-- ... seu HTML e CSS do dashboard ... -->
+
+<!-- Template do Formulário de Anime -->
+<template id="template-anime-form">
+    <div class="admin-form-container">
+        <h2 class="form-title">Adicionar Anime</h2>
+        <form id="main-form" enctype="multipart/form-data">
+            <!-- ... todos os seus campos de input para anime (título, sinopse, etc.) ... -->
+            
+            <!-- [NOVO] Checkbox de Notificação -->
+            <div class="form-group" style="display:flex; align-items:center; gap:10px; border-top: 1px solid var(--theme-border-color); padding-top: 1.5rem; margin-top: 1.5rem;">
+                <input type="checkbox" name="forcarNotificacao" id="forcarNotificacaoAnime" style="width:auto;height:auto">
+                <label for="forcarNotificacaoAnime" style="margin:0; text-transform: none; font-size: 1rem;">Forçar notificação por e-mail para TODOS os usuários?</label>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                <button type="submit" class="btn btn--primary">Salvar</button>
+                <button type="button" class="btn-cancel btn">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</template>
+
+<!-- Template do Gerenciador de Episódios -->
+<template id="template-episode-manager">
+     <div class="admin-form-container">
+        <h2 class="form-title-episodes">Gerenciar Episódios</h2>
+        <form id="episode-add-form" enctype="multipart/form-data" style="margin-bottom: 2rem; border-bottom: 1px solid var(--theme-border-color); padding-bottom: 2rem;">
+            <!-- ... todos os seus campos de input para episódio (temporada, número, etc.) ... -->
+
+            <!-- [NOVO] Checkbox de Notificação -->
+            <div class="form-group" style="display:flex; align-items:center; gap:10px; margin-top: 1.5rem;">
+                <input type="checkbox" name="forcarNotificacao" id="forcarNotificacaoEp" style="width:auto;height:auto">
+                <label for="forcarNotificacaoEp" style="margin:0; text-transform: none; font-size: 1rem;">Forçar notificação por e-mail para TODOS os usuários?</label>
+            </div>
+
+            <button type="submit" class="btn btn--primary btn--small">Adicionar Episódio</button>
+        </form>
+        <!-- ... resto do seu template ... -->
+    </div>
+</template>
+
     <!-- Template para a visão de lista (Animes e Posts) -->
     <template id="template-list-view">
         <div style="margin-bottom: 1.5rem;">
